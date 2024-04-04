@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "gt4sd_inference_guacamol"
+version = "0.1.0"
+license="MIT"
+description = "gt4sd Inference for paccmannrl prediction"
+authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "torch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "supplemental"
+
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+pytest = "8.0.2"
+guacamol_baselines = {git = "https://github.com/PhillipDowney/guacamol_baselines.git", rev = "0.0.4" ,optional = false }
+guacamol = {git = "https://github.com/brian316/guacamol.git", rev = "", optional = false}
+gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+molecule_generation      =    ">=0.4.1"
+torch = [
+    { version = ">=1.7.1", source = "pypi", platform = "darwin" },
+    { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
+    { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
+]
+
+[tool.poetry.extras]
+
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.352"
+python-lsp-server = {extras = ["all"], version = "^1.10.0"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

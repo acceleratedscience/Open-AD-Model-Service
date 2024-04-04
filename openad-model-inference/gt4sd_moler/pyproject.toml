@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "gt4sd_inference_moler"
+version = "0.1.0"
+license="MIT"
+description = "gt4sd Inference for paccmannrl prediction"
+authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "torch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+# molecule_generation = {git = "https://github.com/GT4SD/molecule-generation", rev = "main", optional = false}
+molecule_generation      =    ">=0.4.1"
+python = ">=3.9,<3.11"
+pytest = "8.0.2"
+
+[tool.poetry.extras]
+
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.352"
+python-lsp-server = {extras = ["all"], version = "^1.10.0"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

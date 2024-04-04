@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "gt4sd_inference_paccmann"
+version = "0.1.0"
+license="MIT"
+description = "gt4sd Inference for paccmannrl prediction"
+authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "torch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+gt4sd-inference-guacamol = {path =  "../gt4sd_guacamol/", optional = false}
+
+#automatically loads through dependancies
+toxsmi = {git = "https://github.com/PhillipDowney/chemical_representation_learning_for_toxicity_prediction", rev="0.0.3" , optional = false}
+pytoda = { git = "https://github.com/PhillipDowney/paccmann_datasets" ,rev = "1.1.3",optional = false }
+
+
+
+paccmann_chemistry = {git =  "https://github.com/PhillipDowney/paccmann_chemistry", rev = "0.0.4" , optional = false}
+
+paccmann_generator = {git =  "https://github.com/PhillipDowney/paccmann_generator",rev = "0.0.2", optional = false}
+
+paccmann_predictor = {git = "https://github.com/PhillipDowney/paccmann_predictor", rev = "0.0.2" ,optional = false}
+
+paccmann_omics = {git =  "https://github.com/PaccMann/paccmann_omics" , optional = false}
+
+reinvent-chemistry = "0.0.51"
+python = ">=3.9,<3.11"
+pytest = "8.0.2"
+tape-proteins = ">=0.5"
+[tool.poetry.extras]
+
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.352"
+python-lsp-server = {extras = ["all"], version = "^1.10.0"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

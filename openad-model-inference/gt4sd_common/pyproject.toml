@@ -1,0 +1,72 @@
+
+[tool.poetry]
+name = "gt4sd_common"
+version = "0.1.0"
+license="MIT"
+description = "gt4sd common commpoents"
+authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "torch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "supplemental"
+
+
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+scikit-learn = "1.2.2"
+minio = "^7.2.4"
+#selfies = "0.2.4"
+#selfies = ">=2.1.1"
+#selfies = ">=0.2.4,<=1.0.0"
+pydantic-settings = "^2.2.1"
+pymatgen = "^2024.3.1"
+numpy = "^1.21"
+transformers  = "^4.38.2"
+importlib-metadata = ">=7.1" # temporary: https://github.com/python/importlib_metadata/issues/409
+importlib-resources = ">=6.4.0"
+modlamp = ">=4.3.0"
+torch = [
+    { version = ">=1.1.3", source = "pypi", platform = "darwin" },
+    { version = ">=1.1.3+cu118", source = "torch-cu118", platform = "linux" },
+    { version = ">=1.1.3+cpu", source = "torch-cpu", platform = "win32" },
+]
+tensorflow  =  "2.9.3"
+tensorflow-io-gcs-filesystem = "<0.32.0"
+rdkit = ">=2022.9.5, <2023.0.0"
+pytdc = "^0.4.1"
+deepchem =  "*"
+#deepchem = {git = "https://github.com/deepchem/deepchem",rev = "2.7.1" , optional = false}
+#guacamol_baselines = {git = "https://github.com/PhillipDowney/guacamol_baselines.git", rev = "0.0.4" ,optional = false }
+#guacamol = {git = "https://github.com/brian316/guacamol.git", rev = "", optional = false}
+#pytoda = { git = "https://github.com/PaccMann/paccmann_datasets" ,rev = "0.1.1",optional = false }
+
+
+
+[tool.poetry.extras]
+
+
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.352"
+python-lsp-server = {extras = ["all"], version = "^1.10.0"}
+
+
+[build-system]
+
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
