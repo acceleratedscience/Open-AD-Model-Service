@@ -16,8 +16,9 @@ name = "torch-cu118"
 url = "https://download.pytorch.org/whl/cu118"
 priority = "supplemental"
 
-
-
+[[tool.poetry.source]]
+name = "scatter-cpu"
+url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu.html"
 
 [tool.poetry.dependencies]
 gt4sd_common = {path =  "../gt4sd_common/", optional = false}
@@ -29,10 +30,12 @@ torch = [
     { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
 ]
 
-torch-scatter = [
-  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp39-cp39-linux_x86_64.whl" , markers = "sys_platform == 'linux'"},
-  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2-cp310-cp310-macosx_11_0_x86_64.whl" , markers = "sys_platform == 'darwin'" }
-]
+torch-scatter = { version = "=2.1.2+pt22cpu", source = "scatter-cpu" }
+
+# torch-scatter = [
+#   {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp39-cp39-linux_x86_64.whl" , markers = "sys_platform == 'linux'"},
+#   {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2-cp310-cp310-macosx_11_0_x86_64.whl" , markers = "sys_platform == 'darwin'" }
+# ]
 
 torch-cluster = [{url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3-cp310-cp310-macosx_11_0_x86_64.whl", markers = "sys_platform == 'darwin'" },
 {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3%2Bpt22cpu-cp310-cp310-linux_x86_64.whl", markers = "sys_platform == 'linux'"}]
