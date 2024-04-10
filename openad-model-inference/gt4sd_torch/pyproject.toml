@@ -19,6 +19,7 @@ priority = "supplemental"
 [[tool.poetry.source]]
 name = "scatter-cpu"
 url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu.html"
+priority = "supplemental"
 
 [tool.poetry.dependencies]
 gt4sd_common = {path =  "../gt4sd_common/", optional = false}
