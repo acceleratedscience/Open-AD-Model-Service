@@ -16,26 +16,35 @@ name = "torch-cu118"
 url = "https://download.pytorch.org/whl/cu118"
 priority = "supplemental"
 
-
-
+[[tool.poetry.source]]
+name = "scatter-cpu"
+url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu.html"
+priority = "supplemental"
 
 [tool.poetry.dependencies]
 gt4sd_common = {path =  "../gt4sd_common/", optional = false}
 python = ">=3.9,<3.11"
 pytest = "8.0.2"
-torch = [
-    { version = ">=1.7.1", source = "pypi", platform = "darwin" },
-    { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
-    { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
-]
+# torch = [
+#     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
+#     { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
+#     { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
+# ]
+torch = "2.1.2"
+
+# torch-scatter = { git = "https://github.com/rusty1s/pytorch_scatter", branch = "master"}
 
 torch-scatter = [
-  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp39-cp39-linux_x86_64.whl" , markers = "sys_platform == 'linux'"},
-  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2-cp310-cp310-macosx_11_0_x86_64.whl" , markers = "sys_platform == 'darwin'" }
+  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcu118/torch_scatter-2.1.2%2Bpt22cu118-cp310-cp310-linux_x86_64.whl" , platform = "linux"},
+  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcu118/torch_scatter-2.1.2%2Bpt22cu118-cp310-cp310-win_amd64.whl" , platform = "win32" },
+  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2-cp310-cp310-macosx_11_0_x86_64.whl" , platform = "darwin" }
 ]
 
-torch-cluster = [{url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3-cp310-cp310-macosx_11_0_x86_64.whl", markers = "sys_platform == 'darwin'" },
-{url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3%2Bpt22cpu-cp310-cp310-linux_x86_64.whl", markers = "sys_platform == 'linux'"}]
+torch-cluster = [
+  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcu118/torch_cluster-1.6.3%2Bpt22cu118-cp310-cp310-linux_x86_64.whl", platform = "linux"},
+  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcu118/torch_cluster-1.6.3%2Bpt22cu118-cp310-cp310-win_amd64.whl" , platform = "win32" },
+  {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3-cp310-cp310-macosx_11_0_x86_64.whl", platform = "darwin" }
+]
 torch-geometric = "2.5"
 torchdrug = ">=0.2.0"
 
