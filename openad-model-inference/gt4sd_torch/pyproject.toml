@@ -22,7 +22,9 @@ url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu.html"
 priority = "supplemental"
 
 [tool.poetry.dependencies]
-gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+# gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
+
 python = ">=3.9,<3.11"
 pytest = "8.0.2"
 # torch = [

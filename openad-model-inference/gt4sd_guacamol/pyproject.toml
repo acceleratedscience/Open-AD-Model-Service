@@ -26,7 +26,8 @@ python = ">=3.9,<3.11"
 pytest = "8.0.2"
 guacamol_baselines = {git = "https://github.com/PhillipDowney/guacamol_baselines.git", rev = "0.0.4" ,optional = false }
 guacamol = {git = "https://github.com/brian316/guacamol.git", rev = "", optional = false}
-gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+# gt4sd_common = {path =  "../gt4sd_common/", optional = false}
+gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
 molecule_generation      =    ">=0.4.1"
 torch = [
     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
