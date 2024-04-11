@@ -35,11 +35,12 @@ psutil = "^5.9.8"
 pyright = "^1.1.352"
 python-lsp-server = {extras = ["all"], version = "^1.10.0"}
 mols2grid = { version = "^2.0.0", optional = true}
-torch = [
-    { version = ">=1.7.1", source = "pypi", platform = "darwin" },
-    { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
-    { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
-]
+# torch = [
+#     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
+#     { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
+#     { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
+# ]
+torch = "^1.7.1"
 
 
 

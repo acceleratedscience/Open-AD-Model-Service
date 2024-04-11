@@ -29,12 +29,12 @@ guacamol = {git = "https://github.com/brian316/guacamol.git", rev = "", optional
 # gt4sd_common = {path =  "../gt4sd_common/", optional = false}
 gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
 molecule_generation      =    ">=0.4.1"
-torch = [
-    { version = ">=1.7.1", source = "pypi", platform = "darwin" },
-    { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
-    { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
-]
-
+# torch = [
+#     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
+#     { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
+#     { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
+# ]
+torch = "^1.7.1"
 [tool.poetry.extras]
 
 

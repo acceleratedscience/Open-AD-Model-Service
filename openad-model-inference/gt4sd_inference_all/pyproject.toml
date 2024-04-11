@@ -35,6 +35,7 @@ gt4sd_inference_torch_drug = { git = "https://github.com/acceleratedscience/Open
 
 
 mols2grid = "*"
+
 # torch = [
 #     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
 #     { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
