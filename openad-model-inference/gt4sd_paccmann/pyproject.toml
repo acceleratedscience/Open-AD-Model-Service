@@ -18,7 +18,7 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 gt4sd_common = {path =  "../gt4sd_common/", optional = false}
-gt4sd-inference-guacamol = {path =  "../gt4sd_guacamol/", optional = false}
+gt4sd_inference_guacamol = {path =  "../gt4sd_guacamol/", optional = false}
 
 #automatically loads through dependancies
 toxsmi = {git = "https://github.com/PhillipDowney/chemical_representation_learning_for_toxicity_prediction", rev="0.0.3" , optional = false}

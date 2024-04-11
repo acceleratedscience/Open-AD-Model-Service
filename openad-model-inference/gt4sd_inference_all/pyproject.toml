@@ -26,6 +26,13 @@ gt4sd_inference_reinvent = {path =  "../gt4sd_reinvent/", optional = false}
 gt4sd_inference_moler = {path =  "../gt4sd_moler/", optional = false}
 gt4sd_inference_guacamol = {path =  "../gt4sd_guacamol/", optional = false}
 gt4sd_inference_torch_drug = {path =  "../gt4sd_torch/", optional = false}
+# gt4sd_inference_guacamol = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_guacamol", branch = "main" }
+# gt4sd_inference_regression = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_regression", branch = "main" }
+# gt4sd_inference_paccmann = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_paccmann", branch = "main" }
+# gt4sd_inference_reinvent = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_reinvent", branch = "main" }
+# gt4sd_inference_moler = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_moler", branch = "main" }
+# gt4sd_inference_torch_drug = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_torch", branch = "main" }
+
 
 mols2grid = "*"
 # torch = [
