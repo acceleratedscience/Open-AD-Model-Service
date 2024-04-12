@@ -132,7 +132,6 @@ def get_train_val_test_loader(
         pin_memory=pin_memory,
     )
     if return_test:
-
         test_sampler = SubsetRandomSampler(indices[-test_size:])
 
         test_loader = DataLoader(
@@ -241,9 +240,7 @@ class GaussianDistance:
               Expanded distance matrix with the last dimension of length
               len(self.filter).
         """
-        return np.exp(
-            -((distances[..., np.newaxis] - self.filter) ** 2) / self.var**2
-        )
+        return np.exp(-((distances[..., np.newaxis] - self.filter) ** 2) / self.var**2)
 
 
 class AtomInitializer:

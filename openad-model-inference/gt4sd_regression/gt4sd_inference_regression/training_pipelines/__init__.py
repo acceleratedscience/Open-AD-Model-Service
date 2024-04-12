@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Module initialization for gt4sd traning pipelines."""
+
 import json
 import logging
 from typing import Any, Dict
@@ -29,13 +30,13 @@ from typing import Any, Dict
 import sentencepiece as _sentencepiece
 import torch as _torch
 import tensorflow as _tensorflow
-from gt4sd_trainer.hf_pl.core import (
+from gt4sd_trainer.hf_pl.core import (  # noqa: F401
     LanguageModelingDataArguments,
     LanguageModelingModelArguments,
     LanguageModelingSavingArguments,
     LanguageModelingTrainingPipeline,
 )
-from gt4sd_trainer.hf_pl.pytorch_lightning_trainer import (
+from gt4sd_trainer.hf_pl.pytorch_lightning_trainer import (  # noqa: F401
     PytorchLightningTrainingArguments,
 )
 
@@ -110,12 +111,12 @@ from .pytorch_lightning.molformer.core import (
     MolformerTrainingPipeline,
 )
 """
-from .regression_transformer.core import (
+from .regression_transformer.core import (  # noqa: E402
     RegressionTransformerDataArguments,
     RegressionTransformerSavingArguments,
     RegressionTransformerTrainingArguments,
 )
-from .regression_transformer.implementation import (
+from .regression_transformer.implementation import (  # noqa: E402
     RegressionTransformerModelArguments,
     RegressionTransformerTrainingPipeline,
 )
@@ -178,7 +179,9 @@ def training_pipeline_name_to_metadata(name: str) -> Dict[str, Any]:
     metadata: Dict[str, Any] = {"training_pipeline": name, "parameters": {}}
     if name in TRAINING_PIPELINE_NAME_METADATA_MAPPING:
         try:
-            path = exitclose_file_creator(f"training_pipelines/{TRAINING_PIPELINE_NAME_METADATA_MAPPING[name]}")
+            path = exitclose_file_creator(
+                f"training_pipelines/{TRAINING_PIPELINE_NAME_METADATA_MAPPING[name]}"
+            )
             with open(path, "rt") as fp:
                 metadata["parameters"] = json.load(fp)
         except Exception:
@@ -187,12 +190,15 @@ def training_pipeline_name_to_metadata(name: str) -> Dict[str, Any]:
             )
 
     elif name in TRAINING_PIPELINE_ARGUMENTS_MAPPING:
-
         for training_argument_class in TRAINING_PIPELINE_ARGUMENTS_MAPPING[name]:
             field_types = extract_fields_from_class(training_argument_class)
             metadata["parameters"].update(field_types)
 
     else:
-        logger.warning(f'training pipeline "{name}" metadata not found, returning an empty metadata dictionary')
-    metadata["description"] = metadata["parameters"].pop("description", "A training pipeline.")
+        logger.warning(
+            f'training pipeline "{name}" metadata not found, returning an empty metadata dictionary'
+        )
+    metadata["description"] = metadata["parameters"].pop(
+        "description", "A training pipeline."
+    )
     return metadata

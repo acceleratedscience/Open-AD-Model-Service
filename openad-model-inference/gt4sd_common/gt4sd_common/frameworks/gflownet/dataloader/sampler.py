@@ -29,9 +29,17 @@ import torch
 import torch.nn as nn
 from torch.utils.data import IterableDataset
 
-from gt4sd_common.frameworks.gflownet.envs.graph_building_env import GraphBuildingEnvContext
-from gt4sd_common.frameworks.gflownet.loss.trajectory_balance import TrajectoryBalance, TrajectoryBalanceModel
-from gt4sd_common.frameworks.gflownet.dataloader.dataset import GFlowNetDataset, GFlowNetTask
+from gt4sd_common.frameworks.gflownet.envs.graph_building_env import (
+    GraphBuildingEnvContext,
+)
+from gt4sd_common.frameworks.gflownet.loss.trajectory_balance import (
+    TrajectoryBalance,
+    TrajectoryBalanceModel,
+)
+from gt4sd_common.frameworks.gflownet.dataloader.dataset import (
+    GFlowNetDataset,
+    GFlowNetTask,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -187,7 +195,11 @@ class SamplingIterator(IterableDataset):
         """
         # Otherwise, query the task for flat rewards
         valid_idcs = torch.tensor(
-            [i + num_offline for i in range(self.online_batch_size) if trajs[i + num_offline]["is_valid"]]
+            [
+                i + num_offline
+                for i in range(self.online_batch_size)
+                if trajs[i + num_offline]["is_valid"]
+            ]
         ).long()
 
         pred_reward = torch.zeros((self.online_batch_size))
@@ -239,7 +251,9 @@ class SamplingIterator(IterableDataset):
 
         # predict reward with task
         else:
-            trajs, flat_rewards = self.predict_reward_task(trajs, flat_rewards, num_offline, is_valid)
+            trajs, flat_rewards = self.predict_reward_task(
+                trajs, flat_rewards, num_offline, is_valid
+            )
 
         return trajs, flat_rewards
 
@@ -270,7 +284,9 @@ class SamplingIterator(IterableDataset):
         for idcs in self._idx_iterator():
             num_offline = idcs.shape[0]  # This is in [1, self.offline_batch_size]
             # Sample conditional info such as temperature, trade-off weights, etc.
-            cond_info = self.task.sample_conditional_information(num_offline + self.online_batch_size)
+            cond_info = self.task.sample_conditional_information(
+                num_offline + self.online_batch_size
+            )
             is_valid = torch.ones(cond_info["beta"].shape[0]).bool()
 
             # sample offline data
@@ -279,12 +295,16 @@ class SamplingIterator(IterableDataset):
             # Sample some on-policy data (sample online the model or the task)
             if self.online_batch_size > 0:
                 # update trajectories and rewards with on-policy data
-                trajs, flat_rewards = self.sample_online(trajs, flat_rewards, cond_info, num_offline)
+                trajs, flat_rewards = self.sample_online(
+                    trajs, flat_rewards, cond_info, num_offline
+                )
 
             # compute scalar rewards from conditional information & flat rewards
             rewards = self.task.cond_info_to_reward(cond_info, flat_rewards)
             # account for illegal actions
-            rewards[torch.logical_not(is_valid)] = np.exp(self.algo.illegal_action_logreward)
+            rewards[torch.logical_not(is_valid)] = np.exp(
+                self.algo.illegal_action_logreward
+            )
 
             # Construct batch using trajectories, rewards
             batch = self.algo.construct_batch(trajs, cond_info["encoding"], rewards)

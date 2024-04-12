@@ -2,7 +2,7 @@
   "description": "Pipeline mocking a training process lasting 30 seconds.",
   "batch_size": {
     "type": "integer",
-    "default":  32,
+    "default": 32,
     "description": "Batch size for training.",
     "example": 32,
     "optional": false

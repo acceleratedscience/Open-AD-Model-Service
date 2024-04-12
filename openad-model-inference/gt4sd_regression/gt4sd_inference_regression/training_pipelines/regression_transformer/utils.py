@@ -79,7 +79,9 @@ class Property:
         """
         counts = Counter(self.mask_lengths)
         if len(counts) > 1:
-            logger.warning(f"Not all {self.name} properties have same number of tokens: {counts}")
+            logger.warning(
+                f"Not all {self.name} properties have same number of tokens: {counts}"
+            )
         return int(counts.most_common(1)[0][0])
 
 
@@ -110,7 +112,10 @@ def add_tokens_from_lists(
             toks = tokenizer.tokenize(line)
             all_tokens = all_tokens.union(toks)
             # Grow the set of all properties (assumes that the text follows the last `|`)
-            props = [x.split(">")[0] + ">" for x in line.split(tokenizer.expression_separator)[:-1]]
+            props = [
+                x.split(">")[0] + ">"
+                for x in line.split(tokenizer.expression_separator)[:-1]
+            ]
             for prop in props:
                 if prop not in properties.keys():
                     properties[prop] = Property(prop)
@@ -156,8 +161,9 @@ def prepare_datasets_from_files(
     aug = AUGMENT_FACTORY.get(tokenizer.language, lambda x: x)
     trans = TRANSFORM_FACTORY.get(tokenizer.language, lambda x: x)
 
-    for i, (data, path) in enumerate(zip([train_data, test_data], [train_path, test_path])):
-
+    for i, (data, path) in enumerate(
+        zip([train_data, test_data], [train_path, test_path])
+    ):
         if not path.endswith(".csv"):
             raise TypeError(f"Please provide a csv file not {path}.")
 
@@ -177,7 +183,10 @@ def prepare_datasets_from_files(
         # Parse data and create RT-compatible format
         for j, row in df.iterrows():
             line = "".join(
-                [f"<{p}>{row[p]:.3f}{tokenizer.expression_separator}" for p in properties]
+                [
+                    f"<{p}>{row[p]:.3f}{tokenizer.expression_separator}"
+                    for p in properties
+                ]
                 + [trans(row.text)]  # type: ignore
             )
             data.append(line)
@@ -187,15 +196,22 @@ def prepare_datasets_from_files(
             for _ in range(augment):
                 for j, row in df.iterrows():
                     line = "".join(
-                        [f"<{p}>{row[p]:.3f}{tokenizer.expression_separator}" for p in properties]
+                        [
+                            f"<{p}>{row[p]:.3f}{tokenizer.expression_separator}"
+                            for p in properties
+                        ]
                         + [trans(aug(row.text))]  # type: ignore
                     )
                     data.append(line)
 
-    return add_tokens_from_lists(tokenizer=tokenizer, train_data=train_data, test_data=test_data)
+    return add_tokens_from_lists(
+        tokenizer=tokenizer, train_data=train_data, test_data=test_data
+    )
 
 
-def get_train_config_dict(training_args: Dict[str, Any], properties: Set) -> Dict[str, Any]:
+def get_train_config_dict(
+    training_args: Dict[str, Any], properties: Set
+) -> Dict[str, Any]:
     return {
         "alternate_steps": training_args["alternate_steps"],
         "reset_training_loss": True,
@@ -261,15 +277,21 @@ class TransformersTrainingArgumentsCLI(TrainingArguments):
     )
     greater_is_better: Optional[str] = field(  # type: ignore
         default="no",
-        metadata={"help": "Whether the `metric_for_best_model` should be maximized or not."},
+        metadata={
+            "help": "Whether the `metric_for_best_model` should be maximized or not."
+        },
     )
     remove_unused_columns: Optional[str] = field(  # type: ignore
         default="yes",
-        metadata={"help": "Remove columns not required by the model when using an nlp.Dataset."},
+        metadata={
+            "help": "Remove columns not required by the model when using an nlp.Dataset."
+        },
     )
     load_best_model_at_end: Optional[str] = field(  # type: ignore
         default=None,
-        metadata={"help": "Whether or not to load the best model found during training at the end of training."},
+        metadata={
+            "help": "Whether or not to load the best model found during training at the end of training."
+        },
     )
     ddp_find_unused_parameters: Optional[str] = field(  # type: ignore
         default="no",
@@ -349,7 +371,10 @@ class TransformersTrainingArgumentsCLI(TrainingArguments):
     optim: Optional[str] = field(  # type: ignore
         default="adamw_hf",
         metadata={
-            "help": ("The optimizer to use. One of  `adamw_hf`, `adamw_torch`, `adafactor` " "or `adamw_apex_fused`.")
+            "help": (
+                "The optimizer to use. One of  `adamw_hf`, `adamw_torch`, `adafactor` "
+                "or `adamw_apex_fused`."
+            )
         },
     )
 

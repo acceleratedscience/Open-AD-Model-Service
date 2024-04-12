@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Module initialization for gt4sd."""
+
 from gt4sd_common.extras import EXTRAS_ENABLED
 
 # NOTE: here we import the applications to register them
@@ -44,10 +45,6 @@ from .conditional_generation.paccmann_rl import (  # noqa: F401
     PaccMannRLProteinBasedGenerator,
 )
 """
-from .conditional_generation.regression_transformer import (  # noqa: F401
-    RegressionTransformerMolecules,
-    RegressionTransformerProteins,
-)
 
 """
 from .conditional_generation.reinvent import ReinventGenerator  # noqa: F401

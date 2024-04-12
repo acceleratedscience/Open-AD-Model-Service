@@ -31,7 +31,6 @@ def build_env_context(
     environment_name: str = "graph_building_env",
     context_name: str = "graph_building_env_context",
 ):
-
     """Builds an environment and context environment.
 
     Args:

@@ -53,7 +53,9 @@ def to_mol(mol: SmallMolecule) -> Chem.Mol:
     elif isinstance(mol, Chem.Mol):
         pass
     else:
-        raise TypeError(f"Please provide SMILES string or rdkit.Chem.Mol object not {type(mol)}")
+        raise TypeError(
+            f"Please provide SMILES string or rdkit.Chem.Mol object not {type(mol)}"
+        )
     return mol
 
 
@@ -70,16 +72,22 @@ def to_smiles(mol: SmallMolecule) -> str:
         try:
             mol = Chem.MolFromSmiles(mol)
         except Exception:
-            raise ValueError(f"Could not convert SMILES string to rdkit.Chem.Mol: {mol}")
+            raise ValueError(
+                f"Could not convert SMILES string to rdkit.Chem.Mol: {mol}"
+            )
     elif isinstance(mol, Chem.Mol):
         pass
     else:
-        raise TypeError(f"Pass a SMILES string or rdkit.Chem.Mol object not {type(mol)}")
+        raise TypeError(
+            f"Pass a SMILES string or rdkit.Chem.Mol object not {type(mol)}"
+        )
 
     return Chem.MolToSmiles(mol, canonical=True)
 
 
-def get_similarity_fn(target_mol: SmallMolecule, fp_key: str = "FCFP4") -> Callable[[SmallMolecule], PropertyValue]:
+def get_similarity_fn(
+    target_mol: SmallMolecule, fp_key: str = "FCFP4"
+) -> Callable[[SmallMolecule], PropertyValue]:
     """Get a similarity function for a target molecule.
 
     Args:
@@ -105,7 +113,9 @@ def get_activity_fn(target: str) -> Callable[[SmallMolecule], PropertyValue]:
         an affinity function that can be called with a `SmallMolecule`.
     """
     if target not in download_oracle_names:
-        raise ValueError(f"Supported targets are: {download_oracle_names}, not {target}")
+        raise ValueError(
+            f"Supported targets are: {download_oracle_names}, not {target}"
+        )
     return Oracle(name=target)
 
 
@@ -131,7 +141,9 @@ def get_sequence(protein: MacroMolecule) -> str:
     else:
         raise TypeError(f"Pass a string or rdkit.Chem.Mol object not {type(protein)}")
     if seq == []:
-        raise ValueError(f"Sequence was empty or rdkit.Chem.Mol could not be converted: {protein}")
+        raise ValueError(
+            f"Sequence was empty or rdkit.Chem.Mol could not be converted: {protein}"
+        )
     return seq[-1]
 
 
@@ -148,7 +160,9 @@ def get_descriptor(protein: MacroMolecule) -> GlobalDescriptor:
     return GlobalDescriptor(seq)
 
 
-def get_target_parameters(target: Union[str, Dict[str, Any]]) -> Tuple[List[Type[Any]], List[float]]:
+def get_target_parameters(
+    target: Union[str, Dict[str, Any]],
+) -> Tuple[List[Type[Any]], List[float]]:
     """Generates a tuple of scorers and weight list
 
     Args:
@@ -165,7 +179,9 @@ def get_target_parameters(target: Union[str, Dict[str, Any]]) -> Tuple[List[Type
     elif isinstance(target, dict):
         target_dictionary = target
     else:
-        raise ValueError(f"{target} of type {type(target)} is not supported: provide 'str' or 'Dict[str, Any]'")
+        raise ValueError(
+            f"{target} of type {type(target)} is not supported: provide 'str' or 'Dict[str, Any]'"
+        )
     for scoring_function_name, parameters in target_dictionary.items():
         weight = 1.0
         if "weight" in parameters:
@@ -205,7 +221,9 @@ def validate_api_token(parameters: ApiTokenParameters, message: str = "") -> Non
         raise AttributeError(f"API key missing in {parameters}")
 
     if not isinstance(parameters.api_token, str):
-        raise TypeError(f"API key has to be a string not {parameters.api_token}\n {message}")
+        raise TypeError(
+            f"API key has to be a string not {parameters.api_token}\n {message}"
+        )
 
 
 def docking_import_check() -> None:

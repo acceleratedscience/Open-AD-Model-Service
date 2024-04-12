@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Implementation of Regression Transformer conditional generators."""
+
 import json
 import logging
 import os
@@ -98,8 +99,12 @@ class ConditionalGenerator:
         self.device = device_claim(device)
         # Set up the data preparation pipeline
         if not os.path.exists(os.path.join(resources_path, "inference.json")):
-            raise OSError(f"algorithm_version {resources_path.split('/')[-1]} does not exist.")
-        self.tokenizer = InferenceBertTokenizer.from_pretrained(resources_path, pad_even=False)
+            raise OSError(
+                f"algorithm_version {resources_path.split('/')[-1]} does not exist."
+            )
+        self.tokenizer = InferenceBertTokenizer.from_pretrained(
+            resources_path, pad_even=False
+        )
         self.collator = MaskedTextCollator(self.tokenizer)
 
         # Set up model: First load the pretrained XLNet model
@@ -124,7 +129,9 @@ class ConditionalGenerator:
         """
         config_name = os.path.join(resources_path, "config.json")
         config = AutoConfig.from_pretrained(config_name, mem_len=1024)
-        xlnet_model = AutoModelWithLMHead.from_pretrained(resources_path, from_tf=False, config=config)
+        xlnet_model = AutoModelWithLMHead.from_pretrained(
+            resources_path, from_tf=False, config=config
+        )
         xlnet_model.resize_token_embeddings(len(self.tokenizer))
         xlnet_model.to(self.device)
         xlnet_model.eval()
@@ -148,12 +155,25 @@ class ConditionalGenerator:
             # Optional normalize parameter (for property) defaults to True
             self.do_normalize = data.get("normalize", [True] * len(self.properties))
 
-            self.property_mask_lengths = [data["property_mask_length"][p] for p in self.properties]
-            self._mins = [data.get("property_ranges", {}).get(p, [0, 1])[0] for p in self.properties]
-            self._maxs = [data.get("property_ranges", {}).get(p, [0, 1])[1] for p in self.properties]
+            self.property_mask_lengths = [
+                data["property_mask_length"][p] for p in self.properties
+            ]
+            self._mins = [
+                data.get("property_ranges", {}).get(p, [0, 1])[0]
+                for p in self.properties
+            ]
+            self._maxs = [
+                data.get("property_ranges", {}).get(p, [0, 1])[1]
+                for p in self.properties
+            ]
             # In case custom normalization/denormalization is required
-            self.normalization_fns = [data.get("normalization_fns", {}).get(p, None) for p in self.properties]
-            self.denormalization_fns = [data.get("denormalization_fns", {}).get(p, None) for p in self.properties]
+            self.normalization_fns = [
+                data.get("normalization_fns", {}).get(p, None) for p in self.properties
+            ]
+            self.denormalization_fns = [
+                data.get("denormalization_fns", {}).get(p, None)
+                for p in self.properties
+            ]
             self.metadata = data
 
             # If tolerance dict is given, ensure it is well-formed
@@ -162,25 +182,34 @@ class ConditionalGenerator:
                 # Check that no extra properties are given
                 for key in self.tolerance.keys():
                     if key not in self.properties:
-                        logger.error(f"tolerance key {key} is not a valid property name, will be ignored.")
+                        logger.error(
+                            f"tolerance key {key} is not a valid property name, will be ignored."
+                        )
                 # Check that all properties are given
                 for key in self.properties:
                     if key not in self.tolerance.keys():
-                        logger.error(f"tolerance key {key} is missing, will be set to 20%.")
+                        logger.error(
+                            f"tolerance key {key} is missing, will be set to 20%."
+                        )
                     self.tolerance_dict[key] = self.tolerance.get(key, 20.0)
 
             elif isinstance(self.tolerance, float):
                 for key in self.properties:
                     self.tolerance_dict[key] = self.tolerance
             else:
-                raise TypeError(f"tolerance must be either a float or a dictionary, not {type(self.tolerance)}.")
+                raise TypeError(
+                    f"tolerance must be either a float or a dictionary, not {type(self.tolerance)}."
+                )
 
             # Tolerance defined on the original scale
             self.tolerances = [
-                (self._maxs[i] - self._mins[i]) * self.tolerance_dict[k] / 100.0 for i, k in enumerate(self.properties)
+                (self._maxs[i] - self._mins[i]) * self.tolerance_dict[k] / 100.0
+                for i, k in enumerate(self.properties)
             ]
         except Exception:
-            raise ValueError(f"Could not restore inference parameters from {resources_path}")
+            raise ValueError(
+                f"Could not restore inference parameters from {resources_path}"
+            )
 
     def denormalize(self, x: float, idx: int, precision: int = 4) -> float:
         """
@@ -200,7 +229,9 @@ class ConditionalGenerator:
 
         # The default normalization reverts a linear transformation to [0,1] scale
         if self.denormalization_fns[idx] is None:
-            return round(x * (self._maxs[idx] - self._mins[idx]) + self._mins[idx], precision)
+            return round(
+                x * (self._maxs[idx] - self._mins[idx]) + self._mins[idx], precision
+            )
 
         # This allows to revert arbitrarily complex preprocessing functions
         fn = self.denormalization_fns[idx]
@@ -208,7 +239,9 @@ class ConditionalGenerator:
             denormed = eval(fn)(x)
             return round(denormed, precision)
         except SyntaxError:
-            raise SyntaxError(f"Custom denormalization function {fn} seems improperly formatted")
+            raise SyntaxError(
+                f"Custom denormalization function {fn} seems improperly formatted"
+            )
 
     def normalize(self, x: str, idx: int, precision: int = 3) -> float:
         """
@@ -250,7 +283,9 @@ class ConditionalGenerator:
             normed = eval(fn)(x_float)
             return round(normed, precision)
         except SyntaxError:
-            raise SyntaxError(f"Custom normalization function {fn} seems improperly formatted")
+            raise SyntaxError(
+                f"Custom normalization function {fn} seems improperly formatted"
+            )
 
     def validate_input(self, x: str) -> None:
         """
@@ -264,17 +299,30 @@ class ConditionalGenerator:
         """
 
         if self.tokenizer.expression_separator not in x:
-            raise ValueError(f"Expression separator {self.tokenizer.expression_separator} not " f"found in input {x}.")
+            raise ValueError(
+                f"Expression separator {self.tokenizer.expression_separator} not "
+                f"found in input {x}."
+            )
         if self.tokenizer.mask_token not in x:
-            raise ValueError(f"Nothing to do, no mask to fill ({self.tokenizer.mask_token}) found " f"in input {x}.")
+            raise ValueError(
+                f"Nothing to do, no mask to fill ({self.tokenizer.mask_token}) found "
+                f"in input {x}."
+            )
         if not all(p in x for p in self.properties):
-            raise ValueError(f"Not all property tokens ({self.properties}) found in input")
+            raise ValueError(
+                f"Not all property tokens ({self.properties}) found in input"
+            )
 
         text_sequence = x.split(self.tokenizer.expression_separator)[-1]
         number_sequence = x[: -len(text_sequence) - 1]
 
-        if self.tokenizer.mask_token in text_sequence and self.tokenizer.mask_token in number_sequence:
-            raise ValueError(f"Do not mask number and text sequence at the same time like in {x}.")
+        if (
+            self.tokenizer.mask_token in text_sequence
+            and self.tokenizer.mask_token in number_sequence
+        ):
+            raise ValueError(
+                f"Do not mask number and text sequence at the same time like in {x}."
+            )
         if isinstance(self.tokenizer.text_tokenizer, PolymerGraphTokenizer):
             self.validate_input_molecule(text_sequence, MoleculeFormat.copolymer)
         elif isinstance(self.tokenizer.text_tokenizer, SelfiesTokenizer):
@@ -284,7 +332,9 @@ class ConditionalGenerator:
 
         self.validate_input_numerical(number_sequence)
 
-    def validate_input_molecule(self, sequence: str, input_type: str = "SELFIES") -> None:
+    def validate_input_molecule(
+        self, sequence: str, input_type: str = "SELFIES"
+    ) -> None:
         """
         Verifies that the non-numerical part of the input is a proper sequence.
 
@@ -302,7 +352,9 @@ class ConditionalGenerator:
         """
         if self.tokenizer.mask_token in sequence:
             # Task is most likely regression
-            if sequence.count(self.tokenizer.mask_token) != sum(self.property_mask_lengths):
+            if sequence.count(self.tokenizer.mask_token) != sum(
+                self.property_mask_lengths
+            ):
                 raise ValueError(
                     f"To predict {self.properties} you have to mask exactly "
                     f"{self.property_mask_lengths} times respectively."
@@ -313,10 +365,13 @@ class ConditionalGenerator:
             for toks in sequence.split(self.tokenizer.expression_separator):
                 tokens.extend(self.tokenizer.property_tokenizer.tokenize(toks))
                 tokens.append(self.tokenizer.expression_separator)
-            idx = list(np.where(np.array(tokens) == self.tokenizer.expression_separator)[0])
+            idx = list(
+                np.where(np.array(tokens) == self.tokenizer.expression_separator)[0]
+            )
             if len(idx) < len(self.properties):
                 raise ValueError(
-                    "Please append all properties with separator token:" f"{self.tokenizer.expression_separator}."
+                    "Please append all properties with separator token:"
+                    f"{self.tokenizer.expression_separator}."
                 )
             if idx[0] != self.property_mask_lengths[0] + 1:
                 raise ValueError(
@@ -346,8 +401,10 @@ class ConditionalGenerator:
         """
 
         self.validate_input(x)
-        if self.tokenizer.mask_token in x.split(self.tokenizer.expression_separator)[-1]:
-
+        if (
+            self.tokenizer.mask_token
+            in x.split(self.tokenizer.expression_separator)[-1]
+        ):
             return "generation"
 
         return "regression"
@@ -378,7 +435,9 @@ class ConditionalGenerator:
 
         return self.compile_regression_result(input_ids, prediction)
 
-    def compile_regression_result(self, input_ids: torch.Tensor, prediction: torch.Tensor) -> List[Sequence]:
+    def compile_regression_result(
+        self, input_ids: torch.Tensor, prediction: torch.Tensor
+    ) -> List[Sequence]:
         """
         Postprocesses the prediction from the property task to obtain a float.
 
@@ -393,12 +452,21 @@ class ConditionalGenerator:
         """
         properties = []
         for inp, pred in zip(input_ids, prediction):
-            in_tokens = self.tokenizer.decode(inp, clean_up_tokenization_spaces=False).split(" ")
-            out_tokens = self.tokenizer.decode(pred, clean_up_tokenization_spaces=False).split(" ")
+            in_tokens = self.tokenizer.decode(
+                inp, clean_up_tokenization_spaces=False
+            ).split(" ")
+            out_tokens = self.tokenizer.decode(
+                pred, clean_up_tokenization_spaces=False
+            ).split(" ")
             joined = self.tokenizer.get_sample_prediction(out_tokens, in_tokens)
             _, gen_prop = self.tokenizer.aggregate_tokens(joined, label_mode=False)
             properties.append(
-                "".join([f"<{k}>{self.denormalize(v, pidx)}" for pidx, (k, v) in enumerate(gen_prop.items())])
+                "".join(
+                    [
+                        f"<{k}>{self.denormalize(v, pidx)}"
+                        for pidx, (k, v) in enumerate(gen_prop.items())
+                    ]
+                )
             )
         return properties
 
@@ -465,9 +533,9 @@ class ConditionalGenerator:
         # Obtain the sequences (AAS or SELFIES)
         sequences = [
             self.tokenizer.to_readable(
-                "".join(self.tokenizer.decode(seq, skip_special_tokens=True).split(" ")).split(
-                    self.tokenizer.expression_separator
-                )[-1]
+                "".join(
+                    self.tokenizer.decode(seq, skip_special_tokens=True).split(" ")
+                ).split(self.tokenizer.expression_separator)[-1]
             )
             for seq in generations
         ]
@@ -479,7 +547,11 @@ class ConditionalGenerator:
             filter(
                 lambda x: all(
                     [
-                        abs(float(x[1].split(p)[-1].split("<")[0]) - self.target_values[i]) < self.tolerances[i]
+                        abs(
+                            float(x[1].split(p)[-1].split("<")[0])
+                            - self.target_values[i]
+                        )
+                        < self.tolerances[i]
                         for i, p in enumerate(self.properties)
                     ]
                 ),
@@ -507,7 +579,9 @@ class ConditionalGenerator:
         # Tokenize sequence and extract positions of separator tokens
         tokens = self.tokenizer.tokenize(context)
         final_tokens = ""
-        sep_idxs = [i for i, t in enumerate(tokens) if t == self.tokenizer.expression_separator]
+        sep_idxs = [
+            i for i, t in enumerate(tokens) if t == self.tokenizer.expression_separator
+        ]
 
         # Declard as class variable since used by other methods
         self.target_values = []
@@ -543,7 +617,9 @@ class ConditionalGenerator:
         except ValueError:
             return False
 
-    def validate_numerical(self, sequences: List[Any]) -> Tuple[List[Sequence], List[int]]:
+    def validate_numerical(
+        self, sequences: List[Any]
+    ) -> Tuple[List[Sequence], List[int]]:
         """
         Validate whether a list of sequences contains only numerical values.
 
@@ -557,7 +633,11 @@ class ConditionalGenerator:
         items = []
         idxs = []
         for idx, item in enumerate(sequences):
-            if isinstance(item, str) and item.startswith("<") and self.isfloat(item.split(">")[-1]):
+            if (
+                isinstance(item, str)
+                and item.startswith("<")
+                and self.isfloat(item.split(">")[-1])
+            ):
                 items.append(item)
                 idxs.append(idx)
         return items, idxs
@@ -616,13 +696,19 @@ class ConditionalGenerator:
         if property_goal == {}:
             raise ValueError("Please specify the target properties with a dictionary.")
         if not all([k in property_goal.keys() for k in self.properties]):
-            raise ValueError(f"Please provide property goals for all properties: {self.properties}.")
+            raise ValueError(
+                f"Please provide property goals for all properties: {self.properties}."
+            )
         self.property_goal = property_goal
 
         if not isinstance(fraction_to_mask, float):
-            raise TypeError(f"The fraction_to_mask {fraction_to_mask} has to be a float.")
+            raise TypeError(
+                f"The fraction_to_mask {fraction_to_mask} has to be a float."
+            )
         if fraction_to_mask < 0 or fraction_to_mask > 1:
-            raise ValueError(f"The fraction_to_mask {fraction_to_mask} has to be between 0 and 1.")
+            raise ValueError(
+                f"The fraction_to_mask {fraction_to_mask} has to be between 0 and 1."
+            )
         self.fraction_to_mask = fraction_to_mask
 
         if not isinstance(tokens_to_mask, list):
@@ -672,35 +758,48 @@ class ConditionalGenerator:
         tokens = self.tokenizer.text_tokenizer.tokenize(language_seq)
 
         # Determine which tokens can be masked (from `tokens_to_mask`)
-        maskable_tokens = set(tokens) if self.maskable_tokens == [] else set(self.maskable_tokens)
+        maskable_tokens = (
+            set(tokens) if self.maskable_tokens == [] else set(self.maskable_tokens)
+        )
         maskable_idxs = [i for i, t in enumerate(tokens) if t in maskable_tokens]
 
         # Make sure that `substructures_to_keep` are not masked
         for keep in self.substructures_to_keep:
-            keep_toks = self.tokenizer.text_tokenizer.tokenize(self.language_encoding(keep))
+            keep_toks = self.tokenizer.text_tokenizer.tokenize(
+                self.language_encoding(keep)
+            )
             to_be_kept = get_substructure_indices(tokens, keep_toks)
             maskable_idxs = list(filter(lambda x: x not in to_be_kept, maskable_idxs))
 
         num_to_mask = round(len(maskable_idxs) * self.fraction_to_mask)
         # Mask the tokens
         mask_idxs = np.random.choice(maskable_idxs, num_to_mask, replace=False)
-        sequence_tokens = [t if i not in mask_idxs else self.tokenizer.mask_token for i, t in enumerate(tokens)]
+        sequence_tokens = [
+            t if i not in mask_idxs else self.tokenizer.mask_token
+            for i, t in enumerate(tokens)
+        ]
 
         # Make sure that `substructures_to_mask` are actually masked
         for mask in self.substructures_to_mask:
-            mask_toks = self.tokenizer.text_tokenizer.tokenize(self.language_encoding(mask))
+            mask_toks = self.tokenizer.text_tokenizer.tokenize(
+                self.language_encoding(mask)
+            )
             to_be_masked = get_substructure_indices(tokens, mask_toks)
             for idx in to_be_masked:
                 sequence_tokens[idx] = self.tokenizer.mask_token
 
         # Extract the property tokens
         if not set(self.properties) == set(self.property_goal.keys()):
-            raise ValueError(f"Please provide property goals exactly for: {self.properties}.")
+            raise ValueError(
+                f"Please provide property goals exactly for: {self.properties}."
+            )
 
         # Define property tokens (this has unnormalized property values)
         prop_tokens = ""
         for i, p in enumerate(self.properties):
-            numerical = str(self.property_goal[p] + 1e-10)[: self.property_mask_lengths[i]]
+            numerical = str(self.property_goal[p] + 1e-10)[
+                : self.property_mask_lengths[i]
+            ]
             prop_tokens += p + numerical + self.tokenizer.expression_separator
 
         # Return new sequence
@@ -716,7 +815,9 @@ class ConditionalGenerator:
     def filter_substructures(self, property_successes: Tuple[Tuple[str, str]]):
         raise NotImplementedError
 
-    def validate_substructures(self, substructures_to_mask: List[str], substructures_to_keep: List[str]):
+    def validate_substructures(
+        self, substructures_to_mask: List[str], substructures_to_keep: List[str]
+    ):
         """
         Validates the substructures that are ignored/kept for the masking when the
         `sampling_wrapper` is used.
@@ -731,25 +832,37 @@ class ConditionalGenerator:
         """
         seed_encoded = self.language_encoding(self.seed_molecule)
         if not isinstance(substructures_to_mask, list):
-            raise TypeError(f"The substructures_to_mask {substructures_to_mask} has to be a list.")
+            raise TypeError(
+                f"The substructures_to_mask {substructures_to_mask} has to be a list."
+            )
         to_mask = []
         for mask in substructures_to_mask:
             if not isinstance(mask, str):
-                raise TypeError(f"The substructure_to_mask {mask} has to be a string in {self.subs_format} format.")
+                raise TypeError(
+                    f"The substructure_to_mask {mask} has to be a string in {self.subs_format} format."
+                )
             if self.language_encoding(mask) not in seed_encoded:
-                logger.error(f"\nSubstructure to keep in {mask} not found in seed sequence, ignoring it.")
+                logger.error(
+                    f"\nSubstructure to keep in {mask} not found in seed sequence, ignoring it."
+                )
             else:
                 to_mask.append(mask)
         self.substructures_to_mask = to_mask
 
         if not isinstance(substructures_to_keep, list):
-            raise TypeError(f"The substructures_to_keep {substructures_to_keep} has to be a list.")
+            raise TypeError(
+                f"The substructures_to_keep {substructures_to_keep} has to be a list."
+            )
         to_keep = []
         for keep in substructures_to_keep:
             if not isinstance(keep, str):
-                raise TypeError(f"The substructure_to_keep {keep} has to be a string in AAS format.")
+                raise TypeError(
+                    f"The substructure_to_keep {keep} has to be a string in AAS format."
+                )
             if self.language_encoding(keep) not in seed_encoded:
-                logger.error(f"\nSubstructure to keep in {keep} not found in seed sequence, ignoring it.")
+                logger.error(
+                    f"\nSubstructure to keep in {keep} not found in seed sequence, ignoring it."
+                )
             else:
                 to_keep.append(keep)
 
@@ -757,10 +870,12 @@ class ConditionalGenerator:
         # Contains even the ones whose strings cant be found in seed string
         self.all_substructures_to_keep = substructures_to_keep
 
-        if len(set(self.substructures_to_keep + self.substructures_to_mask)) < len(self.substructures_to_keep) + len(
-            self.substructures_to_mask
-        ):
-            raise ValueError("Substructures to mask and keep contain duplicates or overlap.")
+        if len(set(self.substructures_to_keep + self.substructures_to_mask)) < len(
+            self.substructures_to_keep
+        ) + len(self.substructures_to_mask):
+            raise ValueError(
+                "Substructures to mask and keep contain duplicates or overlap."
+            )
 
 
 class ChemicalLanguageRT(ConditionalGenerator):
@@ -812,7 +927,9 @@ class ChemicalLanguageRT(ConditionalGenerator):
             device: device where the inference s running either as a dedicated class
                 or a string. If not provided is inferred.
         """
-        super().__init__(device=device, resources_path=resources_path, tolerance=tolerance)
+        super().__init__(
+            device=device, resources_path=resources_path, tolerance=tolerance
+        )
 
         if sampling_wrapper == {}:
             # Validate input and determine task
@@ -850,7 +967,9 @@ class ChemicalLanguageRT(ConditionalGenerator):
 
         self.small_mol = True
 
-    def validate_input_molecule(self, sequence: str, input_type: str = MoleculeFormat.selfies) -> None:
+    def validate_input_molecule(
+        self, sequence: str, input_type: str = MoleculeFormat.selfies
+    ) -> None:
         """
         Verifies that the non-numerical part of the input sequence is a molecule.
 
@@ -863,10 +982,15 @@ class ChemicalLanguageRT(ConditionalGenerator):
             # Fractional molecules based on non-masked parts of the SELFIES sequence
             smis = list(map(decoder, sequence.split(self.tokenizer.mask_token)))
             _, idxs = validate_molecules(smis, input_type)  # type: ignore
-        elif input_type == MoleculeFormat.smiles or input_type == MoleculeFormat.copolymer:
+        elif (
+            input_type == MoleculeFormat.smiles
+            or input_type == MoleculeFormat.copolymer
+        ):
             _, idxs = validate_molecules([sequence], input_type)
             if len(idxs) != 1:
-                raise ValueError(f"The context {sequence} is not a valid {input_type} string.")
+                raise ValueError(
+                    f"The context {sequence} is not a valid {input_type} string."
+                )
         else:
             raise ValueError(f"Unknown data type {input_type}.")
 
@@ -904,7 +1028,9 @@ class ChemicalLanguageRT(ConditionalGenerator):
             )
             if smiles_list == []:
                 return ([None], [-1])
-            return validate_molecules(pattern_list=smiles_list, input_type=MoleculeFormat.smiles)  # type: ignore
+            return validate_molecules(
+                pattern_list=smiles_list, input_type=MoleculeFormat.smiles
+            )  # type: ignore
 
     def get_maskable_tokens(self, tokens_to_mask: List[str]) -> List[str]:
         """
@@ -924,12 +1050,16 @@ class ChemicalLanguageRT(ConditionalGenerator):
         if isinstance(self.tokenizer.text_tokenizer, SelfiesTokenizer):
             selfie = encoder(seq)
             if not isinstance(selfie, str):
-                raise TypeError(f"{seq} (type={type(seq)}) is not a SMILES sequence that can be converted to SELFIES.")
+                raise TypeError(
+                    f"{seq} (type={type(seq)}) is not a SMILES sequence that can be converted to SELFIES."
+                )
             return selfie
         else:
             return seq
 
-    def filter_substructures(self, property_successes: Tuple[Tuple[str, str]]) -> Tuple[Tuple[str, str]]:
+    def filter_substructures(
+        self, property_successes: Tuple[Tuple[str, str]]
+    ) -> Tuple[Tuple[str, str]]:
         """
         Remove samples where user-required substructures are absent from generated samples.
 
@@ -948,7 +1078,9 @@ class ChemicalLanguageRT(ConditionalGenerator):
             return property_successes
 
         # Remove samples with stub-like sequences (spuriously small)
-        property_successes = filter_stubbed(property_successes, target=self.target, threshold=0.5)
+        property_successes = filter_stubbed(
+            property_successes, target=self.target, threshold=0.5
+        )
 
         successes: List[Tuple[str, str]] = []
         subs_mols: List = []
@@ -959,9 +1091,9 @@ class ChemicalLanguageRT(ConditionalGenerator):
                     f"{keep} is not a valid SMILES/SELFIES. Instead substructure filtering "
                     f"based on sequence alone can be done and is set to: {self.text_filtering}"
                 )
-            if keep not in self.substructures_to_keep and not Chem.MolFromSmiles(self.target).HasSubstructMatch(
-                subs_mol
-            ):
+            if keep not in self.substructures_to_keep and not Chem.MolFromSmiles(
+                self.target
+            ).HasSubstructMatch(subs_mol):
                 logger.info(
                     f"{keep} could not be identified in SMILES/SELFIES on text level AND no "
                     "substructure match occurred, hence it will be ignored"
@@ -985,7 +1117,11 @@ class ChemicalLanguageRT(ConditionalGenerator):
             mol = Chem.MolFromSmiles(smi)
             for subs_mol, subs_string in zip(subs_mols, self.all_substructures_to_keep):
                 if subs_mol is None:
-                    if self.text_filtering and subs_string not in smi and subs_string in self.substructures_to_keep:
+                    if (
+                        self.text_filtering
+                        and subs_string not in smi
+                        and subs_string in self.substructures_to_keep
+                    ):
                         sane = False
                         break
                 else:
@@ -1050,7 +1186,9 @@ class ProteinLanguageRT(ConditionalGenerator):
             device: device where the inference s running either as a dedicated class
                 or a string. If not provided is inferred.
         """
-        super().__init__(device=device, resources_path=resources_path, tolerance=tolerance)
+        super().__init__(
+            device=device, resources_path=resources_path, tolerance=tolerance
+        )
 
         if sampling_wrapper == {}:
             # Validate input and determine task
@@ -1095,7 +1233,9 @@ class ProteinLanguageRT(ConditionalGenerator):
             input_type: str argument that is ignored but needed for sibling class.
         """
         if sequence != sequence.upper():
-            raise ValueError(f"Sequence {sequence} does not follow IUPAC convention for AAS")
+            raise ValueError(
+                f"Sequence {sequence} does not follow IUPAC convention for AAS"
+            )
 
     def validate_output(self, sequences: List[Any]) -> Tuple[List[Any], List[int]]:
         """
@@ -1151,7 +1291,9 @@ class ProteinLanguageRT(ConditionalGenerator):
     def language_encoding(self, seq: str) -> str:
         return seq
 
-    def filter_substructures(self, property_successes: Tuple[Tuple[str, str]]) -> Tuple[Tuple[str, str]]:
+    def filter_substructures(
+        self, property_successes: Tuple[Tuple[str, str]]
+    ) -> Tuple[Tuple[str, str]]:
         """
         Remove samples where user-required substructures are absent from generated samples.
 

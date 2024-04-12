@@ -33,8 +33,14 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, StandardScaler
 from torch.utils.data import Dataset
 
-from gt4sd_common.frameworks.granular.ml.models import ARCHITECTURE_FACTORY, AUTOENCODER_ARCHITECTURES
-from gt4sd_common.frameworks.granular.tokenizer.tokenizer import TOKENIZER_FACTORY, Tokenizer
+from gt4sd_common.frameworks.granular.ml.models import (
+    ARCHITECTURE_FACTORY,
+    AUTOENCODER_ARCHITECTURES,
+)
+from gt4sd_common.frameworks.granular.tokenizer.tokenizer import (
+    TOKENIZER_FACTORY,
+    Tokenizer,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -157,7 +163,10 @@ class SmilesTokenizationPreProcessingDataset(GranularDataset):
         self.input_tokens: List[torch.Tensor] = []
         self.target_tokens: List[torch.Tensor] = []
 
-        tokens_ids = [tokenizer.convert_tokens_to_ids(tokenizer.tokenize(smile)) for smile in self.input_smiles]
+        tokens_ids = [
+            tokenizer.convert_tokens_to_ids(tokenizer.tokenize(smile))
+            for smile in self.input_smiles
+        ]
         if set_seq_size:
             self.set_seq_size = set_seq_size
         else:
@@ -174,7 +183,9 @@ class SmilesTokenizationPreProcessingDataset(GranularDataset):
             },
         )
 
-    def smiles_to_ids(self, input_smiles: List[str] = [], target_smiles: List[str] = []) -> None:
+    def smiles_to_ids(
+        self, input_smiles: List[str] = [], target_smiles: List[str] = []
+    ) -> None:
         """Process input SMILES lists generating examples by tokenizing strings and converting them to tensors.
 
         Args:
@@ -188,15 +199,28 @@ class SmilesTokenizationPreProcessingDataset(GranularDataset):
             self.target_smiles = target_smiles
             smiles = target_smiles
         else:
-            raise Exception("Either input_smiles or target_smiles needs to be specified")
+            raise Exception(
+                "Either input_smiles or target_smiles needs to be specified"
+            )
 
-        tokens_ids = [self.tokenizer.convert_tokens_to_ids(self.tokenizer.tokenize(smile)) for smile in smiles]
+        tokens_ids = [
+            self.tokenizer.convert_tokens_to_ids(self.tokenizer.tokenize(smile))
+            for smile in smiles
+        ]
         examples = []
         for token in tokens_ids:
-            example_tokens = self.tokenizer.convert_tokens_to_ids([self.tokenizer.sos_token])
+            example_tokens = self.tokenizer.convert_tokens_to_ids(
+                [self.tokenizer.sos_token]
+            )
             example_tokens.extend(token)
-            example_tokens.extend(self.tokenizer.convert_tokens_to_ids([self.tokenizer.eos_token]))
-            examples.append(torch.tensor(self.tokenizer.add_padding_tokens(example_tokens, self.set_seq_size)))
+            example_tokens.extend(
+                self.tokenizer.convert_tokens_to_ids([self.tokenizer.eos_token])
+            )
+            examples.append(
+                torch.tensor(
+                    self.tokenizer.add_padding_tokens(example_tokens, self.set_seq_size)
+                )
+            )
 
         if len(input_smiles) > 0 and len(target_smiles) == 0:
             self.input_tokens = examples
@@ -288,8 +312,12 @@ class AutoEncoderDataset(GranularDataset):
                 ]
             )
 
-            self.input_data = torch.from_numpy(self.input_scaling.fit_transform(pd.concat([input_data], axis=1)))
-            self.target_data = torch.from_numpy(self.target_scaling.fit_transform(pd.concat([target_data], axis=1)))
+            self.input_data = torch.from_numpy(
+                self.input_scaling.fit_transform(pd.concat([input_data], axis=1))
+            )
+            self.target_data = torch.from_numpy(
+                self.target_scaling.fit_transform(pd.concat([target_data], axis=1))
+            )
 
         self.input_data, self.target_data = (
             self.input_data.type(torch.float),
@@ -402,7 +430,9 @@ def build_dataset(
 
         # build tokenizer
         if build_vocab:
-            tokenizer = TOKENIZER_FACTORY[dataset_type](vocab_file, smiles=data[input_columns].squeeze().tolist())
+            tokenizer = TOKENIZER_FACTORY[dataset_type](
+                vocab_file, smiles=data[input_columns].squeeze().tolist()
+            )
         else:
             tokenizer = TOKENIZER_FACTORY[dataset_type](vocab_file, smiles=[])
         dataset = SmilesTokenizationPreProcessingDataset(
@@ -454,7 +484,9 @@ def build_architecture(
     """
     model_type = model_type.lower()
     if model_type not in MODEL_TYPES:
-        raise ValueError(f"model_type={model_type} not supported. Pick a valid one: {sorted(list(MODEL_TYPES))}")
+        raise ValueError(
+            f"model_type={model_type} not supported. Pick a valid one: {sorted(list(MODEL_TYPES))}"
+        )
 
     architecture: Dict[str, Any] = {
         "name": hparams["name"],

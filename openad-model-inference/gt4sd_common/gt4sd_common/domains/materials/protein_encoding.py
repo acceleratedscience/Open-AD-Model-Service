@@ -204,9 +204,9 @@ class PrimarySequenceEncoder(nn.Module):
         with torch.no_grad():
             # Iterator[(sequence_id, token_ids, input_mask)]
             batch_loader_like = self.generate_tokenized(batch)
-            batch_dict_with_ids: Dict[
-                str, Union[List[str], torch.Tensor]
-            ] = self.collate_fn(list(batch_loader_like))
+            batch_dict_with_ids: Dict[str, Union[List[str], torch.Tensor]] = (
+                self.collate_fn(list(batch_loader_like))
+            )
             ids: List[str] = cast(List[str], batch_dict_with_ids["ids"])
             batch_dict = self.from_collated_batch(batch_dict_with_ids)
             # outputs = self.model(**batch_dict)

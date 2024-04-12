@@ -25,7 +25,6 @@
 
 """Run training pipelines for the GT4SD."""
 
-
 import logging
 import sys
 from dataclasses import dataclass, field
@@ -41,7 +40,9 @@ from gt4sd_common.cli.argument_parser import ArgumentParser, DataClass, DataClas
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_TRAINING_PIPELINES = sorted(list(set(TRAINING_PIPELINE_ARGUMENTS_MAPPING) & set(TRAINING_PIPELINE_MAPPING)))
+SUPPORTED_TRAINING_PIPELINES = sorted(
+    list(set(TRAINING_PIPELINE_ARGUMENTS_MAPPING) & set(TRAINING_PIPELINE_MAPPING))
+)
 
 # disable cudnn if issues with gpu training
 if GT4SDConfiguration.get_instance().gt4sd_disable_cudnn:
@@ -57,7 +58,9 @@ class TrainerArguments:
     __name__ = "trainer_base_args"
 
     training_pipeline_name: str = field(
-        metadata={"help": f"Training pipeline name, supported pipelines: {', '.join(SUPPORTED_TRAINING_PIPELINES)}."},
+        metadata={
+            "help": f"Training pipeline name, supported pipelines: {', '.join(SUPPORTED_TRAINING_PIPELINES)}."
+        },
     )
     configuration_file: Optional[str] = field(
         default=None,
@@ -78,11 +81,15 @@ class TrainerArgumentParser(ArgumentParser):
         """
         try:
             help_args_set = {"-h", "--help"}
-            if len(set(sys.argv).union(help_args_set)) < len(help_args_set) + 2:  # considering filename
+            if (
+                len(set(sys.argv).union(help_args_set)) < len(help_args_set) + 2
+            ):  # considering filename
                 super().print_help()
                 return
             args = [arg for arg in sys.argv if arg not in help_args_set]
-            parsed_arguments = super().parse_args_into_dataclasses(args=args, return_remaining_strings=True)
+            parsed_arguments = super().parse_args_into_dataclasses(
+                args=args, return_remaining_strings=True
+            )
             trainer_arguments = None
             for arguments in parsed_arguments:
                 if arguments.__name__ == "trainer_base_args":
@@ -124,7 +131,9 @@ class TrainerArgumentParser(ArgumentParser):
                 json_file=json_file, allow_extra_keys=True
             )
         except Exception:
-            logger.exception(f"error parsing configuration file: {json_file}, printing error and exiting")
+            logger.exception(
+                f"error parsing configuration file: {json_file}, printing error and exiting"
+            )
             sys.exit(1)
         if number_of_dataclass_types > len(self.dataclass_types):
             self.dataclass_types.insert(0, cast(DataClassType, TrainerArguments))
@@ -140,16 +149,18 @@ def main() -> None:
     """
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-    base_args = TrainerArgumentParser(cast(DataClassType, TrainerArguments)).parse_args_into_dataclasses(
-        return_remaining_strings=True
-    )[0]
+    base_args = TrainerArgumentParser(
+        cast(DataClassType, TrainerArguments)
+    ).parse_args_into_dataclasses(return_remaining_strings=True)[0]
     training_pipeline_name = base_args.training_pipeline_name
     if training_pipeline_name not in set(SUPPORTED_TRAINING_PIPELINES):
         ValueError(
             f"Training pipeline {training_pipeline_name} is not supported. Supported types: {', '.join(SUPPORTED_TRAINING_PIPELINES)}."
         )
     arguments = TRAINING_PIPELINE_ARGUMENTS_MAPPING[training_pipeline_name]
-    parser = TrainerArgumentParser(cast(Iterable[DataClassType], tuple([TrainerArguments, *arguments])))
+    parser = TrainerArgumentParser(
+        cast(Iterable[DataClassType], tuple([TrainerArguments, *arguments]))
+    )
 
     configuration_filepath = base_args.configuration_file
     if configuration_filepath:
@@ -163,7 +174,10 @@ def main() -> None:
         if isinstance(arg, TrainingPipelineArguments) and isinstance(arg.__name__, str)
     }
 
-    if base_args.training_pipeline_name == "granular-trainer" and config["model_args"]["model_list_path"] is None:
+    if (
+        base_args.training_pipeline_name == "granular-trainer"
+        and config["model_args"]["model_list_path"] is None
+    ):
         config["model_args"]["model_list_path"] = configuration_filepath
 
     pipeline = TRAINING_PIPELINE_MAPPING[training_pipeline_name]

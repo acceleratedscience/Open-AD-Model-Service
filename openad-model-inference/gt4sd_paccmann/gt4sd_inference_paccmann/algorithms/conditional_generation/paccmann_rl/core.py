@@ -105,12 +105,16 @@ class PaccMannRL(GeneratorAlgorithm[S, T]):
         )
         return implementation.generate_batch
 
-    def validate_configuration(self, configuration: AlgorithmConfiguration[S, T]) -> AlgorithmConfiguration[S, T]:
+    def validate_configuration(
+        self, configuration: AlgorithmConfiguration[S, T]
+    ) -> AlgorithmConfiguration[S, T]:
         @runtime_checkable
         class AnyPaccMannRLConfiguration(Protocol):
             """Protocol for PaccMannRL configurations."""
 
-            def get_conditional_generator(self, resources_path: str) -> ConditionalGenerator: ...
+            def get_conditional_generator(
+                self, resources_path: str
+            ) -> ConditionalGenerator: ...
 
             def validate_item(self, item: Any) -> S: ...
 
@@ -138,11 +142,15 @@ class PaccMannRLProteinBasedGenerator(AlgorithmConfiguration[SMILES, Protein]):
     )
     temperature: float = field(
         default=1.4,
-        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
+        metadata=dict(
+            description="Temperature parameter for the softmax sampling in decoding."
+        ),
     )
     generated_length: int = field(
         default=100,
-        metadata=dict(description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."),
+        metadata=dict(
+            description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."
+        ),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -157,7 +165,9 @@ class PaccMannRLProteinBasedGenerator(AlgorithmConfiguration[SMILES, Protein]):
             "type": "string",
         }
 
-    def get_conditional_generator(self, resources_path: str) -> ProteinSequenceConditionalGenerator:
+    def get_conditional_generator(
+        self, resources_path: str
+    ) -> ProteinSequenceConditionalGenerator:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -215,11 +225,15 @@ class PaccMannRLOmicBasedGenerator(AlgorithmConfiguration[SMILES, Omics]):
     )
     temperature: float = field(
         default=1.4,
-        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
+        metadata=dict(
+            description="Temperature parameter for the softmax sampling in decoding."
+        ),
     )
     generated_length: int = field(
         default=100,
-        metadata=dict(description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."),
+        metadata=dict(
+            description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."
+        ),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -234,7 +248,9 @@ class PaccMannRLOmicBasedGenerator(AlgorithmConfiguration[SMILES, Omics]):
             "type": "list",
         }
 
-    def get_conditional_generator(self, resources_path: str) -> TranscriptomicConditionalGenerator:
+    def get_conditional_generator(
+        self, resources_path: str
+    ) -> TranscriptomicConditionalGenerator:
         """Instantiate the actual generator implementation.
 
         Args:

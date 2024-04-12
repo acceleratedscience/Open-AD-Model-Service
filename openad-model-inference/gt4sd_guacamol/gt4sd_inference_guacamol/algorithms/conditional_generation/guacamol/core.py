@@ -28,7 +28,9 @@ from typing import Any, Callable, ClassVar, Dict, Iterable, Optional, TypeVar
 from gt4sd_common.domains.materials import SMILES, MoleculeFormat, validate_molecules
 from gt4sd_common.exceptions import InvalidItem
 from gt4sd_inference_guacamol.training_pipelines.core import TrainingPipelineArguments
-from gt4sd_inference_guacamol.training_pipelines.guacamol_baselines.core import GuacaMolSavingArguments
+from gt4sd_inference_guacamol.training_pipelines.guacamol_baselines.core import (
+    GuacaMolSavingArguments,
+)
 from gt4sd_inference_guacamol.training_pipelines.moses.core import MosesSavingArguments
 from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
@@ -101,7 +103,9 @@ class GuacaMolGenerator(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
+        implementation: Generator = configuration.get_conditional_generator(
+            self.local_artifacts
+        )  # type: ignore
         return implementation.generate_batch  # type: ignore
 
 
@@ -161,11 +165,15 @@ class SMILESGAGenerator(GuacaMolAbstractGenerator):
     )
     gene_size: int = field(
         default=2,
-        metadata=dict(description="size of the gene which is used in creation of genes"),
+        metadata=dict(
+            description="size of the gene which is used in creation of genes"
+        ),
     )
     random_start: bool = field(
         default=False,
-        metadata=dict(description="set to True to randomly choose list of SMILES for generating optimizied molecules"),
+        metadata=dict(
+            description="set to True to randomly choose list of SMILES for generating optimizied molecules"
+        ),
     )
     generations: int = field(
         default=2,
@@ -233,7 +241,9 @@ class GraphGAGenerator(GuacaMolAbstractGenerator):
     )
     mutation_rate: float = field(
         default=0.01,
-        metadata=dict(description="frequency of the new mutations in a single gene or organism over time"),
+        metadata=dict(
+            description="frequency of the new mutations in a single gene or organism over time"
+        ),
     )
     offspring_size: int = field(
         default=200,
@@ -245,7 +255,9 @@ class GraphGAGenerator(GuacaMolAbstractGenerator):
     )
     random_start: bool = field(
         default=False,
-        metadata=dict(description="set to True to randomly choose list of SMILES for generating optimizied molecules"),
+        metadata=dict(
+            description="set to True to randomly choose list of SMILES for generating optimizied molecules"
+        ),
     )
     generations: int = field(
         default=2,
@@ -339,7 +351,9 @@ class GraphMCTSGenerator(GuacaMolAbstractGenerator):
     )
     max_atoms: int = field(
         default=60,
-        metadata=dict(description="maximum number of atoms to explore to terminal the node state"),
+        metadata=dict(
+            description="maximum number of atoms to explore to terminal the node state"
+        ),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -419,11 +433,15 @@ class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
     )
     benchmark_num_samples: int = field(
         default=4096,
-        metadata=dict(description="number of molecules to generate from final model for the benchmark"),
+        metadata=dict(
+            description="number of molecules to generate from final model for the benchmark"
+        ),
     )
     random_start: bool = field(
         default=False,
-        metadata=dict(description="set to True to randomly choose list of SMILES for generating optimizied molecules"),
+        metadata=dict(
+            description="set to True to randomly choose list of SMILES for generating optimizied molecules"
+        ),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -480,7 +498,9 @@ class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
                 "guacamol_v1_all.smiles": "",
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )
 
 
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
@@ -502,7 +522,9 @@ class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
     )
     episode_size: int = field(
         default=8192,
-        metadata=dict(description="number of molecules sampled by the policy at the start of a series of ppo updates"),
+        metadata=dict(
+            description="number of molecules sampled by the policy at the start of a series of ppo updates"
+        ),
     )
     optimize_batch_size: int = field(
         default=1024,
@@ -514,11 +536,15 @@ class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
     )
     kl_div_weight: int = field(
         default=10,
-        metadata=dict(description="used for calculating Kullback-Leibler divergence loss"),
+        metadata=dict(
+            description="used for calculating Kullback-Leibler divergence loss"
+        ),
     )
     clip_param: float = field(
         default=0.2,
-        metadata=dict(description="used for determining how far the new policy is from the old one"),
+        metadata=dict(
+            description="used for determining how far the new policy is from the old one"
+        ),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -571,7 +597,9 @@ class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
                 "model_final_0.473.json": training_pipeline_arguments.model_config_filepath,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )
 
 
 class MosesGenerator(GeneratorAlgorithm[S, T]):
@@ -622,7 +650,9 @@ class MosesGenerator(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
+        implementation: Generator = configuration.get_conditional_generator(
+            self.local_artifacts
+        )  # type: ignore
         return implementation.generate_batch  # type: ignore
 
 
@@ -722,7 +752,9 @@ class VaeGenerator(GuacaMolAbstractGenerator):
                 "vocab.pt": training_pipeline_arguments.vocab_path,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )
 
 
 @ApplicationsRegistry.register_algorithm_application(MosesGenerator)
@@ -782,4 +814,6 @@ class OrganGenerator(GuacaMolAbstractGenerator):
                 "vocab.pt": training_pipeline_arguments.vocab_path,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )

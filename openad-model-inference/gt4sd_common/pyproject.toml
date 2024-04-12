@@ -68,6 +68,3 @@ python-lsp-server = {extras = ["all"], version = "^1.10.0"}
 
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
-

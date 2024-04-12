@@ -82,7 +82,9 @@ def charge(protein: MacroMolecule, ph: float = 7.0, amide: bool = False) -> floa
     return float(desc.descriptor)
 
 
-def charge_density(protein: MacroMolecule, ph: float = 7.0, amide: bool = False) -> float:
+def charge_density(
+    protein: MacroMolecule, ph: float = 7.0, amide: bool = False
+) -> float:
     """Computes the charge density of a protein.
 
     Bjellqvist, B., Hughes, G. J., Pasquali, C., Paquet, N., Ravier, F., Sanchez, J. C., ... & Hochstrasser, D. (1993).

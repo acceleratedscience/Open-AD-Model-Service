@@ -34,7 +34,10 @@ import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader, Sampler, Subset, random_split
 
-from gt4sd_common.frameworks.granular.dataloader.dataset import CombinedGranularDataset, GranularDataset
+from gt4sd_common.frameworks.granular.dataloader.dataset import (
+    CombinedGranularDataset,
+    GranularDataset,
+)
 from gt4sd_common.frameworks.granular.dataloader.sampler import StratifiedSampler
 
 # imports that have to be loaded before lightning to avoid segfaults
@@ -96,7 +99,9 @@ class GranularDataModule(pl.LightningDataModule):
         Returns:
             a combined granular dataset.
         """
-        return CombinedGranularDataset([a_dataset.dataset for a_dataset in dataset_list])
+        return CombinedGranularDataset(
+            [a_dataset.dataset for a_dataset in dataset_list]
+        )
 
     def prepare_train_data(self) -> None:
         """Prepare training dataset."""
@@ -116,25 +121,36 @@ class GranularDataModule(pl.LightningDataModule):
         Args:
             stage: stage considered, unused. Defaults to None.
         """
-        if self.stratified_batch_file is not None and self.stratified_value_name is None:
+        if (
+            self.stratified_batch_file is not None
+            and self.stratified_value_name is None
+        ):
             raise ValueError(
                 f"stratified_batch_file={self.stratified_batch_file}, need to set stratified_value_name as well"
             )
         if self.validation_indices_file is None and self.validation_split is None:
             self.validation_split = 0.5
         if self.validation_indices_file:
-            val_indices = pd.read_csv(self.validation_indices_file).values.flatten().tolist()
-            train_indices = [i for i in range(len(self.train_dataset)) if i not in val_indices]
+            val_indices = (
+                pd.read_csv(self.validation_indices_file).values.flatten().tolist()
+            )
+            train_indices = [
+                i for i in range(len(self.train_dataset)) if i not in val_indices
+            ]
             self.train_data = Subset(self.train_dataset, train_indices)
             self.val_data = Subset(self.train_dataset, val_indices)
 
         else:
             val = int(len(self.train_dataset) * cast(float, (self.validation_split)))
             train = len(self.train_dataset) - val
-            self.train_data, self.val_data = random_split(self.train_dataset, [train, val])
+            self.train_data, self.val_data = random_split(
+                self.train_dataset, [train, val]
+            )
         logger.info(f"number of data points used for training: {len(self.train_data)}")
         logger.info(f"number of data points used for validation: {len(self.val_data)}")
-        logger.info(f"validation proportion: {len(self.val_data) / (len(self.val_data) + len(self.train_data))}")
+        logger.info(
+            f"validation proportion: {len(self.val_data) / (len(self.val_data) + len(self.train_data))}"
+        )
 
     @staticmethod
     def get_stratified_batch_sampler(
@@ -154,9 +170,9 @@ class GranularDataModule(pl.LightningDataModule):
             a stratified batch sampler.
         """
         stratified_batch_dataframe = pd.read_csv(stratified_batch_file)
-        stratified_data = stratified_batch_dataframe[selector_fn(stratified_batch_dataframe)][
-            stratified_value_name
-        ].values
+        stratified_data = stratified_batch_dataframe[
+            selector_fn(stratified_batch_dataframe)
+        ][stratified_value_name].values
         stratified_data_tensor = torch.from_numpy(stratified_data)
         return StratifiedSampler(targets=stratified_data_tensor, batch_size=batch_size)
 

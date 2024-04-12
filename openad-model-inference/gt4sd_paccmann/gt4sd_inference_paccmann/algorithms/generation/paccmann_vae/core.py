@@ -34,9 +34,15 @@ from gt4sd_common.domains.materials import SMILES
 from gt4sd_inference_paccmann.algorithms.conditional_generation.paccmann_rl.core import (
     PaccMannRLProteinBasedGenerator,
 )
-from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm, Untargeted
+from gt4sd_common.algorithms.core import (
+    AlgorithmConfiguration,
+    GeneratorAlgorithm,
+    Untargeted,
+)
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
-from gt4sd_inference_paccmann.algorithms.generation.paccmann_vae.implementation import PaccMannVaeDefaultGenerator
+from gt4sd_inference_paccmann.algorithms.generation.paccmann_vae.implementation import (
+    PaccMannVaeDefaultGenerator,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -48,7 +54,9 @@ S = TypeVar("S", bound=SMILES)
 class PaccMannVAE(GeneratorAlgorithm[S, T]):
     """Molecular VAE as in the PaccMann\\ :superscript:`RL` paper."""
 
-    def __init__(self, configuration: AlgorithmConfiguration[S, T], target: Optional[T] = None):
+    def __init__(
+        self, configuration: AlgorithmConfiguration[S, T], target: Optional[T] = None
+    ):
         """Instantiate PaccMannVAE ready to generate molecules.
 
         Args:
@@ -81,7 +89,9 @@ class PaccMannVAE(GeneratorAlgorithm[S, T]):
         Returns:
             callable with target generating a batch of items.
         """
-        implementation: PaccMannVaeDefaultGenerator = configuration.get_conditional_generator()  # type: ignore
+        implementation: PaccMannVaeDefaultGenerator = (
+            configuration.get_conditional_generator()
+        )  # type: ignore
         return implementation.generate
 
 
@@ -103,11 +113,15 @@ class PaccMannVAEGenerator(AlgorithmConfiguration[SMILES, Any]):
     )
     temperature: float = field(
         default=1.4,
-        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
+        metadata=dict(
+            description="Temperature parameter for the softmax sampling in decoding."
+        ),
     )
     generated_length: int = field(
         default=100,
-        metadata=dict(description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."),
+        metadata=dict(
+            description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."
+        ),
     )
 
     def get_target_description(self) -> Optional[Dict[str, str]]:

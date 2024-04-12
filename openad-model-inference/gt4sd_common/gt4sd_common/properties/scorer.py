@@ -123,7 +123,9 @@ class PropertyPredictorScorer(DistanceScorer):
                 )
         # if property is not available, raise error
         else:
-            raise ValueError(f"{property_name} is not available or not a valid property.")
+            raise ValueError(
+                f"{property_name} is not available or not a valid property."
+            )
 
 
 class MoleculePropertyPredictorScorer(PropertyPredictorScorer):

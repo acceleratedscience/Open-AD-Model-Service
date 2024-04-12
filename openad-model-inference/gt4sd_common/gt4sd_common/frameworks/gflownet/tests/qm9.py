@@ -84,7 +84,9 @@ class QM9Dataset(GFlowNetDataset):
         )
 
 
-def thermometer(v: torch.Tensor, n_bins: int = 50, vmin: int = 0, vmax: int = 1) -> torch.Tensor:
+def thermometer(
+    v: torch.Tensor, n_bins: int = 50, vmin: int = 0, vmax: int = 1
+) -> torch.Tensor:
     """Compute a thermometer reward using gap.
 
     Args:
@@ -98,7 +100,9 @@ def thermometer(v: torch.Tensor, n_bins: int = 50, vmin: int = 0, vmax: int = 1)
     """
     bins = torch.linspace(vmin, vmax, n_bins)
     gap = bins[1] - bins[0]
-    return (v[..., None] - bins.reshape((1,) * v.ndim + (-1,))).clamp(0, gap.item()) / gap
+    return (v[..., None] - bins.reshape((1,) * v.ndim + (-1,))).clamp(
+        0, gap.item()
+    ) / gap
 
 
 # define task
@@ -202,7 +206,9 @@ class QM9GapTask(GFlowNetTask):
         beta_enc = thermometer(torch.tensor(beta), 32, 0, 32)
         return {"beta": torch.tensor(beta), "encoding": beta_enc}
 
-    def cond_info_to_reward(self, cond_info: Dict[str, torch.Tensor], _flat_reward: FlatRewards) -> RewardScalar:
+    def cond_info_to_reward(
+        self, cond_info: Dict[str, torch.Tensor], _flat_reward: FlatRewards
+    ) -> RewardScalar:
         """Compute the reward for a given conditional information.
 
         Args:
@@ -215,7 +221,9 @@ class QM9GapTask(GFlowNetTask):
             flat_reward = torch.tensor(_flat_reward)
         return RewardScalar(flat_reward ** cond_info["beta"])
 
-    def compute_flat_rewards(self, mols: List[RDMol]) -> Tuple[RewardScalar, torch.Tensor]:
+    def compute_flat_rewards(
+        self, mols: List[RDMol]
+    ) -> Tuple[RewardScalar, torch.Tensor]:
         """Computes the flat rewards for a list of molecules.
 
         Args:

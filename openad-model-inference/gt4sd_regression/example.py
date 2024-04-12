@@ -1,20 +1,21 @@
 from gt4sd_inference_regression.algorithms.conditional_generation.regression_transformer import (
     RegressionTransformer,
     RegressionTransformerMolecules,
-    RegressionTransformerProteins,
 )
 
 from selfies import encoder
 
 
-import logging, sys
-
-logging.disable(sys.maxsize)
+import logging
+import sys
+from gt4sd_common.algorithms.registry import ApplicationsRegistry
 
 import mols2grid
 from rdkit import Chem
 
 import pandas as pd
+
+logging.disable(sys.maxsize)
 
 smi = "CC(C#C)N(C)C(=O)NC1=CC=C(Cl)C=C1"
 true_esol = -3.9
@@ -32,7 +33,10 @@ config = RegressionTransformerMolecules(
     search="sample",  # the alternative is 'greedy' but 'sample' is recommended for generative tasks
     temperature=2,
     tolerance=5,  # percentage of tolerated deviation from the desired property value (here -3.53)
-    sampling_wrapper={"property_goal": {"<esol>": target_esol}, "fraction_to_mask": 0.2},
+    sampling_wrapper={
+        "property_goal": {"<esol>": target_esol},
+        "fraction_to_mask": 0.2,
+    },
 )
 esol_generator = RegressionTransformer(configuration=config, target=smi)
 generations = list(esol_generator.sample(8))
@@ -67,7 +71,11 @@ config = RegressionTransformerMolecules(
     search="sample",  # the alternative is 'greedy' but 'sample' is recommended for generative tasks
     temperature=2,
     tolerance=5,  # percentage of tolerated deviation from the desired property value (here -3.53)
-    sampling_wrapper={"property_goal": {"<esol>": target_esol}, "fraction_to_mask": 1.0, "tokens_to_mask": ["Cl", "N"]},
+    sampling_wrapper={
+        "property_goal": {"<esol>": target_esol},
+        "fraction_to_mask": 1.0,
+        "tokens_to_mask": ["Cl", "N"],
+    },
 )
 esol_generator = RegressionTransformer(configuration=config, target=smi)
 generations = list(esol_generator.sample(8))
@@ -94,7 +102,9 @@ mols2grid.display(
     name="Results",
 )
 
-config = RegressionTransformerMolecules(algorithm_version="solubility", search="sample", temperature=2, tolerance=5)
+config = RegressionTransformerMolecules(
+    algorithm_version="solubility", search="sample", temperature=2, tolerance=5
+)
 target = "<esol>-3.53|[C][C][Branch1_3][Ring1][C][#C][N][Branch1_3][epsilon][C][C][Branch1_3][epsilon][MASK][MASK][MASK][MASK][C][=C][Branch1_3][epsilon][Cl][C][=C][Ring1][Branch1_2]"
 esol_generator = RegressionTransformer(configuration=config, target=target)
 generations = list(esol_generator.sample(5))
@@ -119,7 +129,7 @@ mols2grid.display(
     height=None,
     name="Results",
 )
-from gt4sd_common.algorithms.registry import ApplicationsRegistry
+
 
 algorithms = ApplicationsRegistry.list_available()
 for a in algorithms:

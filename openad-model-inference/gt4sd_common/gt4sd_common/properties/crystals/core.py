@@ -36,7 +36,11 @@ from gt4sd_common.algorithms.core import (
     Predictor,
     PredictorAlgorithm,
 )
-from gt4sd_common.frameworks.cgcnn.data import AtomCustomJSONInitializer, CIFData, collate_pool
+from gt4sd_common.frameworks.cgcnn.data import (
+    AtomCustomJSONInitializer,
+    CIFData,
+    collate_pool,
+)
 from gt4sd_common.frameworks.cgcnn.model import CrystalGraphConvNet, Normalizer
 from gt4sd_common.frameworks.crystals_rfc.feature_engine import Features
 from gt4sd_common.frameworks.crystals_rfc.rf_classifier import RFC
@@ -94,7 +98,6 @@ class _CGCNN(PredictorAlgorithm):
     """Base class for all cgcnn-based predictive algorithms."""
 
     def __init__(self, parameters: CGCNNParameters):
-
         # Set up the configuration from the parameters
         configuration = ConfigurablePropertyAlgorithmConfiguration(
             algorithm_type=parameters.algorithm_type,
@@ -121,10 +124,14 @@ class _CGCNN(PredictorAlgorithm):
         """
 
         existing_models = os.listdir(resources_path)
-        existing_models = [file for file in existing_models if file.endswith(".pth.tar")]
+        existing_models = [
+            file for file in existing_models if file.endswith(".pth.tar")
+        ]
 
         if len(existing_models) > 1:
-            raise ValueError("Only one model should be located in the specified model path.")
+            raise ValueError(
+                "Only one model should be located in the specified model path."
+            )
         elif len(existing_models) == 0:
             raise ValueError("Model does not exist in the specified model path.")
 
@@ -137,11 +144,12 @@ class _CGCNN(PredictorAlgorithm):
         normalizer = Normalizer(torch.zeros(3))
         normalizer.load_state_dict(checkpoint["normalizer"])
 
-        atom_initialization = AtomCustomJSONInitializer(os.path.join(resources_path, "atom_init.json"))
+        atom_initialization = AtomCustomJSONInitializer(
+            os.path.join(resources_path, "atom_init.json")
+        )
 
         # Wrapper to get the predictions
         def informative_model(cif_path: str) -> Dict[str, List[float]]:
-
             dataset = CIFData(cif_path, atom_initialization=atom_initialization)
             test_loader = DataLoader(
                 dataset,
@@ -201,7 +209,6 @@ class MetalNonMetalClassifier(PredictorAlgorithm):
     """Metal/non-metal classifier class."""
 
     def __init__(self, parameters: MetalNonMetalClassifierParameters):
-
         # Set up the configuration from the parameters
         configuration = ConfigurablePropertyAlgorithmConfiguration(
             algorithm_type=parameters.algorithm_type,

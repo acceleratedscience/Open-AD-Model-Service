@@ -23,6 +23,9 @@
 #
 """Topics modelling with zero-shot learning initialization."""
 
-from gt4sd_inference_paccmann.algorithms.prediction.paccmann.core import TopicsPredictor, TopicsZeroShot
+from gt4sd_inference_paccmann.algorithms.prediction.paccmann.core import (
+    TopicsPredictor,
+    TopicsZeroShot,
+)
 
 __all__ = ["TopicsZeroShot", "TopicsPredictor"]

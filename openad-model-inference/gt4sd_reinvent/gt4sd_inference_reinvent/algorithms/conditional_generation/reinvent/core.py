@@ -89,8 +89,10 @@ class Reinvent(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: ReinventConditionalGenerator = configuration.get_conditional_generator(  # type: ignore
-            self.local_artifacts
+        implementation: ReinventConditionalGenerator = (
+            configuration.get_conditional_generator(  # type: ignore
+                self.local_artifacts
+            )
         )
         return implementation.generate_samples
 
@@ -135,7 +137,9 @@ class ReinventGenerator(AlgorithmConfiguration[str, str]):
             "type": "string",
         }
 
-    def get_conditional_generator(self, resources_path: str) -> ReinventConditionalGenerator:
+    def get_conditional_generator(
+        self, resources_path: str
+    ) -> ReinventConditionalGenerator:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -164,7 +168,9 @@ class ReinventGenerator(AlgorithmConfiguration[str, str]):
         Returns:
             the validated SMILES.
         """
-        molecules, _ = validate_molecules(pattern_list=[item], input_type=MoleculeFormat.smiles)
+        molecules, _ = validate_molecules(
+            pattern_list=[item], input_type=MoleculeFormat.smiles
+        )
 
         if molecules[0] is None:
             raise InvalidItem(

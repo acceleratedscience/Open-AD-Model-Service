@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Controlled Latent attribute Space Sampling initialization."""
+
 import logging
 
 from ....extras import EXTRAS_ENABLED

@@ -27,7 +27,10 @@ from typing import ClassVar, Type
 
 import pytest
 
-from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent import Reinvent, ReinventGenerator
+from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent import (
+    Reinvent,
+    ReinventGenerator,
+)
 from gt4sd_common.algorithms.core import AlgorithmConfiguration
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
 
@@ -110,7 +113,9 @@ def test_generation_via_import(config, algorithm):
         ),
     ],
 )
-def test_generation_via_registry(algorithm_type, domain, algorithm_name, algorithm_application):
+def test_generation_via_registry(
+    algorithm_type, domain, algorithm_name, algorithm_application
+):
     algorithm = ApplicationsRegistry.get_application_instance(
         target="N1CCN(CC1)CCCCN",
         algorithm_type=algorithm_type,

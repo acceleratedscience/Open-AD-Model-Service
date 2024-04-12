@@ -133,9 +133,7 @@ class CatalystVAE(Representation):
             a catalyst in SMILES format.
         """
         z = torch.unsqueeze(point_to_tensor(z), dim=0)
-        reconstructed = self.model.decode(z, max_len=self.maximum_length)[0][
-            0
-        ]  # type:ignore
+        reconstructed = self.model.decode(z, max_len=self.maximum_length)[0][0]  # type:ignore
         reconstructed = self.clean_regex.sub("", reconstructed)
         match_ending = self.end_regex.search(reconstructed)
         if match_ending:

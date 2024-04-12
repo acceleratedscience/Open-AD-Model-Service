@@ -129,7 +129,8 @@ def fix_datasets(sane_datasets: List[Dataset]) -> None:
     for ds in sane_datasets[1:]:
         if not issubclass(ds, dataset):
             raise AttributeError(
-                f"Reverting silent TorchDrug overwriting failed, {ds} is not a subclass" f" of {dataset}."
+                f"Reverting silent TorchDrug overwriting failed, {ds} is not a subclass"
+                f" of {dataset}."
             )
 
 
@@ -165,7 +166,8 @@ def fix_schedulers(sane_schedulers: List[LRScheduler]) -> None:
     for lrs in sane_schedulers[1:]:
         if not issubclass(lrs, scheduler):
             raise AttributeError(
-                f"Reverting silent TorchDrug overwriting failed, {lrs} is not a subclass" f" of {scheduler}."
+                f"Reverting silent TorchDrug overwriting failed, {lrs} is not a subclass"
+                f" of {scheduler}."
             )
 
 

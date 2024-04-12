@@ -91,7 +91,8 @@ def prepare_ctrl_input(tokenizer: BasicTokenizer, prompt: str, **kwargs):
 
     encoded_prompt = tokenizer.encode(prompt, add_special_tokens=False)  # type:ignore
     if not any(
-        encoded_prompt[0] == x for x in tokenizer.control_codes.values()  # type:ignore
+        encoded_prompt[0] == x
+        for x in tokenizer.control_codes.values()  # type:ignore
     ):
         logger.warning(
             "not starting generation from a control code so you will not get good results"

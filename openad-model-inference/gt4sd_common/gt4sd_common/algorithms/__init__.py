@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Module initialization for gt4sd."""
+
 from gt4sd_common.extras import EXTRAS_ENABLED
 
 # NOTE: here we import the applications to register them
@@ -37,7 +38,7 @@ try:
         SMILESLSTMPPOGenerator,
         VaeGenerator,
     )
-except:
+except:  # noqa: E722
     pass
 
 from .conditional_generation.key_bert import KeyBERTGenerator  # noqa: F401
@@ -48,7 +49,7 @@ try:
         PaccMannRLOmicBasedGenerator,
         PaccMannRLProteinBasedGenerator,
     )
-except:
+except:  # noqa: E722
     pass
 
 try:
@@ -56,12 +57,14 @@ try:
         RegressionTransformerMolecules,
         RegressionTransformerProteins,
     )
-except:
+except:  # noqa: E722
     pass
 
 try:
-    from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent import ReinventGenerator  # noqa: F401
-except:
+    from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent import (
+        ReinventGenerator,  # noqa: F401
+    )
+except:  # noqa: E722
     pass
 from .conditional_generation.template import TemplateGenerator  # noqa: F401
 from .controlled_sampling.advanced_manufacturing import CatalystGenerator  # noqa: F401
@@ -86,28 +89,35 @@ try:
         HuggingFaceXLNetGenerator,
     )
 
-    from gt4sd_inference_reinvent.algorithms.generation.pgt import (
+    from gt4sd_inference_reinvent.algorithms.generation.pgt import (  # noqa: F401
         PGTCoherenceChecker,
         PGTEditor,
         PGTGenerator,
-    )  # noqa: F401
-    from gt4sd_inference_reinvent.algorithms.prediction.topics_zero_shot import TopicsPredictor  # noqa: F401
-    from gt4sd_inference_reinvent.algorithms.generation.polymer_blocks import PolymerBlocksGenerator  # noqa: F401
-except:
+    )
+    from gt4sd_inference_reinvent.algorithms.prediction.topics_zero_shot import (  # noqa: F401
+        TopicsPredictor,
+    )
+    from gt4sd_inference_reinvent.algorithms.generation.polymer_blocks import (  # noqa: F401
+        PolymerBlocksGenerator,
+    )
+except:  # noqa: E722
     pass
 
 try:
     from gt4sd_inference_moler.algorithms.generation.moler import MoLeRDefaultGenerator  # noqa: F401
-except:
+except:  # noqa: E722
     pass
 
 try:
-    from gt4sd_inference_torch_drug.algorithms.generation.torchdrug import TorchDrugGCPN, TorchDrugGraphAF  # noqa: F401
-except:
+    from gt4sd_inference_torch_drug.algorithms.generation.torchdrug import (  # noqa: F401
+        TorchDrugGCPN,
+        TorchDrugGraphAF,
+    )
+except:  # noqa: E722
     pass
 try:
     from gt4sd_inference_paccmann.algorithms.prediction.paccmann import PaccMann  # noqa: F401
-except:
+except:  # noqa: E722
     pass
 # extras requirements
 if EXTRAS_ENABLED:

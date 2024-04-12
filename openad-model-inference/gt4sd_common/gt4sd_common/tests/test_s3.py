@@ -76,7 +76,9 @@ def test_sync_folder(client: GT4SDS3Client):
     directory = tempfile.mkdtemp()
     try:
         client.sync_folder("gt4sd-ci-tests", directory)
-        filepaths = set([filepath.replace(directory, "") for filepath in os.listdir(directory)])
+        filepaths = set(
+            [filepath.replace(directory, "") for filepath in os.listdir(directory)]
+        )
         objectpaths = set(
             map(
                 lambda path: path.split("/")[0],
@@ -100,7 +102,9 @@ def test_sync_folder_with_s3(client):
             folder_path=directory,
             secure=test_settings.gt4sd_s3_secure,
         )
-        filepaths = set([filepath.replace(directory, "") for filepath in os.listdir(directory)])
+        filepaths = set(
+            [filepath.replace(directory, "") for filepath in os.listdir(directory)]
+        )
         objectpaths = set(
             map(
                 lambda path: path.split("/")[0],

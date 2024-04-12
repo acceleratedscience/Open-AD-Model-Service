@@ -691,7 +691,8 @@ class PositionalEncoding(nn.Module):
             model output.
         """
         x = x + torch.autograd.Variable(
-            self.pe[:, : x.size(1)], requires_grad=False  # type:ignore
+            self.pe[:, : x.size(1)],
+            requires_grad=False,  # type:ignore
         )
         return self.dropout(x)
 

@@ -73,18 +73,27 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
             "expl_H": list(range(4)),  # TODO: check what is the actual range of this
             "no_impl": [False, True],
         }
-        self.atom_attr_defaults = {k: self.atom_attr_values[k][0] for k in self.atom_attr_values}
+        self.atom_attr_defaults = {
+            k: self.atom_attr_values[k][0] for k in self.atom_attr_values
+        }
         # The size of the input vector for each atom
         self.atom_attr_size = sum(len(i) for i in self.atom_attr_values.values())
         self.atom_attrs = sorted(self.atom_attr_values.keys())
         # The beginning position within the input vector of each attribute
-        self.atom_attr_slice = [0] + list(np.cumsum([len(self.atom_attr_values[i]) for i in self.atom_attrs]))
+        self.atom_attr_slice = [0] + list(
+            np.cumsum([len(self.atom_attr_values[i]) for i in self.atom_attrs])
+        )
         # The beginning position within the logit vector of each attribute
         self.atom_attr_logit_slice = {
             k: s
             for k, s in zip(
                 self.atom_attrs,
-                [0] + list(np.cumsum([len(self.atom_attr_values[i]) - 1 for i in self.atom_attrs])),
+                [0]
+                + list(
+                    np.cumsum(
+                        [len(self.atom_attr_values[i]) - 1 for i in self.atom_attrs]
+                    )
+                ),
             )
         }
         # The attribute and value each logit dimension maps back to
@@ -104,18 +113,29 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
                 BondType.AROMATIC,
             ],
         }
-        self.bond_attr_defaults = {k: self.bond_attr_values[k][0] for k in self.bond_attr_values}
+        self.bond_attr_defaults = {
+            k: self.bond_attr_values[k][0] for k in self.bond_attr_values
+        }
         self.bond_attr_size = sum(len(i) for i in self.bond_attr_values.values())
         self.bond_attrs = sorted(self.bond_attr_values.keys())
-        self.bond_attr_slice = [0] + list(np.cumsum([len(self.bond_attr_values[i]) for i in self.bond_attrs]))
+        self.bond_attr_slice = [0] + list(
+            np.cumsum([len(self.bond_attr_values[i]) for i in self.bond_attrs])
+        )
         self.bond_attr_logit_slice = {
             k: s
             for k, s in zip(
                 self.bond_attrs,
-                [0] + list(np.cumsum([len(self.bond_attr_values[i]) - 1 for i in self.bond_attrs])),
+                [0]
+                + list(
+                    np.cumsum(
+                        [len(self.bond_attr_values[i]) - 1 for i in self.bond_attrs]
+                    )
+                ),
             )
         }
-        self.bond_attr_logit_map = [(k, v) for k in self.bond_attrs for v in self.bond_attr_values[k][1:]]
+        self.bond_attr_logit_map = [
+            (k, v) for k in self.bond_attrs for v in self.bond_attr_values[k][1:]
+        ]
 
         # These values are used by Models to know how many inputs/logits to produce
         self.num_new_node_values = len(atoms)
@@ -135,7 +155,9 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
         ]
         self.device = device
 
-    def aidx_to_graph_action(self, g: gd.Data, action_idx: Tuple[int, int, int]) -> GraphAction:
+    def aidx_to_graph_action(
+        self, g: gd.Data, action_idx: Tuple[int, int, int]
+    ) -> GraphAction:
         """Translate an action index (e.g. from a GraphActionCategorical) to a GraphAction.
 
         Args:
@@ -155,7 +177,9 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
         if t is GraphActionType.Stop:
             return GraphAction(t)
         elif t is GraphActionType.AddNode:
-            return GraphAction(t, source=act_row, value=self.atom_attr_values["v"][act_col])
+            return GraphAction(
+                t, source=act_row, value=self.atom_attr_values["v"][act_col]
+            )
         elif t is GraphActionType.SetNodeAttr:
             attr, val = self.atom_attr_logit_map[act_col]
             return GraphAction(t, source=act_row, attr=attr, value=val)
@@ -166,11 +190,15 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
         elif t is GraphActionType.SetEdgeAttr:
             a, b = g.edge_index[:, act_row * 2]
             attr, val = self.bond_attr_logit_map[act_col]
-            return GraphAction(t, source=a.item(), target=b.item(), attr=attr, value=val)
+            return GraphAction(
+                t, source=a.item(), target=b.item(), attr=attr, value=val
+            )
         else:
             raise ValueError(f"Unknown action type: {t}")
 
-    def graph_action_to_aidx(self, g: gd.Data, action: GraphAction) -> Tuple[int, int, int]:
+    def graph_action_to_aidx(
+        self, g: gd.Data, action: GraphAction
+    ) -> Tuple[int, int, int]:
         """Translate a GraphAction to an index tuple.
 
         Args:
@@ -200,8 +228,12 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
             # that's also possibly in the reverse order (t,s).
             # That's definitely not too efficient, can we do better?
             row = (
-                (g.non_edge_index.T == torch.tensor([(action.source, action.target)])).prod(1)
-                + (g.non_edge_index.T == torch.tensor([(action.target, action.source)])).prod(1)
+                (
+                    g.non_edge_index.T == torch.tensor([(action.source, action.target)])
+                ).prod(1)
+                + (
+                    g.non_edge_index.T == torch.tensor([(action.target, action.source)])
+                ).prod(1)
             ).argmax()
             col = 0
         elif action.action is GraphActionType.SetEdgeAttr:
@@ -209,7 +241,11 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
             # so no need for a double check.
             # row = ((g.edge_index.T == torch.tensor([(action.source, action.target)])).prod(1) +
             #       (g.edge_index.T == torch.tensor([(action.target, action.source)])).prod(1)).argmax()
-            row = (g.edge_index.T == torch.tensor([(action.source, action.target)])).prod(1).argmax()
+            row = (
+                (g.edge_index.T == torch.tensor([(action.source, action.target)]))
+                .prod(1)
+                .argmax()
+            )
             # Because edges are duplicated but logits aren't, divide by two
             row = row.div(2, rounding_mode="floor")  # type: ignore
             col = (
@@ -249,7 +285,9 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
                 edge_attr[i * 2, sl + idx] = 1
                 edge_attr[i * 2 + 1, sl + idx] = 1
 
-        edge_index = torch.tensor([e for i, j in g.edges for e in [(i, j), (j, i)]], dtype=torch.long)
+        edge_index = torch.tensor(
+            [e for i, j in g.edges for e in [(i, j), (j, i)]], dtype=torch.long
+        )
         edge_index = edge_index.reshape((-1, 2)).T
         gc = nx.complement(g)
 
@@ -269,7 +307,9 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
             Batch of Data instances.
         """
 
-        return gd.Batch.from_data_list(graphs, follow_batch=["edge_index", "non_edge_index"])
+        return gd.Batch.from_data_list(
+            graphs, follow_batch=["edge_index", "non_edge_index"]
+        )
 
     def mol_to_graph(self, mol: Mol) -> Graph:
         """Convert an RDMol to a Graph.
@@ -293,14 +333,22 @@ class MolBuildingEnvContext(GraphBuildingEnvContext):
             g.add_node(
                 a.GetIdx(),
                 v=a.GetSymbol(),
-                **{attr: val for attr, val in attrs.items() if val != self.atom_attr_defaults[attr]},
+                **{
+                    attr: val
+                    for attr, val in attrs.items()
+                    if val != self.atom_attr_defaults[attr]
+                },
             )
         for b in mol.GetBonds():
             attrs = {"type": b.GetBondType()}
             g.add_edge(
                 b.GetBeginAtomIdx(),
                 b.GetEndAtomIdx(),
-                **{attr: val for attr, val in attrs.items() if val != self.bond_attr_defaults[attr]},
+                **{
+                    attr: val
+                    for attr, val in attrs.items()
+                    if val != self.bond_attr_defaults[attr]
+                },
             )
         return g
 

@@ -27,7 +27,11 @@ import logging
 from dataclasses import field
 from typing import Any, ClassVar, List, Optional, TypeVar
 
-from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm, Untargeted
+from gt4sd_common.algorithms.core import (
+    AlgorithmConfiguration,
+    GeneratorAlgorithm,
+    Untargeted,
+)
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
 from gt4sd_inference_paccmann.algorithms.prediction.paccmann.implementation import (
     BimodalMCAAffinityPredictor,
@@ -99,7 +103,9 @@ class PaccMann(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: MCAPredictor = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
+        implementation: MCAPredictor = configuration.get_conditional_generator(
+            self.local_artifacts
+        )  # type: ignore
         return implementation.predict_values
 
 
@@ -121,10 +127,14 @@ class AffinityPredictor(AlgorithmConfiguration[str, str]):
     )
     confidence: bool = field(
         default=False,
-        metadata=dict(description="Whether the confidence for the prediction should be returned."),
+        metadata=dict(
+            description="Whether the confidence for the prediction should be returned."
+        ),
     )
 
-    def get_conditional_generator(self, resources_path: str) -> BimodalMCAAffinityPredictor:
+    def get_conditional_generator(
+        self, resources_path: str
+    ) -> BimodalMCAAffinityPredictor:
         """Instantiate the actual predictor implementation.
 
         Args:

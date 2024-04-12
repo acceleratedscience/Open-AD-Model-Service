@@ -1,23 +1,18 @@
-print(1)
-
-
 from gt4sd_common.properties import PropertyPredictorRegistry
 
-print(1.1)
 import tempfile
 import glob
 
-print(2)
 from rdkit import Chem
 
-print(3)
+import importlib_resources
+import os
 
 seed = "CCO"
 target = "drd2"
 molecule = "C12C=CC=NN1C(C#CC1=C(C)C=CC3C(NC4=CC(C(F)(F)F)=CC=C4)=NOC1=3)=CN=2"
 protein = "KFLIYQMECSTMIFGL"
 molecule = Chem.MolFromSmiles(molecule)
-print(5)
 molecule_properties_old = [
     "esol",
     "lipinski",
@@ -38,8 +33,6 @@ molecule_properties_old = [
     "bertz",
     "OrganTox",
 ]
-import importlib_resources
-import os
 
 test_files = []
 with importlib_resources.as_file(
@@ -157,7 +150,9 @@ for prop in molecule_properties:
                 "box_center": [15.190, 53.903, 16.917],
                 "box_size": [20, 20, 20],
             }
-            prop_object = PropertyPredictorRegistry.get_property_predictor(name=prop, parameters=parms)
+            prop_object = PropertyPredictorRegistry.get_property_predictor(
+                name=prop, parameters=parms
+            )
             results.append(prop + " = " + str(prop_object(protein)))
         elif prop not in crystal_props:
             parms = {"algorithm_version": "v0"}
@@ -169,14 +164,21 @@ for prop in molecule_properties:
                     "smiles": seed,
                 }
                 molecule = "CCC"
-            prop_object = PropertyPredictorRegistry.get_property_predictor(name=prop, parameters=parms)
+            prop_object = PropertyPredictorRegistry.get_property_predictor(
+                name=prop, parameters=parms
+            )
             if prop in proteins:
-
-                results.append("protein property " + prop + " = " + str(prop_object(protein)))
+                results.append(
+                    "protein property " + prop + " = " + str(prop_object(protein))
+                )
             elif prop in crystal_props:
-                results.append("crystal  property " + prop + " = " + str(prop_object(molecule)))
+                results.append(
+                    "crystal  property " + prop + " = " + str(prop_object(molecule))
+                )
             else:
-                results.append("molecules property " + prop + " = " + str(prop_object(molecule)))
+                results.append(
+                    "molecules property " + prop + " = " + str(prop_object(molecule))
+                )
         else:
             tmpdir = tempfile.TemporaryDirectory(prefix="./")
 
@@ -197,7 +199,9 @@ for prop in molecule_properties:
 
             # data_path = Path(data_dir, tmpdir.name + "/*")
 
-            model = PropertyPredictorRegistry.get_property_predictor(name=prop, parameters=parms)
+            model = PropertyPredictorRegistry.get_property_predictor(
+                name=prop, parameters=parms
+            )
 
             out = model(input=data_module)  # type: ignore
             if prop == "metal_nonmetal_classifier":
@@ -205,14 +209,28 @@ for prop in molecule_properties:
                 predictions = out["predictions"]
                 i = 0
                 for formula in formulas:
-                    results.append("crystal  property " + prop + "  :  " + formula + " = " + str(predictions[i]))
+                    results.append(
+                        "crystal  property "
+                        + prop
+                        + "  :  "
+                        + formula
+                        + " = "
+                        + str(predictions[i])
+                    )
                     i += 1
 
             else:
                 pred_dict = dict(zip(out["cif_ids"], out["predictions"]))  # type: ignore
                 # for results in pred_dict:
                 for key in pred_dict:
-                    results.append("crystal  property " + prop + "  :  " + key + " = " + str(pred_dict[key]))
+                    results.append(
+                        "crystal  property "
+                        + prop
+                        + "  :  "
+                        + key
+                        + " = "
+                        + str(pred_dict[key])
+                    )
                 tmpdir.cleanup()
 
     except Exception as e:
@@ -227,7 +245,6 @@ print()
 print("Here are the results")
 results.sort()
 for result in results:
-
     print(result)
 """
 import importlib_resources

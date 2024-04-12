@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Test for properties."""
+
 import numpy as np
 import pytest
 
@@ -86,12 +87,18 @@ def select_sample(property_key):
 
 def select_opposite_sample(property_key):
     """select a molecule or protein not accordingly to the property."""
-    return protein if property_key not in PROTEIN_PROPERTY_PREDICTOR_FACTORY else molecule
+    return (
+        protein if property_key not in PROTEIN_PROPERTY_PREDICTOR_FACTORY else molecule
+    )
 
 
-@pytest.mark.parametrize("property_key", [(property_key) for property_key in ground_truths.keys()])
+@pytest.mark.parametrize(
+    "property_key", [(property_key) for property_key in ground_truths.keys()]
+)
 def test_property_scorer(property_key):
-    scoring_function = PropertyPredictorRegistry.get_property_predictor(name=property_key)
+    scoring_function = PropertyPredictorRegistry.get_property_predictor(
+        name=property_key
+    )
     scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["property_predictor_scorer"](
         name=property_key,
         scoring_function=scoring_function,
@@ -138,9 +145,13 @@ def test_charge_with_arguments_scorer():
     assert np.isclose(scorer.score(protein), OPTIMAL_SCORE, atol=1e-2)  # type: ignore
 
 
-@pytest.mark.parametrize("property_key", [(property_key) for property_key in ground_truths.keys()])
+@pytest.mark.parametrize(
+    "property_key", [(property_key) for property_key in ground_truths.keys()]
+)
 def test_validation_property_scorer(property_key):
-    scoring_function = PropertyPredictorRegistry.get_property_predictor(name=property_key)
+    scoring_function = PropertyPredictorRegistry.get_property_predictor(
+        name=property_key
+    )
     scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["property_predictor_scorer"](
         name=property_key,
         scoring_function=scoring_function,
@@ -154,12 +165,18 @@ def test_validation_property_scorer(property_key):
         assert True
 
 
-@pytest.mark.parametrize("property_key", [(property_key) for property_key in ground_truths.keys()])
+@pytest.mark.parametrize(
+    "property_key", [(property_key) for property_key in ground_truths.keys()]
+)
 def test_molecule_property_scorer(property_key):
-    scoring_function = PropertyPredictorRegistry.get_property_predictor(name=property_key)
+    scoring_function = PropertyPredictorRegistry.get_property_predictor(
+        name=property_key
+    )
     if property_key not in MOLECULE_PROPERTY_PREDICTOR_FACTORY:
         try:
-            scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["molecule_property_predictor_scorer"](
+            scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS[
+                "molecule_property_predictor_scorer"
+            ](
                 name=property_key,
                 scoring_function=scoring_function,
                 target=ground_truths[property_key],
@@ -169,7 +186,9 @@ def test_molecule_property_scorer(property_key):
             assert True
 
     if property_key in MOLECULE_PROPERTY_PREDICTOR_FACTORY:
-        scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["molecule_property_predictor_scorer"](
+        scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS[
+            "molecule_property_predictor_scorer"
+        ](
             name=property_key,
             scoring_function=scoring_function,
             target=ground_truths[property_key],
@@ -178,12 +197,18 @@ def test_molecule_property_scorer(property_key):
         assert np.isclose(scorer.score(sample), OPTIMAL_SCORE, atol=1e-2)  # type: ignore
 
 
-@pytest.mark.parametrize("property_key", [(property_key) for property_key in ground_truths.keys()])
+@pytest.mark.parametrize(
+    "property_key", [(property_key) for property_key in ground_truths.keys()]
+)
 def test_protein_property_scorer(property_key):
-    scoring_function = PropertyPredictorRegistry.get_property_predictor(name=property_key)
+    scoring_function = PropertyPredictorRegistry.get_property_predictor(
+        name=property_key
+    )
     if property_key not in PROTEIN_PROPERTY_PREDICTOR_FACTORY:
         try:
-            scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["protein_property_predictor_scorer"](
+            scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS[
+                "protein_property_predictor_scorer"
+            ](
                 name=property_key,
                 scoring_function=scoring_function,
                 target=ground_truths[property_key],
@@ -193,7 +218,9 @@ def test_protein_property_scorer(property_key):
             assert True
 
     if property_key in PROTEIN_PROPERTY_PREDICTOR_FACTORY:
-        scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["protein_property_predictor_scorer"](
+        scorer = SCORING_FACTORY_WITH_PROPERTY_PREDICTORS[
+            "protein_property_predictor_scorer"
+        ](
             name=property_key,
             scoring_function=scoring_function,
             target=ground_truths[property_key],
@@ -210,7 +237,9 @@ def test_property_predictor_scorer_registry():
         parameters={"smiles": seed},
     )
     sample = select_sample("similarity_seed")
-    assert isinstance(scorer, SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["property_predictor_scorer"])
+    assert isinstance(
+        scorer, SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["property_predictor_scorer"]
+    )
     assert np.isclose(scorer.score(sample), OPTIMAL_SCORE, atol=1e-2)  # type: ignore
 
     scorer = PropertyPredictorRegistry.get_property_predictor_scorer(
@@ -220,6 +249,8 @@ def test_property_predictor_scorer_registry():
         parameters={"amide": "True", "ph": 5.0},
     )
     sample = select_sample("charge")
-    assert isinstance(scorer, SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["property_predictor_scorer"])
+    assert isinstance(
+        scorer, SCORING_FACTORY_WITH_PROPERTY_PREDICTORS["property_predictor_scorer"]
+    )
     assert np.isclose(scorer.score(sample), OPTIMAL_SCORE, atol=1e-2)  # type: ignore
     assert len(PropertyPredictorRegistry.list_available_scorers()) == 3

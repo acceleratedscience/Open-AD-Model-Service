@@ -96,11 +96,15 @@ class InferenceArguments:
     )
     configuration_file: Optional[str] = field(
         default=None,
-        metadata={"help": "Configuration file for the inference pipeline in JSON format."},
+        metadata={
+            "help": "Configuration file for the inference pipeline in JSON format."
+        },
     )
     print_info: bool = field(
         default=False,
-        metadata={"help": "Print info for the selected algorithm, preventing inference run. Defaults to False."},
+        metadata={
+            "help": "Print info for the selected algorithm, preventing inference run. Defaults to False."
+        },
     )
 
 
@@ -108,11 +112,19 @@ def main() -> None:
     """Run an inference pipeline."""
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-    parser = ArgumentParser(cast(Iterable[DataClassType], (AlgorithmApplicationArguments, InferenceArguments)))
-    algorithm_args, inference_args, _ = parser.parse_args_into_dataclasses(return_remaining_strings=True)
+    parser = ArgumentParser(
+        cast(
+            Iterable[DataClassType], (AlgorithmApplicationArguments, InferenceArguments)
+        )
+    )
+    algorithm_args, inference_args, _ = parser.parse_args_into_dataclasses(
+        return_remaining_strings=True
+    )
 
     filters = algorithm_args.__dict__
-    matching_algorithms = filter_algorithm_applications(algorithms=AVAILABLE_ALGORITHMS, filters=filters)
+    matching_algorithms = filter_algorithm_applications(
+        algorithms=AVAILABLE_ALGORITHMS, filters=filters
+    )
     if len(matching_algorithms) > 1:
         logger.info(
             f"Multiple algorithms matching the parameters:{os.linesep}"
@@ -137,7 +149,9 @@ def main() -> None:
     configuration_filepath = inference_args.configuration_file
 
     if print_info:
-        algorithm_configuration = ApplicationsRegistry.get_configuration_instance(**selected_algorithm)
+        algorithm_configuration = ApplicationsRegistry.get_configuration_instance(
+            **selected_algorithm
+        )
         algorithm_configuration_dict = {**algorithm_configuration.to_dict()}
         _ = algorithm_configuration_dict.pop("description", None)
         logger.info(
@@ -169,8 +183,12 @@ def main() -> None:
         **selected_algorithm,
         **configuration,
     )
-    logger.info(f"Starting generation with the following configuration:{algorithm.configuration}")
-    print(f"{os.linesep.join(map(str, algorithm.sample(number_of_items=number_of_samples)))}")
+    logger.info(
+        f"Starting generation with the following configuration:{algorithm.configuration}"
+    )
+    print(
+        f"{os.linesep.join(map(str, algorithm.sample(number_of_items=number_of_samples)))}"
+    )
 
 
 if __name__ == "__main__":

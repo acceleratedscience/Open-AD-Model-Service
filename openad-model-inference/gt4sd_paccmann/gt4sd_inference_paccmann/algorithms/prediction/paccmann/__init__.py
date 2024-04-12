@@ -21,6 +21,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from gt4sd_inference_paccmann.algorithms.prediction.paccmann.core import AffinityPredictor, PaccMann
+from gt4sd_inference_paccmann.algorithms.prediction.paccmann.core import (
+    AffinityPredictor,
+    PaccMann,
+)
 
 __all__ = ["PaccMann", "AffinityPredictor"]
