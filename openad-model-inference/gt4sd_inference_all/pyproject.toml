@@ -18,14 +18,8 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-pytest = "8.0.2"
+mols2grid = "*"
 
-# gt4sd_inference_regression = {path =  "../gt4sd_regression/", optional = false}
-# gt4sd_inference_paccmann = {path =  "../gt4sd_paccmann/", optional = false}
-# gt4sd_inference_reinvent = {path =  "../gt4sd_reinvent/", optional = false}
-# gt4sd_inference_moler = {path =  "../gt4sd_moler/", optional = false}
-# gt4sd_inference_guacamol = {path =  "../gt4sd_guacamol/", optional = false}
-# gt4sd_inference_torch_drug = {path =  "../gt4sd_torch/", optional = false}
 gt4sd_inference_guacamol = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_guacamol", branch = "main" }
 gt4sd_inference_regression = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_regression", branch = "main" }
 gt4sd_inference_paccmann = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_paccmann", branch = "main" }
@@ -33,32 +27,8 @@ gt4sd_inference_reinvent = { git = "https://github.com/acceleratedscience/Open-A
 gt4sd_inference_moler = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_moler", branch = "main" }
 gt4sd_inference_torch_drug = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_torch", branch = "main" }
 
-
-mols2grid = "*"
-
-# torch = [
-#     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
-#     { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
-#     { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
-# ]
-# torch-scatter = [
-#   {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp310-cp310-linux_x86_64.whl",  markers = "sys_platform == 'linux'"},
-#   {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2-cp310-cp310-macosx_11_0_x86_64.whl",  markers = "sys_platform == 'darwin'" }
-# ]
-
-# torch-cluster = [{url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3-cp310-cp310-macosx_11_0_x86_64.whl", markers = "sys_platform == 'darwin'" },
-# {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3%2Bpt22cpu-cp310-cp310-linux_x86_64.whl", markers = "sys_platform == 'linux'"}]
-
-#pytoda = { git = "https://github.com/PaccMann/paccmann_datasets" ,rev = "0.1.1",optional = false }
-
-
-# torch-geometric = "2.5"
-# torchdrug = ">=0.2.0"
-
-[tool.poetry.extras]
-
-
 [tool.poetry.group.dev.dependencies]
+pytest = "8.0.2"
 pyright = "^1.1.352"
 python-lsp-server = {extras = ["all"], version = "^1.10.0"}
 
