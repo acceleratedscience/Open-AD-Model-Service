@@ -251,9 +251,7 @@ class GPConditionalGenerator:
             random_state=opt_seed,
         )
         log_params = deepcopy(optimization_parameters)
-        log_params["dimensions"] = np.mean(
-            optimization_parameters["dimensions"]
-        )  # type:ignore
+        log_params["dimensions"] = np.mean(optimization_parameters["dimensions"])  # type:ignore
         logger.info(f"running optimization with the following parameters: {log_params}")
         smiles_set = set()
         logger.info(

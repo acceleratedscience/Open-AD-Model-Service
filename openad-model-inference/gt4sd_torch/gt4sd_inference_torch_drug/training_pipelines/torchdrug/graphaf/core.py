@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """TorchDrug GraphAF training utilities."""
+
 import ast
 import logging
 import os
@@ -77,7 +78,6 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
             dataset_args: dataset arguments passed to the configuration.
         """
         try:
-
             params = {**training_args, **dataset_args, **model_args}
 
             model_path = params["model_path"]
@@ -101,10 +101,15 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
                 "kekulize": not params.get("no_kekulization", False),
             }
             if dataset_name not in DATASET_FACTORY.keys():
-                raise ValueError(f"Dataset {dataset_name} is not supported. Choose from " f"{DATASET_FACTORY.keys()}")
+                raise ValueError(
+                    f"Dataset {dataset_name} is not supported. Choose from "
+                    f"{DATASET_FACTORY.keys()}"
+                )
             if dataset_name != "custom":
                 # This is a native TorchDrug dataset
-                dataset = DATASET_FACTORY[dataset_name](path=params["dataset_path"], **joint_dataset_args)
+                dataset = DATASET_FACTORY[dataset_name](
+                    path=params["dataset_path"], **joint_dataset_args
+                )
             else:
                 # User brought their own dataset
                 dataset = DATASET_FACTORY["custom"](
@@ -137,7 +142,9 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
                     f"Not task={task} and target_field={params['target_field']}"
                 )
             criterion = ast.literal_eval(params["criterion"])
-            if "ppo" in criterion.keys() and (params["no_kekulization"] or params["node_feature"] != "symbol"):
+            if "ppo" in criterion.keys() and (
+                params["no_kekulization"] or params["node_feature"] != "symbol"
+            ):
                 # See torchdrug issue: https://github.com/DeepGraphLearning/torchdrug/issues/77
                 raise ValueError(
                     "For property optimiz. leave `no_kekulization` at the default ("
@@ -146,9 +153,15 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
                 )
 
             # Model prior/flow initialization
-            node_prior = distribution.IndependentGaussian(torch.zeros(num_atom_type), torch.ones(num_atom_type))
-            edge_prior = distribution.IndependentGaussian(torch.zeros(num_bond_type + 1), torch.ones(num_bond_type + 1))
-            node_flow = GraphAF(model, node_prior, num_layer=params.get("num_node_flow_layers", 12))
+            node_prior = distribution.IndependentGaussian(
+                torch.zeros(num_atom_type), torch.ones(num_atom_type)
+            )
+            edge_prior = distribution.IndependentGaussian(
+                torch.zeros(num_bond_type + 1), torch.ones(num_bond_type + 1)
+            )
+            node_flow = GraphAF(
+                model, node_prior, num_layer=params.get("num_node_flow_layers", 12)
+            )
             edge_flow = GraphAF(
                 model,
                 edge_prior,
@@ -171,7 +184,9 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
                 baseline_momentum=params.get("baseline_momentum", 0.9),
             )
 
-            optimizer = optim.Adam(task.parameters(), lr=params.get("learning_rate", 1e-5))
+            optimizer = optim.Adam(
+                task.parameters(), lr=params.get("learning_rate", 1e-5)
+            )
             device = (0,) if torch.cuda.is_available() else None
             solver = Engine(
                 task,
@@ -192,9 +207,13 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
 
             weight_paths = sorted(list(model_dir.glob("*.pkl")), key=os.path.getmtime)
             if len(weight_paths) > 0:
-                solver.load(weight_paths[-1], load_optimizer=params.get("load_optimizer", False))
+                solver.load(
+                    weight_paths[-1], load_optimizer=params.get("load_optimizer", False)
+                )
                 logger.info(f"Restored existing model from {weight_paths[-1]}")
-                logger.info("To avoid this, set `training_name` & `model_path` to a new folder.")
+                logger.info(
+                    "To avoid this, set `training_name` & `model_path` to a new folder."
+                )
 
             epochs = params.get("epochs", 10)
             solver.train(num_epoch=epochs)
@@ -202,15 +221,23 @@ class TorchDrugGraphAFTrainingPipeline(TorchDrugTrainingPipeline):
             # Save model
             task_name = f"task={params.get('task')}_" if params.get("task") else ""
             data_name = "data=" + (
-                dataset_name + "_" + str(params["file_path"]).split(os.sep)[-1].split(".")[0]
+                dataset_name
+                + "_"
+                + str(params["file_path"]).split(os.sep)[-1].split(".")[0]
                 if dataset_name == "custom"
                 else dataset_name
             )
 
-            solver.save(model_dir.joinpath(f"graphaf_data={data_name}_{task_name}epoch={epochs}.pkl"))
+            solver.save(
+                model_dir.joinpath(
+                    f"graphaf_data={data_name}_{task_name}epoch={epochs}.pkl"
+                )
+            )
 
         except Exception:
-            logger.exception("Exception occurred while running TorchDrugGraphAFTrainingPipeline")
+            logger.exception(
+                "Exception occurred while running TorchDrugGraphAFTrainingPipeline"
+            )
 
 
 @dataclass
@@ -223,13 +250,23 @@ class TorchDrugGraphAFModelArguments(TrainingPipelineArguments):
         default="[128, 128]",
         metadata={"help": "Dimensionality of each hidden layer"},
     )
-    batch_norm: bool = field(default=False, metadata={"help": "Whether the RGCN uses batch normalization"})
-    edge_input_dim: Optional[int] = field(default=None, metadata={"help": "Dimension of edge features"})
-    short_cut: bool = field(default=False, metadata={"help": "Whether the RGCN uses a short cut"})
-    activation: str = field(default="relu", metadata={"help": "Activation function for RGCN"})
+    batch_norm: bool = field(
+        default=False, metadata={"help": "Whether the RGCN uses batch normalization"}
+    )
+    edge_input_dim: Optional[int] = field(
+        default=None, metadata={"help": "Dimension of edge features"}
+    )
+    short_cut: bool = field(
+        default=False, metadata={"help": "Whether the RGCN uses a short cut"}
+    )
+    activation: str = field(
+        default="relu", metadata={"help": "Activation function for RGCN"}
+    )
     concat_hidden: bool = field(
         default=False,
-        metadata={"help": "Whether hidden representations from all layers are concatenated"},
+        metadata={
+            "help": "Whether hidden representations from all layers are concatenated"
+        },
     )
     num_node_flow_layers: int = field(
         default=12,
@@ -241,7 +278,10 @@ class TorchDrugGraphAFModelArguments(TrainingPipelineArguments):
     )
     no_edge: bool = field(
         default=False,
-        metadata={"help": "Whether to use edge features in the edge GraphAF model. Per " "default, edges are used."},
+        metadata={
+            "help": "Whether to use edge features in the edge GraphAF model. Per "
+            "default, edges are used."
+        },
     )
 
     readout: str = field(
@@ -250,11 +290,15 @@ class TorchDrugGraphAFModelArguments(TrainingPipelineArguments):
     )
     max_edge_unroll: int = field(
         default=12,
-        metadata={"help": "max node id difference. Inferred from training data if not provided"},
+        metadata={
+            "help": "max node id difference. Inferred from training data if not provided"
+        },
     )
     max_node: int = field(
         default=38,
-        metadata={"help": "max number of node. Inferred from training data if not provided."},
+        metadata={
+            "help": "max number of node. Inferred from training data if not provided."
+        },
     )
     criterion: str = field(
         default="{'nll': 1.0}",
@@ -275,7 +319,9 @@ class TorchDrugGraphAFModelArguments(TrainingPipelineArguments):
     )
     agent_update_interval: int = field(
         default=10,
-        metadata={"help": "Update the agent every n batches (similar to gradient accumulation)"},
+        metadata={
+            "help": "Update the agent every n batches (similar to gradient accumulation)"
+        },
     )
     gamma: float = field(
         default=0.9,
@@ -284,7 +330,8 @@ class TorchDrugGraphAFModelArguments(TrainingPipelineArguments):
     reward_temperature: float = field(
         default=1.0,
         metadata={
-            "help": "Temperature for the reward (larger -> higher mean reward)" "lower -> higher maximal reward."
+            "help": "Temperature for the reward (larger -> higher mean reward)"
+            "lower -> higher maximal reward."
         },
     )
     baseline_momentum: float = field(

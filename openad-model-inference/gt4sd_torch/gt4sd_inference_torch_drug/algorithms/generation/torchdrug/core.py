@@ -28,8 +28,14 @@ import os
 from typing import ClassVar, Dict, Optional, TypeVar
 
 from gt4sd_inference_torch_drug.training_pipelines.core import TrainingPipelineArguments
-from gt4sd_inference_torch_drug.training_pipelines.torchdrug.core import TorchDrugSavingArguments
-from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm, Untargeted
+from gt4sd_inference_torch_drug.training_pipelines.torchdrug.core import (
+    TorchDrugSavingArguments,
+)
+from gt4sd_common.algorithms.core import (
+    AlgorithmConfiguration,
+    GeneratorAlgorithm,
+    Untargeted,
+)
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
 from gt4sd_inference_torch_drug.algorithms.generation.torchdrug.implementation import (
     GAFGenerator,
@@ -45,7 +51,9 @@ S = TypeVar("S", bound=str)
 
 
 class TorchDrugGenerator(GeneratorAlgorithm[S, T]):
-    def __init__(self, configuration: AlgorithmConfiguration, target: Optional[T] = None):
+    def __init__(
+        self, configuration: AlgorithmConfiguration, target: Optional[T] = None
+    ):
         """TorchDrug generation algorithm.
 
         Args:
@@ -85,10 +93,14 @@ class TorchDrugGenerator(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
+        implementation: Generator = configuration.get_conditional_generator(
+            self.local_artifacts
+        )  # type: ignore
         return implementation.sample
 
-    def validate_configuration(self, configuration: AlgorithmConfiguration) -> AlgorithmConfiguration:
+    def validate_configuration(
+        self, configuration: AlgorithmConfiguration
+    ) -> AlgorithmConfiguration:
         assert isinstance(configuration, AlgorithmConfiguration)
         return configuration
 
@@ -125,8 +137,11 @@ class TorchDrugGCPN(AlgorithmConfiguration[str, None]):
             a mapping between artifacts' files and training pipeline's output files.
         """
         if isinstance(training_pipeline_arguments, TorchDrugSavingArguments):
-
-            task_name = f"task={training_pipeline_arguments.task}_" if training_pipeline_arguments.task else ""
+            task_name = (
+                f"task={training_pipeline_arguments.task}_"
+                if training_pipeline_arguments.task
+                else ""
+            )
             data_name = "data=" + (
                 training_pipeline_arguments.dataset_name
                 + "_"
@@ -144,7 +159,9 @@ class TorchDrugGCPN(AlgorithmConfiguration[str, None]):
                 )
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )
 
 
 @ApplicationsRegistry.register_algorithm_application(TorchDrugGenerator)
@@ -179,8 +196,11 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
             a mapping between artifacts' files and training pipeline's output files.
         """
         if isinstance(training_pipeline_arguments, TorchDrugSavingArguments):
-
-            task_name = f"task={training_pipeline_arguments.task}_" if training_pipeline_arguments.task else ""
+            task_name = (
+                f"task={training_pipeline_arguments.task}_"
+                if training_pipeline_arguments.task
+                else ""
+            )
             data_name = "data=" + (
                 training_pipeline_arguments.dataset_name
                 + "_"
@@ -198,4 +218,6 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
                 )
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )

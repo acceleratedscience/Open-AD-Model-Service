@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """SMILES LSTM training pipeline from GuacaMol."""
+
 import logging
 import os
 from dataclasses import dataclass, field
@@ -32,7 +33,9 @@ from guacamol_baselines.smiles_lstm_hc.smiles_rnn_distribution_learner import (
 )
 
 from gt4sd_inference_guacamol.training_pipelines.core import TrainingPipelineArguments
-from gt4sd_inference_guacamol.training_pipelines.guacamol_baselines.core import GuacaMolBaselinesTrainingPipeline
+from gt4sd_inference_guacamol.training_pipelines.guacamol_baselines.core import (
+    GuacaMolBaselinesTrainingPipeline,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -68,8 +71,12 @@ class GuacaMolLSTMTrainingArguments(TrainingPipelineArguments):
     __name__ = "training_args"
 
     output_dir: str = field(metadata={"help": "Output directory."})
-    batch_size: int = field(default=512, metadata={"help": "Size of a mini-batch for gradient descent."})
-    valid_every: int = field(default=1000, metadata={"help": "Validate every so many batches."})
+    batch_size: int = field(
+        default=512, metadata={"help": "Size of a mini-batch for gradient descent."}
+    )
+    valid_every: int = field(
+        default=1000, metadata={"help": "Validate every so many batches."}
+    )
     n_epochs: int = field(default=10, metadata={"help": "Number of training epochs."})
     lr: float = field(default=1e-3, metadata={"help": "RNN learning rate."})
 
@@ -81,6 +88,10 @@ class GuacaMolLSTMModelArguments(TrainingPipelineArguments):
     __name__ = "model_args"
 
     hidden_size: int = field(default=512, metadata={"help": "Size of hidden layer."})
-    n_layers: int = field(default=3, metadata={"help": "Number of layers for training."})
+    n_layers: int = field(
+        default=3, metadata={"help": "Number of layers for training."}
+    )
     rnn_dropout: float = field(default=0.2, metadata={"help": "Dropout value for RNN."})
-    max_len: int = field(default=100, metadata={"help": "Max length of a SMILES string."})
+    max_len: int = field(
+        default=100, metadata={"help": "Max length of a SMILES string."}
+    )

@@ -29,7 +29,9 @@ from typing import Any, Callable, ClassVar, Dict, Iterable, Optional, TypeVar
 
 from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
-from gt4sd_inference_paccmann.algorithms.prediction.topics_zero_shot.implementation import ZeroShotClassifier
+from gt4sd_inference_paccmann.algorithms.prediction.topics_zero_shot.implementation import (
+    ZeroShotClassifier,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -129,4 +131,6 @@ class TopicsPredictor(AlgorithmConfiguration[str, str]):
         Returns:
             instance with :meth:`generate_batch<gt4sd.algorithms.prediction.topics_zero_shot.implementation.ZeroShotClassifier.predict>` method for targeted generation.
         """
-        return ZeroShotClassifier(resources_path=resources_path, model_name=self.model_name)
+        return ZeroShotClassifier(
+            resources_path=resources_path, model_name=self.model_name
+        )

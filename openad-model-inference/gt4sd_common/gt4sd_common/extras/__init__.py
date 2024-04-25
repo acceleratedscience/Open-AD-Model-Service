@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Extras handling."""
+
 # extras requirements
 EXTRAS_ENABLED: bool
 try:

@@ -38,8 +38,14 @@ import torch
 import torch.nn as nn
 import torch_geometric.data as gd
 
-from gt4sd_common.frameworks.gflownet.dataloader.dataset import GFlowNetDataset, GFlowNetTask
-from gt4sd_common.frameworks.gflownet.envs.graph_building_env import GraphBuildingEnv, GraphBuildingEnvContext
+from gt4sd_common.frameworks.gflownet.dataloader.dataset import (
+    GFlowNetDataset,
+    GFlowNetTask,
+)
+from gt4sd_common.frameworks.gflownet.envs.graph_building_env import (
+    GraphBuildingEnv,
+    GraphBuildingEnvContext,
+)
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
@@ -134,7 +140,9 @@ class GFlowNetModule(pl.LightningModule):
             loss and logs.
         """
         logs = dict()
-        loss, info = self.algo.compute_batch_losses(self.model, batch, num_bootstrap=self.mb_size)
+        loss, info = self.algo.compute_batch_losses(
+            self.model, batch, num_bootstrap=self.mb_size
+        )
         logs.update(
             {
                 self.model.name + f"/{k}": v.detach() if hasattr(v, "item") else v  # type: ignore
@@ -181,7 +189,9 @@ class GFlowNetModule(pl.LightningModule):
         """
         loss = 0.0
         logs = dict()
-        loss, info = self.algo.compute_batch_losses(self.model, batch, num_bootstrap=batch.num_offline)
+        loss, info = self.algo.compute_batch_losses(
+            self.model, batch, num_bootstrap=batch.num_offline
+        )
         logs.update({k: v if hasattr(v, "item") else v for k, v in info.items()})
         logs.update({"total_loss": loss})
 
@@ -208,7 +218,9 @@ class GFlowNetModule(pl.LightningModule):
         """
         loss = 0.0
         logs = dict()
-        loss, info = self.algo.compute_batch_losses(self.model, batch, num_bootstrap=batch.num_offline)
+        loss, info = self.algo.compute_batch_losses(
+            self.model, batch, num_bootstrap=batch.num_offline
+        )
         logs.update({k: v if hasattr(v, "item") else v for k, v in info.items()})
         logs.update({"total_loss": loss})
 
@@ -258,7 +270,12 @@ class GFlowNetModule(pl.LightningModule):
 
         for key in z_keys:
             z[key] = (
-                torch.cat([torch.squeeze(an_output["z"][key]) for an_output in outputs], dim=0).detach().cpu().numpy()
+                torch.cat(
+                    [torch.squeeze(an_output["z"][key]) for an_output in outputs], dim=0
+                )
+                .detach()
+                .cpu()
+                .numpy()
             )
 
         for key in targets_keys:
@@ -283,7 +300,9 @@ class GFlowNetModule(pl.LightningModule):
         """
         # Separate z parameters from non-z to allow for LR decay on the former
         z_params = list(self.model.log_z.parameters())  # type: ignore
-        non_z_params = [i for i in self.model.parameters() if all(id(i) != id(j) for j in z_params)]
+        non_z_params = [
+            i for i in self.model.parameters() if all(id(i) != id(j) for j in z_params)
+        ]
 
         self.opt = torch.optim.Adam(
             non_z_params,
@@ -294,7 +313,9 @@ class GFlowNetModule(pl.LightningModule):
         )
         self.opt_z = torch.optim.Adam(z_params, self.hps["learning_rate"], (0.9, 0.999))
 
-        self.lr_sched = torch.optim.lr_scheduler.LambdaLR(self.opt, lambda steps: 2 ** (-steps / self.hps["lr_decay"]))
+        self.lr_sched = torch.optim.lr_scheduler.LambdaLR(
+            self.opt, lambda steps: 2 ** (-steps / self.hps["lr_decay"])
+        )
         self.lr_sched_z = torch.optim.lr_scheduler.LambdaLR(
             self.opt_z, lambda steps: 2 ** (-steps / self.hps["z_lr_decay"])
         )
@@ -308,8 +329,16 @@ class GFlowNetModule(pl.LightningModule):
         self.hps["tb_epsilon"] = ast.literal_eval(eps) if isinstance(eps, str) else eps
 
         self.clip_grad_callback = {
-            "value": (lambda params: torch.nn.utils.clip_grad_value_(params, self.clip_grad_param)),
-            "norm": (lambda params: torch.nn.utils.clip_grad_norm_(params, self.clip_grad_param)),
+            "value": (
+                lambda params: torch.nn.utils.clip_grad_value_(
+                    params, self.clip_grad_param
+                )
+            ),
+            "norm": (
+                lambda params: torch.nn.utils.clip_grad_norm_(
+                    params, self.clip_grad_param
+                )
+            ),
             "none": (lambda x: None),
         }[self.hps["clip_grad_type"]]
 

@@ -68,7 +68,9 @@ class AmidePhConfiguration(PropertyPredictorParameters):
 class Length(CallablePropertyPredictor):
     """Retrieves the number of residues of a protein."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=length, parameters=parameters)
 
 
@@ -82,21 +84,27 @@ class MolecularWeight(ConfigurableCallablePropertyPredictor):
 class BomanIndex(CallablePropertyPredictor):
     """Computes the Boman index of a protein (sum of solubility values of all residues)."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=boman_index, parameters=parameters)
 
 
 class AliphaticIndex(CallablePropertyPredictor):
     """Computes the aliphatic index of a protein. Measure of thermal stability."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=aliphatic_index, parameters=parameters)
 
 
 class HydrophobicRatio(CallablePropertyPredictor):
     """Computes the hydrophobicity of a protein, relative freq. of **A,C,F,I,L,M & V**."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=hydrophobic_ratio, parameters=parameters)
 
 
@@ -124,12 +132,16 @@ class IsoelectricPoint(ConfigurableCallablePropertyPredictor):
 class Aromaticity(CallablePropertyPredictor):
     """Computes aromaticity of the protein (relative frequency of Phe+Trp+Tyr)."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=aromaticity, parameters=parameters)
 
 
 class Instability(CallablePropertyPredictor):
     """Calculates the protein instability."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=instability, parameters=parameters)

@@ -128,7 +128,9 @@ class RFC:
         """
         data_X, data_y = df.iloc[:, 1:].values, df.iloc[:, 0].values
 
-        train_x, test_x, train_y, test_y = train_test_split(data_X, data_y, test_size=test_size, random_state=42)
+        train_x, test_x, train_y, test_y = train_test_split(
+            data_X, data_y, test_size=test_size, random_state=42
+        )
 
         return train_x, test_x, train_y, test_y
 

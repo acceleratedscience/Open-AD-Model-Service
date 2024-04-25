@@ -40,10 +40,15 @@ def test_tokenization():
         tokenizer = tokenizer_type("test", smiles=smiles)
         tokens = tokenizer.tokenize(smiles[1])
         assert tokens_groundtruth == tokens
-        assert [tokenizer.vocab[token] for token in tokens] == tokenizer.convert_tokens_to_ids(
-            tokenizer.tokenize(smiles[1])
+        assert [
+            tokenizer.vocab[token] for token in tokens
+        ] == tokenizer.convert_tokens_to_ids(tokenizer.tokenize(smiles[1]))
+        assert 2 == len(
+            [
+                tokenizer.convert_tokens_to_ids(tokenizer.tokenize(a_smiles))
+                for a_smiles in smiles
+            ]
         )
-        assert 2 == len([tokenizer.convert_tokens_to_ids(tokenizer.tokenize(a_smiles)) for a_smiles in smiles])
 
     _test_tokenizer(
         SelfiesTokenizer,

@@ -104,8 +104,10 @@ class PaccMannGP(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: GPConditionalGenerator = configuration.get_conditional_generator(  # type: ignore
-            self.local_artifacts
+        implementation: GPConditionalGenerator = (
+            configuration.get_conditional_generator(  # type: ignore
+                self.local_artifacts
+            )
         )
         return implementation.generate_batch
 
@@ -118,11 +120,9 @@ class PaccMannGP(GeneratorAlgorithm[S, T]):
 
             def get_conditional_generator(
                 self, resources_path: str
-            ) -> GPConditionalGenerator:
-                ...
+            ) -> GPConditionalGenerator: ...
 
-            def validate_item(self, item: Any) -> S:
-                ...
+            def validate_item(self, item: Any) -> S: ...
 
         # TODO raise InvalidAlgorithmConfiguration
         assert isinstance(configuration, AnyPaccMannGPConfiguration)

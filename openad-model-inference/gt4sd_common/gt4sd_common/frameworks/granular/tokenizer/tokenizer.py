@@ -285,7 +285,6 @@ class Tokenizer:
         eos_token: str = "</s>",
         unk_token: str = "<unk>",
     ) -> None:
-
         """Constructs a Tokenizer.
 
         Args:

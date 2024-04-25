@@ -112,7 +112,6 @@ class ReinventBase:
 
         sampled_sequences = []
         for batch in dataloader:
-
             for _ in range(self._batch_size):
                 scaffold_seqs, scaffold_seq_lengths = batch
                 packed = self.model.sample_decorations(

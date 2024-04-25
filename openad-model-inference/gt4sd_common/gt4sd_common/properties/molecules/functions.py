@@ -39,7 +39,7 @@ try:
     )
     from guacamol.utils.descriptors import qed as _qed
     from guacamol.utils.descriptors import tpsa as _tpsa
-except:
+except:  # noqa: E722
     pass
 try:
     from paccmann_generator.drug_evaluators import (
@@ -49,7 +49,7 @@ try:
         PenalizedLogP,
         SCScore,
     )
-except:
+except:  # noqa: E722
     print("passing 1")
     pass
 
@@ -67,7 +67,7 @@ try:
     _esol = ESOL()
     _lipinski = Lipinski()
     _penalized_logp = PenalizedLogP()
-except:
+except:  # noqa: E722
     print("passing 2")
     pass
 
@@ -235,7 +235,9 @@ def number_of_stereocenters(mol: SmallMolecule) -> int:
     return CalcNumAtomStereoCenters(to_mol(mol))
 
 
-def similarity_to_seed(mol: SmallMolecule, similarity_fn: Callable[[SmallMolecule], float]) -> float:
+def similarity_to_seed(
+    mol: SmallMolecule, similarity_fn: Callable[[SmallMolecule], float]
+) -> float:
     """Calculate the similarity of a molecule to a seed molecule.
 
     Example:
@@ -248,7 +250,9 @@ def similarity_to_seed(mol: SmallMolecule, similarity_fn: Callable[[SmallMolecul
     return similarity_fn(to_smiles(mol))
 
 
-def activity_against_target(mol: SmallMolecule, affinity_fn: Callable[[SmallMolecule], float]) -> float:
+def activity_against_target(
+    mol: SmallMolecule, affinity_fn: Callable[[SmallMolecule], float]
+) -> float:
     """Calculate the activity of a molecule against a target molecule.
 
     Example:

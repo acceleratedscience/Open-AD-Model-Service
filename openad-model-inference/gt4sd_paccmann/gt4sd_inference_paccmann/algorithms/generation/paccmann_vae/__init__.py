@@ -23,6 +23,9 @@
 #
 """PaccMannVAE initialization."""
 
-from gt4sd_inference_paccmann.algorithms.generation.paccmann_vae.core import PaccMannVAE, PaccMannVAEGenerator
+from gt4sd_inference_paccmann.algorithms.generation.paccmann_vae.core import (
+    PaccMannVAE,
+    PaccMannVAEGenerator,
+)
 
 __all__ = ["PaccMannVAE", "PaccMannVAEGenerator"]

@@ -73,7 +73,9 @@ def parse_arguments_from_config(conf_file: Optional[str] = None) -> argparse.Nam
 
     # adding a list of all model name into the args
     result: Dict[str, Any] = dict()
-    result["model_list"] = [i for i in list(config.keys()) if i.lower() not in general_config_classes]
+    result["model_list"] = [
+        i for i in list(config.keys()) if i.lower() not in general_config_classes
+    ]
     for key in [*config.keys()]:
         # go trough all models parameter, replace the parsed ones from the the config files ones
         if key.lower() not in general_config_classes:
@@ -86,10 +88,16 @@ def parse_arguments_from_config(conf_file: Optional[str] = None) -> argparse.Nam
             params_from_configfile["name"] = key
 
             for i in params_from_configfile:
-                params_from_configfile[i] = convert_string_to_class(params_from_configfile[i])
+                params_from_configfile[i] = convert_string_to_class(
+                    params_from_configfile[i]
+                )
 
             params_from_configfile.update(
-                {k[: -len(key) - 1]: v for k, v in args_dictionary.items() if v is not None and k.endswith("_" + key)}
+                {
+                    k[: -len(key) - 1]: v
+                    for k, v in args_dictionary.items()
+                    if v is not None and k.endswith("_" + key)
+                }
             )
 
             result[key] = params_from_configfile
@@ -97,7 +105,9 @@ def parse_arguments_from_config(conf_file: Optional[str] = None) -> argparse.Nam
         elif key.lower() == "trainer" or key.lower() == "general":
             params_from_configfile = dict(config[key])
             for i in params_from_configfile:
-                params_from_configfile[i] = convert_string_to_class(params_from_configfile[i])
+                params_from_configfile[i] = convert_string_to_class(
+                    params_from_configfile[i]
+                )
             result.update(params_from_configfile)
 
     # parser Pytorch Trainer arguments

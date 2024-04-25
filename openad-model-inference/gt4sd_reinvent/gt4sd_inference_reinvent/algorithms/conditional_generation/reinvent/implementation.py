@@ -75,7 +75,9 @@ class ReinventConditionalGenerator(ReinventBase):
 
         self.model = DecoratorModel.load_from_file(path=self.model_path)
         self.model.max_sequence_length = max_sequence_length
-        super().__init__(self.model, self.batch_size, self.randomize, self.sample_uniquely)
+        super().__init__(
+            self.model, self.batch_size, self.randomize, self.sample_uniquely
+        )
 
     def sample_unique_sequences(self, sampled_sequences: List[Tuple]) -> List[Tuple]:
         """
@@ -86,9 +88,15 @@ class ReinventConditionalGenerator(ReinventBase):
         Returns:
             A list of SampledTuple.
         """
-        sequences = [SampledSequencesDTO(scaffold, decoration, nll) for scaffold, decoration, nll in sampled_sequences]
+        sequences = [
+            SampledSequencesDTO(scaffold, decoration, nll)
+            for scaffold, decoration, nll in sampled_sequences
+        ]
         logger.info("getting unique sample sequences from generated samples")
-        return [(sample.scaffold, sample.decoration, sample.nll) for sample in self._sample_unique_sequences(sequences)]
+        return [
+            (sample.scaffold, sample.decoration, sample.nll)
+            for sample in self._sample_unique_sequences(sequences)
+        ]
 
     def generate_sampled_tuples(self, scaffold: str) -> Set[SampledTuple]:
         """
@@ -103,14 +111,23 @@ class ReinventConditionalGenerator(ReinventBase):
             batch = next(iter(self.get_dataloader([scaffold])))
             logger.info("initialization of the dataloader")
             scaffold_seqs, scaffold_seq_lengths = batch
-            self.scaffold_seqs = scaffold_seqs.expand(self.batch_size - 1, scaffold_seqs.shape[1])
+            self.scaffold_seqs = scaffold_seqs.expand(
+                self.batch_size - 1, scaffold_seqs.shape[1]
+            )
             self.scaffold_seq_lengths = scaffold_seq_lengths.expand(self.batch_size - 1)
         logger.info("started generating samples with an nll score value")
-        sampled_sequences = list(self.model.sample_decorations(self.scaffold_seqs, self.scaffold_seq_lengths))
+        sampled_sequences = list(
+            self.model.sample_decorations(self.scaffold_seqs, self.scaffold_seq_lengths)
+        )
         if self.sample_uniquely:
             sampled_sequences = self.sample_unique_sequences(sampled_sequences)
 
-        return set([SampledTuple(scaffold, decoration, nll) for scaffold, decoration, nll in sampled_sequences])
+        return set(
+            [
+                SampledTuple(scaffold, decoration, nll)
+                for scaffold, decoration, nll in sampled_sequences
+            ]
+        )
 
     def generate_samples(self, scaffold: str) -> Set[str]:
         """
@@ -121,4 +138,6 @@ class ReinventConditionalGenerator(ReinventBase):
         Returns:
             A Set of SMILES representing molecules.
         """
-        return set(molecule for _, molecule, _ in self.generate_sampled_tuples(scaffold))
+        return set(
+            molecule for _, molecule, _ in self.generate_sampled_tuples(scaffold)
+        )

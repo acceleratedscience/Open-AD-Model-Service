@@ -23,7 +23,6 @@
 #
 """Collection of available methods."""
 
-
 import logging
 from dataclasses import dataclass as vanilla_dataclass
 from dataclasses import field, make_dataclass
@@ -178,16 +177,24 @@ class ApplicationsRegistry:
                     (
                         "algorithm_application",  # type: ignore
                         ClassVar[str],
-                        field(default=(as_algorithm_application or configuration_class.__name__)),  # type: ignore
+                        field(
+                            default=(
+                                as_algorithm_application or configuration_class.__name__
+                            )
+                        ),  # type: ignore
                     ),
                 ],  # type: ignore
             )
             # NOTE: Duplicate call necessary for pydantic >=1.10.* - see https://github.com/pydantic/pydantic/issues/4695
             # PydanticConfiguration: Type[AlgorithmConfiguration] = dataclass(VanillaConfiguration)  # type: ignore
-            PydanticConfiguration: Type[AlgorithmConfiguration] = dataclass(VanillaConfiguration)  # type: ignore
+            PydanticConfiguration: Type[AlgorithmConfiguration] = dataclass(
+                VanillaConfiguration
+            )  # type: ignore
             # get missing entries
             missing_in__dict__ = [
-                key for key in configuration_class.__dict__ if key not in PydanticConfiguration.__dict__
+                key
+                for key in configuration_class.__dict__
+                if key not in PydanticConfiguration.__dict__
             ]
 
             update_wrapper(
@@ -342,7 +349,8 @@ class ApplicationsRegistry:
             algorithm_application=algorithm_application,
         )
         parameters = {
-            key: annotation_tuple.default_value for key, annotation_tuple in application_tuple.parameters_dict.items()
+            key: annotation_tuple.default_value
+            for key, annotation_tuple in application_tuple.parameters_dict.items()
         }
         parameters.update(kwargs)
 

@@ -26,6 +26,7 @@ Implementation details for TorchDrug generation algorithms.
 
 Parts of the implementation inspired by: https://torchdrug.ai/docs/tutorials/generation.html.
 """
+
 import logging
 from pathlib import Path
 from typing import List, Optional, Union
@@ -117,7 +118,9 @@ class Generator:
         Returns:
             a generated SMILES string wrapped into a list.
         """
-        results = self.task.generate(num_sample=self.num_sample, max_resample=self.max_resample)
+        results = self.task.generate(
+            num_sample=self.num_sample, max_resample=self.max_resample
+        )
         return results.to_smiles()
 
 
@@ -202,7 +205,9 @@ class GAFGenerator(Generator):
             resources_path=resources_path,
         )
 
-        node_prior = distribution.IndependentGaussian(torch.zeros(self.input_dim), torch.ones(self.input_dim))
+        node_prior = distribution.IndependentGaussian(
+            torch.zeros(self.input_dim), torch.ones(self.input_dim)
+        )
         edge_prior = distribution.IndependentGaussian(
             torch.zeros(self.num_relation + 1), torch.ones(self.num_relation + 1)
         )

@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """TorchDrugGenerationAlgorithm initialization."""
+
 from .core import TorchDrugGCPN, TorchDrugGenerator, TorchDrugGraphAF
 
 __all__ = ["TorchDrugGenerator", "TorchDrugGCPN", "TorchDrugGraphAF"]

@@ -86,7 +86,9 @@ def _extend_graph_order(num_nodes, edge_index, edge_type, order=3):
     adj_order = get_higher_order_adj_matrix(adj, order)  # (N, N)
 
     type_mat = to_dense_adj(edge_index, edge_attr=edge_type).squeeze(0)  # (N, N)
-    type_highorder = torch.where(adj_order > 1, num_types + adj_order - 1, torch.zeros_like(adj_order))
+    type_highorder = torch.where(
+        adj_order > 1, num_types + adj_order - 1, torch.zeros_like(adj_order)
+    )
     assert (type_mat * type_highorder == 0).all()
     type_new = type_mat + type_highorder
 
@@ -94,7 +96,9 @@ def _extend_graph_order(num_nodes, edge_index, edge_type, order=3):
     _, edge_order = dense_to_sparse(adj_order)
 
     # data.bond_edge_index = data.edge_index  # Save original edges
-    new_edge_index, new_edge_type = coalesce(new_edge_index, new_edge_type.long(), N, N)  # modify data
+    new_edge_index, new_edge_type = coalesce(
+        new_edge_index, new_edge_type.long(), N, N
+    )  # modify data
 
     return new_edge_index, new_edge_type
 
@@ -123,20 +127,27 @@ def _extend_to_radius_graph(
         sidechain_index = dummy_index[is_sidechain]
         sidechain_batch = batch[is_sidechain]
 
-        assign_index = radius(x=pos, y=sidechain_pos, r=cutoff, batch_x=batch, batch_y=sidechain_batch)
+        assign_index = radius(
+            x=pos, y=sidechain_pos, r=cutoff, batch_x=batch, batch_y=sidechain_batch
+        )
         r_edge_index_x = assign_index[1]
         r_edge_index_y = assign_index[0]
         r_edge_index_y = sidechain_index[r_edge_index_y]
 
         rgraph_edge_index1 = torch.stack((r_edge_index_x, r_edge_index_y))  # (2, E)
         rgraph_edge_index2 = torch.stack((r_edge_index_y, r_edge_index_x))  # (2, E)
-        rgraph_edge_index = torch.cat((rgraph_edge_index1, rgraph_edge_index2), dim=-1)  # (2, 2E)
+        rgraph_edge_index = torch.cat(
+            (rgraph_edge_index1, rgraph_edge_index2), dim=-1
+        )  # (2, 2E)
         # delete self loop
-        rgraph_edge_index = rgraph_edge_index[:, (rgraph_edge_index[0] != rgraph_edge_index[1])]
+        rgraph_edge_index = rgraph_edge_index[
+            :, (rgraph_edge_index[0] != rgraph_edge_index[1])
+        ]
 
     rgraph_adj = torch.sparse.LongTensor(  # type: ignore
         rgraph_edge_index,
-        torch.ones(rgraph_edge_index.size(1)).long().to(pos.device) * unspecified_type_number,
+        torch.ones(rgraph_edge_index.size(1)).long().to(pos.device)
+        * unspecified_type_number,
         torch.Size([N, N]),
     )
 
@@ -189,9 +200,9 @@ def graph_field_network(score_d, pos, edge_index, edge_length):
     """
     N = pos.size(0)
     dd_dr = (1.0 / edge_length) * (pos[edge_index[0]] - pos[edge_index[1]])  # (E, 3)
-    score_pos = scatter_add(dd_dr * score_d, edge_index[0], dim=0, dim_size=N) + scatter_add(
-        -dd_dr * score_d, edge_index[1], dim=0, dim_size=N
-    )  # (N, 3)
+    score_pos = scatter_add(
+        dd_dr * score_d, edge_index[0], dim=0, dim_size=N
+    ) + scatter_add(-dd_dr * score_d, edge_index[1], dim=0, dim_size=N)  # (N, 3)
     return score_pos
 
 

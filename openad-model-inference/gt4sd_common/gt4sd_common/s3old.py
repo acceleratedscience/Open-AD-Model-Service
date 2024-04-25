@@ -36,7 +36,9 @@ logger.addHandler(logging.NullHandler())
 
 
 class GT4SDS3Client:
-    def __init__(self, host: str, access_key: str, secret_key: str, secure: bool = True) -> None:
+    def __init__(
+        self, host: str, access_key: str, secret_key: str, secure: bool = True
+    ) -> None:
         """
         Construct an S3 client.
 
@@ -81,7 +83,9 @@ class GT4SDS3Client:
         """
         return [
             s3_object.object_name
-            for s3_object in self.client.list_objects(bucket_name=bucket, prefix=prefix, recursive=True)
+            for s3_object in self.client.list_objects(
+                bucket_name=bucket, prefix=prefix, recursive=True
+            )
         ]
 
     def list_directories(self, bucket: str, prefix: Optional[str] = None) -> Set[str]:
@@ -101,11 +105,15 @@ class GT4SDS3Client:
             prefix = prefix + "/" if prefix[-1] != "/" else prefix
         return set(
             s3_object.object_name[len(prefix) if prefix else 0 : -1]
-            for s3_object in self.client.list_objects(bucket_name=bucket, prefix=prefix, recursive=False)
+            for s3_object in self.client.list_objects(
+                bucket_name=bucket, prefix=prefix, recursive=False
+            )
             if s3_object.object_name[-1] == "/"
         )
 
-    def upload_file(self, bucket: str, target_filepath: str, source_filepath: str) -> None:
+    def upload_file(
+        self, bucket: str, target_filepath: str, source_filepath: str
+    ) -> None:
         """Upload a local file to S3 bucket.
 
         Args:
@@ -115,7 +123,9 @@ class GT4SDS3Client:
         """
         self.client.fput_object(bucket, target_filepath, source_filepath)
 
-    def sync_folder(self, bucket: str, path: str, prefix: Optional[str] = None, force: bool = False) -> None:
+    def sync_folder(
+        self, bucket: str, path: str, prefix: Optional[str] = None, force: bool = False
+    ) -> None:
         """Sync an entire folder from S3 recursively and save it under the given path.
 
         If :obj:`prefix` is given, every file under ``prefix/`` in S3 will be saver under ``path/`` in disk (i.e.
@@ -131,16 +141,22 @@ class GT4SDS3Client:
         if not os.path.exists(path):
             logger.warning(f"path {path} does not exist, creating it...")
             os.makedirs(path)
-        s3_objects = self.client.list_objects(bucket_name=bucket, prefix=prefix, recursive=True)
+        s3_objects = self.client.list_objects(
+            bucket_name=bucket, prefix=prefix, recursive=True
+        )
         for s3_object in s3_objects:
             object_name = s3_object.object_name
-            object_name_stripped_prefix = os.path.relpath(object_name, prefix) if prefix else object_name
+            object_name_stripped_prefix = (
+                os.path.relpath(object_name, prefix) if prefix else object_name
+            )
             filepath = os.path.join(path, object_name_stripped_prefix)
             # check for existence
             do_download = not os.path.exists(filepath)
             if do_download or force:
                 logger.info(f"downloading file {object_name} in {filepath}")
-                self.client.fget_object(bucket_name=bucket, object_name=object_name, file_path=filepath)
+                self.client.fget_object(
+                    bucket_name=bucket, object_name=object_name, file_path=filepath
+                )
 
 
 def upload_file_to_s3(
@@ -169,7 +185,9 @@ def upload_file_to_s3(
         S3SyncError: in case of S3 syncing errors.
     """
     try:
-        client = GT4SDS3Client(host=host, access_key=access_key, secret_key=secret_key, secure=secure)
+        client = GT4SDS3Client(
+            host=host, access_key=access_key, secret_key=secret_key, secure=secure
+        )
         logger.info("starting syncing")
         client.upload_file(bucket, target_filepath, source_filepath)
         logger.info("syncing complete")
@@ -208,7 +226,9 @@ def sync_folder_with_s3(
     """
     path = os.path.join(folder_path, prefix) if prefix else folder_path
     try:
-        client = GT4SDS3Client(host=host, access_key=access_key, secret_key=secret_key, secure=secure)
+        client = GT4SDS3Client(
+            host=host, access_key=access_key, secret_key=secret_key, secure=secure
+        )
         logger.info("starting syncing")
         client.sync_folder(bucket=bucket, path=path, prefix=prefix)
         logger.info("syncing complete")

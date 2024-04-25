@@ -117,16 +117,22 @@ class RegressionTransformer(GeneratorAlgorithm[S, T]):
         )
         if implementation.task == "regression" and configuration.search == "greedy":  # type: ignore
             self.max_samples = 1
-            logger.warning("max_samples was set to 1 due to regression task and greedy search")
+            logger.warning(
+                "max_samples was set to 1 due to regression task and greedy search"
+            )
 
         return implementation.generate_batch  # type: ignore
 
-    def validate_configuration(self, configuration: AlgorithmConfiguration[S, T]) -> AlgorithmConfiguration[S, T]:
+    def validate_configuration(
+        self, configuration: AlgorithmConfiguration[S, T]
+    ) -> AlgorithmConfiguration[S, T]:
         @runtime_checkable
         class AnyRegressionTransformerConfiguration(Protocol):
             """Protocol for RegressionTransformer configurations."""
 
-            def get_conditional_generator(self, resources_path: str) -> ConditionalGenerator: ...
+            def get_conditional_generator(
+                self, resources_path: str
+            ) -> ConditionalGenerator: ...
 
             def validate_item(self, item: Any) -> S: ...
 
@@ -188,7 +194,9 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
 
     temperature: float = field(
         default=1.4,
-        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
+        metadata=dict(
+            description="Temperature parameter for the softmax sampling in decoding."
+        ),
     )
     batch_size: int = field(
         default=8,
@@ -257,7 +265,9 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
             "type": "string",
         }
 
-    def get_conditional_generator(self, resources_path: str, context: str) -> ChemicalLanguageRT:
+    def get_conditional_generator(
+        self, resources_path: str, context: str
+    ) -> ChemicalLanguageRT:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -312,10 +322,14 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
         Returns:
             a mapping between artifacts' files and training pipeline's output files.
         """
-        if isinstance(training_pipeline_arguments, RegressionTransformerSavingArguments):
+        if isinstance(
+            training_pipeline_arguments, RegressionTransformerSavingArguments
+        ):
             training_path = os.path.abspath(training_pipeline_arguments.model_path)
             if training_pipeline_arguments.checkpoint_name:
-                model_path = os.path.join(training_path, training_pipeline_arguments.checkpoint_name)
+                model_path = os.path.join(
+                    training_path, training_pipeline_arguments.checkpoint_name
+                )
             else:
                 model_path = training_path
 
@@ -329,7 +343,9 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
             return mapper
 
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
+            return super().get_filepath_mappings_for_training_pipeline_arguments(
+                training_pipeline_arguments
+            )
 
 
 @ApplicationsRegistry.register_algorithm_application(RegressionTransformer)
@@ -373,12 +389,16 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
 
     search: str = field(
         default="sample",
-        metadata=dict(description="Search algorithm to use for the generation: sample or greedy"),
+        metadata=dict(
+            description="Search algorithm to use for the generation: sample or greedy"
+        ),
     )
 
     temperature: float = field(
         default=1.4,
-        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
+        metadata=dict(
+            description="Temperature parameter for the softmax sampling in decoding."
+        ),
     )
     batch_size: int = field(
         default=32,
@@ -429,7 +449,9 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
             "type": "string",
         }
 
-    def get_conditional_generator(self, resources_path: str, context: str) -> ProteinLanguageRT:
+    def get_conditional_generator(
+        self, resources_path: str, context: str
+    ) -> ProteinLanguageRT:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -472,6 +494,8 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
                 detail = f'"{item}" does not adhere to IUPAC convention for AAS'
             else:
                 title = "InvalidNumerical"
-                detail = f'"{item}" is not a valid Sequence with a floating point number'
+                detail = (
+                    f'"{item}" is not a valid Sequence with a floating point number'
+                )
             raise InvalidItem(title=title, detail=detail)
         return item

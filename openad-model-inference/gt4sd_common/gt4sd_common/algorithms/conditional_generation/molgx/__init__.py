@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """MolGX initialization."""
+
 import logging
 
 from .core import MolGX, MolGXQM9Generator

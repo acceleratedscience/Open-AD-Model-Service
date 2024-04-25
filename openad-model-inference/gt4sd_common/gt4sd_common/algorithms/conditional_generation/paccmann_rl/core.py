@@ -114,11 +114,9 @@ class PaccMannRL(GeneratorAlgorithm[S, T]):
 
             def get_conditional_generator(
                 self, resources_path: str
-            ) -> ConditionalGenerator:
-                ...
+            ) -> ConditionalGenerator: ...
 
-            def validate_item(self, item: Any) -> S:
-                ...
+            def validate_item(self, item: Any) -> S: ...
 
         # TODO raise InvalidAlgorithmConfiguration
         assert isinstance(configuration, AnyPaccMannRLConfiguration)

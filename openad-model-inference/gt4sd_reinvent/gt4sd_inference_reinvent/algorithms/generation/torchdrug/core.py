@@ -127,7 +127,6 @@ class TorchDrugGCPN(AlgorithmConfiguration[str, None]):
             a mapping between artifacts' files and training pipeline's output files.
         """
         if isinstance(training_pipeline_arguments, TorchDrugSavingArguments):
-
             task_name = (
                 f"task={training_pipeline_arguments.task}_"
                 if training_pipeline_arguments.task
@@ -187,7 +186,6 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
             a mapping between artifacts' files and training pipeline's output files.
         """
         if isinstance(training_pipeline_arguments, TorchDrugSavingArguments):
-
             task_name = (
                 f"task={training_pipeline_arguments.task}_"
                 if training_pipeline_arguments.task

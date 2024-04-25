@@ -25,7 +25,6 @@
 
 """Transformers pretrained model to SentenceTransformer model converter."""
 
-
 import json
 import logging
 import os
@@ -48,7 +47,9 @@ class TransformersToSentenceTransformersArguments:
         metadata={"help": "HF model name or path."},
     )
     pooling: str = field(
-        metadata={"help": "Comma separated pooling modes. Supported types: cls, max, mean, mean_sqrt."},
+        metadata={
+            "help": "Comma separated pooling modes. Supported types: cls, max, mean, mean_sqrt."
+        },
     )
     output_path: str = field(
         metadata={"help": "Path to the converted model."},
@@ -74,7 +75,9 @@ def main() -> None:
     ).parse_args_into_dataclasses(return_remaining_strings=True)[0]
 
     model_name_or_path = arguments.model_name_or_path
-    pooling = [polling_argument.strip() for polling_argument in arguments.pooling.split(",")]
+    pooling = [
+        polling_argument.strip() for polling_argument in arguments.pooling.split(",")
+    ]
     output_path = arguments.output_path
 
     word_embedding_model = models.Transformer(model_name_or_path)

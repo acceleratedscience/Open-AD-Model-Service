@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """Regression Transformer training implementation."""
+
 import json
 import logging
 import os
@@ -43,7 +44,10 @@ from transformers import (
     LineByLineTextDataset,
     set_seed,
 )
-from gt4sd_inference_regression.training_pipelines.core import TrainingPipeline, TrainingPipelineArguments
+from gt4sd_inference_regression.training_pipelines.core import (
+    TrainingPipeline,
+    TrainingPipelineArguments,
+)
 
 from gt4sd_inference_regression.training_pipelines.regression_transformer.utils import (
     get_hf_training_arg_object,
@@ -97,10 +101,14 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
 
             # Register training_dataset and eval_dataset
             self.train_dataset, self.test_dataset = self.setup_dataset(**params)
-            logger.info(f"# samples: {len(self.train_dataset)}, {len(self.test_dataset)}.")
+            logger.info(
+                f"# samples: {len(self.train_dataset)}, {len(self.test_dataset)}."
+            )
 
             # Model logging
-            num_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+            num_params = sum(
+                p.numel() for p in self.model.parameters() if p.requires_grad
+            )
             typ = type(self.model)
             logger.info(f"# parameters: {num_params}. Model: {typ}")
             if typ != "xlnet":
@@ -137,17 +145,24 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
             # Initialize our Trainer
             train_config = get_train_config_dict(training_args, set(self.properties))
             os.makedirs(params["output_dir"], exist_ok=True)
-            with open(os.path.join(params["output_dir"], "training_config.json"), "w") as f:
+            with open(
+                os.path.join(params["output_dir"], "training_config.json"), "w"
+            ) as f:
                 json.dump(train_config, f, indent="\t")
 
             # Create the inference.json
             inference_dict = {
                 "property_token": self.properties,
                 "example": self.example_sample,
-                "property_ranges": {p.name: [p.minimum, p.maximum] for p in self.property_objects.values()},
+                "property_ranges": {
+                    p.name: [p.minimum, p.maximum]
+                    for p in self.property_objects.values()
+                },
                 "normalize": [False] * len(self.properties),  # True not supported atm
                 "max_span_length": training_args["max_span_length"],
-                "property_mask_length": {p.name: p.mask_length for p in self.property_objects.values()},
+                "property_mask_length": {
+                    p.name: p.mask_length for p in self.property_objects.values()
+                },
             }
             with open(os.path.join(params["output_dir"], "inference.json"), "w") as f:
                 json.dump(inference_dict, f, indent="\t")
@@ -171,7 +186,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
             trainer.save_model()  # type: ignore
 
         except Exception:
-            logger.exception("Exception occurred while running RegressionTransformerTrainingPipeline.")
+            logger.exception(
+                "Exception occurred while running RegressionTransformerTrainingPipeline."
+            )
 
     def setup_model(self, params: Dict[str, Any]):
         """
@@ -190,7 +207,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
                 "file to --test_data_path or remove the --do_eval argument."
             )
         if params["output_dir"] is None:
-            raise ValueError("You have to specify an output directory for the trained model")
+            raise ValueError(
+                "You have to specify an output directory for the trained model"
+            )
         if (
             os.path.exists(params["output_dir"])
             and os.listdir(params["output_dir"])
@@ -212,7 +231,8 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
 
         if params["model_path"] is None and params["model_type"] is None:
             raise ValueError(
-                "Either pass pretrained model via `model_path` or specify" "which model to use via `model_typ`."
+                "Either pass pretrained model via `model_path` or specify"
+                "which model to use via `model_typ`."
             )
         if params["model_path"]:
             config = AutoConfig.from_pretrained(
@@ -241,7 +261,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
         else:
             config = CONFIG_MAPPING[params["model_type"]]()
             self.model_params = config.__dict__
-            logger.warning(f"Instantiating a new config instance: {params['model_type']}.")
+            logger.warning(
+                f"Instantiating a new config instance: {params['model_type']}."
+            )
 
         # Load tokenizer
         if params["model_path"]:
@@ -254,7 +276,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
                 params["tokenizer_name"], cache_dir=params["cache_dir"]
             )
         else:
-            raise ValueError(f"No support for creating new tokenizer for: {params['model_type']}.")
+            raise ValueError(
+                f"No support for creating new tokenizer for: {params['model_type']}."
+            )
 
         if not params["model_path"]:
             logger.info("Training new model from scratch")
@@ -297,7 +321,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
 
         train_dataset = self.create_dataset_from_list(
             train_data,
-            save_path=train_data_path.replace(".csv", ".txt") if save_datasets else None,
+            save_path=train_data_path.replace(".csv", ".txt")
+            if save_datasets
+            else None,
         )
         test_dataset = self.create_dataset_from_list(
             test_data,
@@ -306,7 +332,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
         logger.info("Finished data setup.")
         return train_dataset, test_dataset
 
-    def create_dataset_from_list(self, data: List[str], save_path: Optional[str] = None) -> LineByLineTextDataset:
+    def create_dataset_from_list(
+        self, data: List[str], save_path: Optional[str] = None
+    ) -> LineByLineTextDataset:
         """
         Creates a LineByLineTextDataset from a List of strings.
 
@@ -327,7 +355,9 @@ class RegressionTransformerTrainingPipeline(TrainingPipeline):
                     f.write(line + "\n")
 
             # Create dataset
-            dataset = LineByLineTextDataset(file_path=f_name, tokenizer=self.tokenizer, block_size=2**64)
+            dataset = LineByLineTextDataset(
+                file_path=f_name, tokenizer=self.tokenizer, block_size=2**64
+            )
             if save_path:
                 shutil.copyfile(f_name, save_path)
         return dataset
@@ -353,7 +383,9 @@ class RegressionTransformerModelArguments(TrainingPipelineArguments):
     )
     config_name: Optional[str] = field(
         default=None,
-        metadata={"help": "Pretrained config name or path. But `model_path` takes preference."},
+        metadata={
+            "help": "Pretrained config name or path. But `model_path` takes preference."
+        },
     )
     model_type: Optional[str] = field(
         default="xlnet",
@@ -365,5 +397,7 @@ class RegressionTransformerModelArguments(TrainingPipelineArguments):
     )
     cache_dir: Optional[str] = field(
         default=None,
-        metadata={"help": "Where do you want to store the pretrained models downloaded from s3"},
+        metadata={
+            "help": "Where do you want to store the pretrained models downloaded from s3"
+        },
     )

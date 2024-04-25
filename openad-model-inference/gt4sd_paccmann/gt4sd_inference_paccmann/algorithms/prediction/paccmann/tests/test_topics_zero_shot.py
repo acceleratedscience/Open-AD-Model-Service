@@ -28,7 +28,10 @@ from typing import ClassVar, Type
 import pytest
 
 from gt4sd_common.algorithms.core import AlgorithmConfiguration
-from gt4sd_inference_paccmann.algorithms.prediction.topics_zero_shot import TopicsPredictor, TopicsZeroShot
+from gt4sd_inference_paccmann.algorithms.prediction.topics_zero_shot import (
+    TopicsPredictor,
+    TopicsZeroShot,
+)
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
 
 
@@ -110,7 +113,9 @@ def test_generation_via_import(config, target, algorithm):
         ),
     ],
 )
-def test_generation_via_registry(algorithm_type, target, domain, algorithm_name, algorithm_application):
+def test_generation_via_registry(
+    algorithm_type, target, domain, algorithm_name, algorithm_application
+):
     algorithm = ApplicationsRegistry.get_application_instance(
         target=target,
         algorithm_type=algorithm_type,

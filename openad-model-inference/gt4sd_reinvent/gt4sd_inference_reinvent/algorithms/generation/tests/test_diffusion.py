@@ -266,7 +266,6 @@ def test_generation_via_registry(
     ],
 )
 def test_geodiff_conditional_generation_via_import(config, algorithm):
-
     with importlib_resources.as_file(
         importlib_resources.files("gt4sd") / "algorithms/generation/tests/mol_dct.pkl"
     ) as path:

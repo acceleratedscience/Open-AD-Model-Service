@@ -35,7 +35,9 @@ import torch_geometric.data as gd
 from torch import Tensor
 from torch.utils.data import Dataset
 
-from gt4sd_common.frameworks.gflownet.envs.graph_building_env import GraphActionCategorical
+from gt4sd_common.frameworks.gflownet.envs.graph_building_env import (
+    GraphActionCategorical,
+)
 from gt4sd_common.frameworks.gflownet.util import MPModelPlaceholder, wrap_model_mp
 
 # This type represents an unprocessed list of reward signals/conditioning information
@@ -49,7 +51,9 @@ RewardScalar = NewType("RewardScalar", torch.tensor)  # type: ignore
 class GFlowNetDataset(Dataset):
     """A dataset for gflownet."""
 
-    def __init__(self, h5_file: str = None, target: str = "gap", properties: List[str] = []) -> None:
+    def __init__(
+        self, h5_file: str = None, target: str = "gap", properties: List[str] = []
+    ) -> None:
         """Initialize a gflownet dataset.
         If the dataset is in a format compatible with h5 file, we can directly load it.
         If the dataset is in a format compatible with xyz file, we have to convert it to h5 file.
@@ -145,7 +149,9 @@ class GFlowNetDataset(Dataset):
             try:
                 path = os.path.join(xyz_path, file)
                 atoms, coordinates, smile, prop = GFlowNetDataset._read_xyz(path)
-                data.append((atoms, coordinates))  # A tuple with the atoms and its coordinates
+                data.append(
+                    (atoms, coordinates)
+                )  # A tuple with the atoms and its coordinates
                 smiles.append(smile)  # The SMILES representation
                 properties.append(prop)  # The molecules properties
             except ValueError:
@@ -266,7 +272,9 @@ class GFlowNetTask:
         self.temperature_sample_dist = hps["temperature_sample_dist"]
         self.temperature_dist_params = ast.literal_eval(hps["temperature_dist_params"])
 
-        self._min, self._max, self._percentile_95 = self.dataset.get_stats(percentile=0.05)  # type: ignore
+        self._min, self._max, self._percentile_95 = self.dataset.get_stats(
+            percentile=0.05
+        )  # type: ignore
         self._width = self._max - self._min
         self._rtrans = "unit+95p"
 
@@ -289,7 +297,9 @@ class GFlowNetTask:
         """
         pass
 
-    def cond_info_to_reward(self, cond_info: Dict[str, Any], flat_reward: FlatRewards) -> RewardScalar:
+    def cond_info_to_reward(
+        self, cond_info: Dict[str, Any], flat_reward: FlatRewards
+    ) -> RewardScalar:
         """Combines a minibatch of reward signal vectors and conditional information into a scalar reward.
 
         Args:
@@ -327,6 +337,8 @@ class GFlowNetTask:
             model: a nn.Module instance.
         """
         if self.num_workers > 0:
-            placeholder = wrap_model_mp(model, self.num_workers, cast_types=(gd.Batch, GraphActionCategorical))
+            placeholder = wrap_model_mp(
+                model, self.num_workers, cast_types=(gd.Batch, GraphActionCategorical)
+            )
             return placeholder
         return model

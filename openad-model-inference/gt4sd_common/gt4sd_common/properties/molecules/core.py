@@ -56,7 +56,7 @@ try:
         PropertyPredictionDataModule,
     )
     from gt4sd_molformer.finetune.ft_tokenizer.ft_tokenizer import MolTranBertTokenizer
-except:
+except:  # noqa: E722
     pass
 try:
     from paccmann_generator.drug_evaluators import SIDER
@@ -174,7 +174,6 @@ class AskcosParameters(IpAdressParameters):
 
 
 class MoleculeOneParameters(ApiTokenParameters):
-
     oracle_name: str = "Molecule One Synthesis"
 
 
@@ -191,8 +190,12 @@ class DockingTdcParameters(PropertyPredictorParameters):
 class DockingParameters(PropertyPredictorParameters):
     # To dock against a user-provided receptor
     name: str = Field(default="pyscreener")
-    receptor_pdb_file: str = Field(example="/tmp/2hbs.pdb", description="Path to receptor PDB file")
-    box_center: List[int] = Field(example=[15.190, 53.903, 16.917], description="Docking box center")
+    receptor_pdb_file: str = Field(
+        example="/tmp/2hbs.pdb", description="Path to receptor PDB file"
+    )
+    box_center: List[int] = Field(
+        example=[15.190, 53.903, 16.917], description="Docking box center"
+    )
     box_size: List[float] = Field(example=[20, 20, 20], description="Docking box size")
 
 
@@ -204,7 +207,9 @@ class MolformerParameters(S3ParametersMolecules):
     algorithm_name: str = "molformer"
     batch_size: int = Field(description="Prediction batch size", default=128)
     workers: int = Field(description="Number of data loading workers", default=8)
-    device: Optional[str] = Field(description="Device to be used for inference", default=None)
+    device: Optional[str] = Field(
+        description="Device to be used for inference", default=None
+    )
 
 
 class MolformerClassificationParameters(MolformerParameters):
@@ -282,7 +287,6 @@ class _Molformer(PredictorAlgorithm):
     """Base class for all Molformer predictive algorithms."""
 
     def __init__(self, parameters: MolformerParameters):
-
         # Set up the configuration from the parameters
         configuration = ConfigurablePropertyAlgorithmConfiguration(
             algorithm_type=parameters.algorithm_type,
@@ -295,7 +299,9 @@ class _Molformer(PredictorAlgorithm):
         self.batch_size = parameters.batch_size
         self.workers = parameters.workers
 
-        self.tokenizer_path = importlib_resources.files("gt4sd_molformer") / "finetune/bert_vocab.txt"
+        self.tokenizer_path = (
+            importlib_resources.files("gt4sd_molformer") / "finetune/bert_vocab.txt"
+        )
 
         self.device = device_claim(parameters.device)
 
@@ -303,7 +309,6 @@ class _Molformer(PredictorAlgorithm):
         super().__init__(configuration=configuration)
 
     def get_resources_path_and_config(self, resources_path: str):
-
         model_path = os.path.join(resources_path, "model.ckpt")
         config_path = os.path.join(resources_path, "hparams.yaml")
 
@@ -345,7 +350,6 @@ class MolformerClassification(_Molformer):
 
         # Wrapper to get the predictions
         def informative_model(samples: Union[str, List[str]]) -> List[float]:
-
             if isinstance(samples, str):
                 samples = [samples]
 
@@ -402,7 +406,6 @@ class MolformerMultitaskClassification(_Molformer):
 
         # Wrapper to get the predictions
         def informative_model(samples: Union[str, List[str]]) -> List[str]:
-
             if isinstance(samples, str):
                 samples = [samples]
 
@@ -414,7 +417,6 @@ class MolformerMultitaskClassification(_Molformer):
 
             preds = []
             for batch in datamodule.test_dataloader():
-
                 with torch.no_grad():
                     batch = [x.to(self.device) for x in batch]
                     batch_output = model.testing_step(batch, 0, 0)
@@ -460,7 +462,6 @@ class MolformerRegression(_Molformer):
 
         # Wrapper to get the predictions
         def informative_model(samples: Union[str, List[str]]) -> List[float]:
-
             if isinstance(samples, str):
                 samples = [samples]
 
@@ -489,7 +490,9 @@ class Plogp(CallablePropertyPredictor):
     rings with > 6 atoms minus the SAS.
     """
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=plogp, parameters=parameters)
 
 
@@ -498,133 +501,173 @@ class Lipinski(CallablePropertyPredictor):
     A crude approximation of druglikeness.
     """
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=lipinski, parameters=parameters)
 
 
 class Esol(CallablePropertyPredictor):
     """Estimate the water solubility of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=esol, parameters=parameters)
 
 
 class Scscore(CallablePropertyPredictor):
     """Calculate the synthetic complexity score (SCScore) of a molecule."""
 
-    def __init__(self, parameters: ScscoreConfiguration = ScscoreConfiguration()) -> None:
-        super().__init__(callable_fn=SCScore(**parameters.dict()), parameters=parameters)
+    def __init__(
+        self, parameters: ScscoreConfiguration = ScscoreConfiguration()
+    ) -> None:
+        super().__init__(
+            callable_fn=SCScore(**parameters.dict()), parameters=parameters
+        )
 
 
 class Sas(CallablePropertyPredictor):
     """Calculate the synthetic accessibility score (SAS) for a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=sas, parameters=parameters)
 
 
 class Bertz(CallablePropertyPredictor):
     """Calculate Bertz index of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=bertz, parameters=parameters)
 
 
 class Tpsa(CallablePropertyPredictor):
     """Calculate the total polar surface area of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=tpsa, parameters=parameters)
 
 
 class Logp(CallablePropertyPredictor):
     """Calculates the partition coefficient of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=logp, parameters=parameters)
 
 
 class Qed(CallablePropertyPredictor):
     """Calculate the quantitative estimate of drug-likeness (QED) of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=qed, parameters=parameters)
 
 
 class NumberHAcceptors(CallablePropertyPredictor):
     """Calculate number of H acceptors of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_h_acceptors, parameters=parameters)
 
 
 class NumberAtoms(CallablePropertyPredictor):
     """Calculate number of atoms of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_atoms, parameters=parameters)
 
 
 class NumberHDonors(CallablePropertyPredictor):
     """Calculate number of H donors of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_h_donors, parameters=parameters)
 
 
 class NumberAromaticRings(CallablePropertyPredictor):
     """Calculate number of aromatic rings of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_aromatic_rings, parameters=parameters)
 
 
 class NumberRings(CallablePropertyPredictor):
     """Calculate number of rings of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_rings, parameters=parameters)
 
 
 class NumberRotatableBonds(CallablePropertyPredictor):
     """Calculate number of rotatable bonds of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_rotatable_bonds, parameters=parameters)
 
 
 class NumberLargeRings(CallablePropertyPredictor):
     """Calculate the amount of large rings (> 6 atoms) of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_large_rings, parameters=parameters)
 
 
 class MolecularWeight(CallablePropertyPredictor):
     """Calculate molecular weight of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=molecular_weight, parameters=parameters)
 
 
 class IsScaffold(CallablePropertyPredictor):
     """Whether a molecule is identical to its Murcko Scaffold."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=is_scaffold, parameters=parameters)
 
 
 class NumberHeterocycles(CallablePropertyPredictor):
     """The amount of heterocycles of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_heterocycles, parameters=parameters)
 
 
 class NumberStereocenters(CallablePropertyPredictor):
     """The amount of stereo centers of a molecule."""
 
-    def __init__(self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()) -> None:
+    def __init__(
+        self, parameters: PropertyPredictorParameters = PropertyPredictorParameters()
+    ) -> None:
         super().__init__(callable_fn=number_of_stereocenters, parameters=parameters)
 
 
@@ -633,7 +676,9 @@ class SimilaritySeed(CallablePropertyPredictor):
 
     def __init__(self, parameters: SimilaritySeedParameters) -> None:
         super().__init__(
-            callable_fn=get_similarity_fn(target_mol=parameters.smiles, fp_key=parameters.fp_key),
+            callable_fn=get_similarity_fn(
+                target_mol=parameters.smiles, fp_key=parameters.fp_key
+            ),
             parameters=parameters,
         )
 
@@ -642,7 +687,9 @@ class ActivityAgainstTarget(CallablePropertyPredictor):
     """Calculate the activity of a molecule against a target molecule."""
 
     def __init__(self, parameters: ActivityAgainstTargetParameters) -> None:
-        super().__init__(callable_fn=get_activity_fn(target=parameters.target), parameters=parameters)
+        super().__init__(
+            callable_fn=get_activity_fn(target=parameters.target), parameters=parameters
+        )
 
 
 class Askcos(ConfigurableCallablePropertyPredictor):
@@ -652,7 +699,6 @@ class Askcos(ConfigurableCallablePropertyPredictor):
     """
 
     def __init__(self, parameters: AskcosParameters):
-
         # Raises if IP is not valid
         msg = (
             "You have to point to an IP address of a running ASKCOS instance. "
@@ -682,7 +728,6 @@ class MoleculeOne(CallablePropertyPredictor):
     """
 
     def __init__(self, parameters: MoleculeOneParameters):
-
         msg = (
             "You have to provide a valid API key, for details on setting this up, see: "
             "https://tdcommons.ai/functions/oracles/#moleculeone"
@@ -692,7 +737,9 @@ class MoleculeOne(CallablePropertyPredictor):
         validate_api_token(parameters, message=msg)
 
         super().__init__(
-            callable_fn=Oracle(name=parameters.oracle_name, api_token=parameters.api_token),
+            callable_fn=Oracle(
+                name=parameters.oracle_name, api_token=parameters.api_token
+            ),
             parameters=parameters,
         )
 
@@ -704,7 +751,6 @@ class DockingTdc(ConfigurableCallablePropertyPredictor):
     """
 
     def __init__(self, parameters: DockingTdcParameters):
-
         docking_import_check()
         callable = Oracle(name=parameters.target)
         super().__init__(callable_fn=callable, parameters=parameters)
@@ -717,7 +763,6 @@ class Docking(ConfigurableCallablePropertyPredictor):
     """
 
     def __init__(self, parameters: DockingParameters):
-
         docking_import_check()
         callable = Oracle(
             name=parameters.name,
@@ -732,7 +777,6 @@ class _MCA(PredictorAlgorithm):
     """Base class for all MCA-based predictive algorithms."""
 
     def __init__(self, parameters: MCAParameters):
-
         # Set up the configuration from the parameters
         configuration = ConfigurablePropertyAlgorithmConfiguration(
             algorithm_type=parameters.algorithm_type,
@@ -848,7 +892,6 @@ class OrganTox(_MCA):
     """Model to predict toxicity for different organs."""
 
     def __init__(self, parameters: OrganToxParameters) -> None:
-
         # Extract model-specific parameters
         self.site = parameters.site
         self.toxicity_type = parameters.toxicity_type
@@ -865,7 +908,9 @@ class OrganTox(_MCA):
             Predictor: the model.
         """
         # This model returns a singular reward and not a prediction for both classes.
-        model = _OrganTox(model_path=resources_path, site=self.site, toxicity_type=self.toxicity_type)
+        model = _OrganTox(
+            model_path=resources_path, site=self.site, toxicity_type=self.toxicity_type
+        )
 
         # Wrapper to get toxicity-endpoint-level predictions
         def informative_model(x: SmallMolecule) -> List[PropertyValue]:

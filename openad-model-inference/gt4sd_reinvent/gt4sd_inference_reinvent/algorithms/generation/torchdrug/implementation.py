@@ -26,6 +26,7 @@ Implementation details for TorchDrug generation algorithms.
 
 Parts of the implementation inspired by: https://torchdrug.ai/docs/tutorials/generation.html.
 """
+
 import logging
 from pathlib import Path
 from typing import List, Optional, Union

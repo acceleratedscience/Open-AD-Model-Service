@@ -33,8 +33,14 @@ import pandas as pd
 import pytorch_lightning as pl
 import torch
 
-from gt4sd_common.frameworks.granular.ml.models import GranularBaseModel, GranularEncoderDecoderModel
-from gt4sd_common.frameworks.granular.ml.models.model_builder import building_models, define_latent_models_input_size
+from gt4sd_common.frameworks.granular.ml.models import (
+    GranularBaseModel,
+    GranularEncoderDecoderModel,
+)
+from gt4sd_common.frameworks.granular.ml.models.model_builder import (
+    building_models,
+    define_latent_models_input_size,
+)
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
@@ -118,7 +124,10 @@ class GranularModule(pl.LightningModule):
             a tuple containing the latent step ouput, the loss and the logs for the module.
         """
         z_model_input = torch.cat(
-            [torch.squeeze(z[pos]) if len(z[pos].size()) == 3 else z[pos] for pos in model.from_position],
+            [
+                torch.squeeze(z[pos]) if len(z[pos].size()) == 3 else z[pos]
+                for pos in model.from_position
+            ],
             dim=1,
         )
         return model_step_fn(
@@ -153,12 +162,16 @@ class GranularModule(pl.LightningModule):
             loss += loss_model
 
         for model in self.latent_models:
-            _, loss_model, logs_model = self._latent_step(batch=batch, model=model, model_step_fn=model.step, z=z)
+            _, loss_model, logs_model = self._latent_step(
+                batch=batch, model=model, model_step_fn=model.step, z=z
+            )
             logs.update({model.name + f"/{k}": v for k, v in logs_model.items()})
             loss += loss_model
 
         logs.update({"total_loss": loss})
-        self.log_dict({f"train/{k}": v for k, v in logs.items()}, on_epoch=False, prog_bar=False)
+        self.log_dict(
+            {f"train/{k}": v for k, v in logs.items()}, on_epoch=False, prog_bar=False
+        )
         logs_epoch = {f"train_epoch/{k}": v for k, v in logs.items()}
         logs_epoch["step"] = self.current_epoch
         self.log_dict(logs_epoch, on_step=False, on_epoch=True, prog_bar=False)
@@ -190,12 +203,16 @@ class GranularModule(pl.LightningModule):
             loss += loss_model
 
         for model in self.latent_models:
-            _, loss_model, logs_model = self._latent_step(batch=batch, model=model, model_step_fn=model.val_step, z=z)
+            _, loss_model, logs_model = self._latent_step(
+                batch=batch, model=model, model_step_fn=model.val_step, z=z
+            )
             logs.update({model.name + f"/{k}": v for k, v in logs_model.items()})
             loss += loss_model
 
         logs.update({"total_loss": loss})
-        self.log_dict({f"val/{k}": v for k, v in logs.items()}, on_epoch=True, prog_bar=True)
+        self.log_dict(
+            {f"val/{k}": v for k, v in logs.items()}, on_epoch=True, prog_bar=True
+        )
 
         return {"loss": loss, "logs": logs}
 
@@ -225,12 +242,16 @@ class GranularModule(pl.LightningModule):
             loss += loss_model
 
         for model in self.latent_models:
-            _, loss_model, logs_model = self._latent_step(batch=batch, model=model, model_step_fn=model.val_step, z=z)
+            _, loss_model, logs_model = self._latent_step(
+                batch=batch, model=model, model_step_fn=model.val_step, z=z
+            )
             logs.update({model.name + f"/{k}": v for k, v in logs_model.items()})
             loss += loss_model
 
         logs.update({"total_loss": loss})
-        self.log_dict({f"val/{k}": v for k, v in logs.items()}, on_epoch=True, prog_bar=True)
+        self.log_dict(
+            {f"val/{k}": v for k, v in logs.items()}, on_epoch=True, prog_bar=True
+        )
         return {"loss": loss, "logs": logs, "z": z}
 
     def test_epoch_end(self, outputs: List[Dict[str, Any]]) -> None:  # type:ignore
@@ -247,7 +268,12 @@ class GranularModule(pl.LightningModule):
         targets_keys = [key for key in outputs[0]["targets"]]
         for key in z_keys:
             z[key] = (
-                torch.cat([torch.squeeze(an_output["z"][key]) for an_output in outputs], dim=0).detach().cpu().numpy()
+                torch.cat(
+                    [torch.squeeze(an_output["z"][key]) for an_output in outputs], dim=0
+                )
+                .detach()
+                .cpu()
+                .numpy()
             )
 
         for key in targets_keys:

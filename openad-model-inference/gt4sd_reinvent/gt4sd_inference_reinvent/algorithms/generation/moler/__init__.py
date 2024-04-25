@@ -22,6 +22,7 @@
 # SOFTWARE.
 #
 """MoLeR initialization."""
+
 import logging
 
 from .core import MoLeR, MoLeRDefaultGenerator

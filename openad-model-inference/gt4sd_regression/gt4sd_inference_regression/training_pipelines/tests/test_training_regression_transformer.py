@@ -95,8 +95,9 @@ xlnet_config = {
 }
 
 
-def combine_defaults_and_user_args(config: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-
+def combine_defaults_and_user_args(
+    config: Dict[str, Dict[str, Any]],
+) -> Dict[str, Dict[str, Any]]:
     arguments = TRAINING_PIPELINE_ARGUMENTS_MAPPING["regression-transformer-trainer"]
     """
     We need `conflict_handler='resolve'` because the RT relies on the TrainingArguments
@@ -143,7 +144,6 @@ def combine_defaults_and_user_args(config: Dict[str, Dict[str, Any]]) -> Dict[st
 
 
 def test_train():
-
     pipeline = TRAINING_PIPELINE_MAPPING.get("regression-transformer-trainer")
     assert pipeline is not None
 
@@ -156,9 +156,9 @@ def test_train():
     config: Dict[str, Any] = template_config.copy()
     config["training_args"]["output_dir"] = TEMPORARY_DIRECTORY
     with importlib_resources.as_file(
-        importlib_resources.files("gt4sd") / "training_pipelines/tests/regression_transformer_raw.csv"
+        importlib_resources.files("gt4sd")
+        / "training_pipelines/tests/regression_transformer_raw.csv"
     ) as raw_path:
-
         # Test finetuning the QED model
         config["model_args"]["model_path"] = mol_path
         config["dataset_args"]["train_data_path"] = str(raw_path)
@@ -194,11 +194,13 @@ def test_train():
             test_pipeline.train(**input_config)
 
     with importlib_resources.as_file(
-        importlib_resources.files("gt4sd") / "training_pipelines/tests/regression_transformer_copolymer_raw.csv"
+        importlib_resources.files("gt4sd")
+        / "training_pipelines/tests/regression_transformer_copolymer_raw.csv"
     ) as raw_path:
-
         # Test finetuning the polymer model
-        polymer_model = RegressionTransformerMolecules(algorithm_version="block_copolymer")
+        polymer_model = RegressionTransformerMolecules(
+            algorithm_version="block_copolymer"
+        )
         polymer_path = polymer_model.ensure_artifacts_for_version("block_copolymer")
 
         config["model_args"]["model_path"] = polymer_path

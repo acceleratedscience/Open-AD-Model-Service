@@ -70,7 +70,9 @@ class Generator:
         Returns:
             the generated molecules.
         """
-        raise NotImplementedError("Implementation not found for generation of molecules.")
+        raise NotImplementedError(
+            "Implementation not found for generation of molecules."
+        )
 
 
 class SMILESGAIterator(Generator):
@@ -140,7 +142,9 @@ class SMILESGAIterator(Generator):
             self.chemGenerator = optimiser.get_generator()
 
         logger.info("generating molecules")
-        molecules = self.chemGenerator.generate_optimized_molecules(self.scoring_function, self.batch_size)
+        molecules = self.chemGenerator.generate_optimized_molecules(
+            self.scoring_function, self.batch_size
+        )
         return molecules
 
 
@@ -211,7 +215,9 @@ class GraphGAIterator(Generator):
             self.gb_ga_generator = optimiser.get_generator()
 
         logger.info("generating molecules")
-        molecules = self.gb_ga_generator.generate_optimized_molecules(self.scoring_function, self.batch_size)
+        molecules = self.gb_ga_generator.generate_optimized_molecules(
+            self.scoring_function, self.batch_size
+        )
         return molecules
 
 
@@ -282,7 +288,9 @@ class GraphMCTSIterator(Generator):
             self.grah_mcts_generator = optimiser.get_generator()
 
         logger.info("generating molecules")
-        molecules = self.grah_mcts_generator.generate_optimized_molecules(self.scoring_function, self.batch_size)
+        molecules = self.grah_mcts_generator.generate_optimized_molecules(
+            self.scoring_function, self.batch_size
+        )
         return molecules
 
 
@@ -362,7 +370,9 @@ class SMILESLSTMHCIterator(Generator):
             self.smiles_lstm_hc_generator = optimiser.get_generator()
 
         logger.info("generating molecules")
-        molecules = self.smiles_lstm_hc_generator.generate_optimized_molecules(self.scoring_function, self.batch_size)
+        molecules = self.smiles_lstm_hc_generator.generate_optimized_molecules(
+            self.scoring_function, self.batch_size
+        )
         return molecules
 
 
@@ -429,7 +439,9 @@ class SMILESLSTMPPOIterator(Generator):
             self.smiles_lstm_ppo_generator = optimiser.get_generator()
 
         logger.info("generating molecules")
-        molecules = self.smiles_lstm_ppo_generator.generate_optimized_molecules(self.scoring_function, self.batch_size)
+        molecules = self.smiles_lstm_ppo_generator.generate_optimized_molecules(
+            self.scoring_function, self.batch_size
+        )
         return molecules
 
 

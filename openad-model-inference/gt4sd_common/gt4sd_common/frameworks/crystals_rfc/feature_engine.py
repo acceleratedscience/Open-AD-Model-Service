@@ -28,7 +28,8 @@ class Features:
         """
         self.formula_file = formula_file
         self.atomic_data_file = pkg_resources.resource_filename(  # type: ignore
-            "gt4sd_common", os.path.join("frameworks", "crystals_rfc", "atomic_data.csv")
+            "gt4sd_common",
+            os.path.join("frameworks", "crystals_rfc", "atomic_data.csv"),
         )
 
     def make_features(
@@ -60,7 +61,6 @@ class Features:
 
         all_feature_list = []
         for indx0, formula in enumerate(formula_list):
-
             feature_list = []
             atom_symbols = list(atomic_descriptors[0].keys())
 
@@ -157,7 +157,9 @@ class Features:
         elif len(df_mat.columns) == 2:
             sym_list = [x[1] for x in df_mat.values.tolist()]
         else:
-            raise ValueError("The provided csv file should contain two or three columns.")
+            raise ValueError(
+                "The provided csv file should contain two or three columns."
+            )
 
         encoded_sym = []
         for sym in sym_list:
@@ -192,7 +194,9 @@ class Features:
         elif len(df_mat.columns) == 2:
             targets = [0 for _ in df_mat.values.tolist()]
         else:
-            raise ValueError("The provided csv file should contain two or three columns.")
+            raise ValueError(
+                "The provided csv file should contain two or three columns."
+            )
 
         return targets
 

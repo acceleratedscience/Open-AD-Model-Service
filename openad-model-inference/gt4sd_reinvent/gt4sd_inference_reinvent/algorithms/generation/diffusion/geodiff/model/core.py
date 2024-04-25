@@ -176,7 +176,8 @@ class MoleculeGNN(ModelMixin, ConfigMixin):
         # with the parameterization of NCSNv2
         # DDPM loss implicit handle the noise variance scale conditioning
         sigma_edge = torch.ones(
-            size=(edge_index.size(1), 1), device=pos.device  # type: ignore
+            size=(edge_index.size(1), 1),
+            device=pos.device,  # type: ignore
         )  # (E, 1)
 
         # Encoding global

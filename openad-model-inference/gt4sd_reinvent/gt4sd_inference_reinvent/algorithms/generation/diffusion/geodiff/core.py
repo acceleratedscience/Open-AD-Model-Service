@@ -221,7 +221,6 @@ class GeoDiffPipeline:
         mols_gen = []
         mols_orig = []
         for to_process in results:
-
             # store the reference 3d position
             to_process["pos_ref"] = to_process["pos_ref"].reshape(
                 -1, to_process["rdmol"].GetNumAtoms(), 3

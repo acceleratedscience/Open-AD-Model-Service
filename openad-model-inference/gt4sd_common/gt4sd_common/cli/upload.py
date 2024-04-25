@@ -24,8 +24,8 @@
 #
 
 """Run model upload for the GT4SD.
-   Two steps procedure: check if the folder/model name is already in the database.
-   If not, upload it.
+Two steps procedure: check if the folder/model name is already in the database.
+If not, upload it.
 """
 
 import logging
@@ -47,7 +47,9 @@ from .argument_parser import ArgumentParser, DataClassType
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_TRAINING_PIPELINES = sorted(TRAINING_PIPELINE_ARGUMENTS_FOR_MODEL_SAVING.keys())
+SUPPORTED_TRAINING_PIPELINES = sorted(
+    TRAINING_PIPELINE_ARGUMENTS_FOR_MODEL_SAVING.keys()
+)
 
 
 @dataclass
@@ -57,7 +59,9 @@ class SavingArguments:
     __name__ = "saving_base_args"
 
     training_pipeline_name: str = field(
-        metadata={"help": f"Training pipeline name, supported pipelines: {', '.join(SUPPORTED_TRAINING_PIPELINES)}."},
+        metadata={
+            "help": f"Training pipeline name, supported pipelines: {', '.join(SUPPORTED_TRAINING_PIPELINES)}."
+        },
     )
     target_version: str = field(
         metadata={"help": "Target algorithm version to save."},
@@ -99,11 +103,15 @@ class SavingArgumentParser(ArgumentParser):
         """
         try:
             help_args_set = {"-h", "--help"}
-            if len(set(sys.argv).union(help_args_set)) < len(help_args_set) + 2:  # considering filename
+            if (
+                len(set(sys.argv).union(help_args_set)) < len(help_args_set) + 2
+            ):  # considering filename
                 super().print_help()
                 return
             args = [arg for arg in sys.argv if arg not in help_args_set]
-            parsed_arguments = super().parse_args_into_dataclasses(args=args, return_remaining_strings=True)
+            parsed_arguments = super().parse_args_into_dataclasses(
+                args=args, return_remaining_strings=True
+            )
             trainer_arguments = None
             for arguments in parsed_arguments:
                 if arguments.__name__ == "trainer_base_args":
@@ -111,9 +119,11 @@ class SavingArgumentParser(ArgumentParser):
                     break
             if trainer_arguments:
                 trainer_arguments.training_pipeline_name
-                training_pipeline_arguments = TRAINING_PIPELINE_ARGUMENTS_FOR_MODEL_SAVING.get(
-                    trainer_arguments.training_pipeline_name,
-                    TrainingPipelineArguments,
+                training_pipeline_arguments = (
+                    TRAINING_PIPELINE_ARGUMENTS_FOR_MODEL_SAVING.get(
+                        trainer_arguments.training_pipeline_name,
+                        TrainingPipelineArguments,
+                    )
                 )
                 parser = ArgumentParser(
                     tuple(
@@ -134,9 +144,9 @@ def main() -> None:
     """
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-    base_args = SavingArgumentParser(cast(DataClassType, SavingArguments)).parse_args_into_dataclasses(
-        return_remaining_strings=True
-    )[0]
+    base_args = SavingArgumentParser(
+        cast(DataClassType, SavingArguments)
+    ).parse_args_into_dataclasses(return_remaining_strings=True)[0]
     training_pipeline_name = base_args.training_pipeline_name
 
     if training_pipeline_name not in set(SUPPORTED_TRAINING_PIPELINES):
@@ -144,7 +154,9 @@ def main() -> None:
             f"Training pipeline {training_pipeline_name} is not supported. Supported types: {', '.join(SUPPORTED_TRAINING_PIPELINES)}."
         )
 
-    training_pipeline_saving_arguments = TRAINING_PIPELINE_ARGUMENTS_FOR_MODEL_SAVING[training_pipeline_name]
+    training_pipeline_saving_arguments = TRAINING_PIPELINE_ARGUMENTS_FOR_MODEL_SAVING[
+        training_pipeline_name
+    ]
     parser = SavingArgumentParser(
         cast(
             Iterable[DataClassType],
@@ -152,7 +164,9 @@ def main() -> None:
         )
     )
 
-    saving_args, training_pipeline_saving_args, _ = parser.parse_args_into_dataclasses(return_remaining_strings=True)
+    saving_args, training_pipeline_saving_args, _ = parser.parse_args_into_dataclasses(
+        return_remaining_strings=True
+    )
 
     filters = {
         key: saving_args.__dict__[key]

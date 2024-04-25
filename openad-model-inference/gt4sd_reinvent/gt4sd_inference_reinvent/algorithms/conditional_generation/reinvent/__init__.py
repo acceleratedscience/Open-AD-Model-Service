@@ -23,6 +23,9 @@
 #
 """REINVENT initialization."""
 
-from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent.core import Reinvent, ReinventGenerator
+from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent.core import (
+    Reinvent,
+    ReinventGenerator,
+)
 
 __all__ = ["Reinvent", "ReinventGenerator"]

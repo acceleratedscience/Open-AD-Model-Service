@@ -22,15 +22,21 @@
 # SOFTWARE.
 #
 """TorchDrug training utilities."""
+
 import os
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 from gt4sd_common.configuration import gt4sd_configuration_instance
-from gt4sd_inference_torch_drug.training_pipelines.core import TrainingPipeline, TrainingPipelineArguments
+from gt4sd_inference_torch_drug.training_pipelines.core import (
+    TrainingPipeline,
+    TrainingPipelineArguments,
+)
 from . import DATASET_FACTORY
 
-DATA_ROOT = os.path.join(gt4sd_configuration_instance.gt4sd_local_cache_path, "data", "torchdrug")
+DATA_ROOT = os.path.join(
+    gt4sd_configuration_instance.gt4sd_local_cache_path, "data", "torchdrug"
+)
 os.makedirs(DATA_ROOT, exist_ok=True)
 
 
@@ -62,14 +68,24 @@ class TorchDrugTrainingArguments(TrainingPipelineArguments):
 
     __name__ = "training_args"
 
-    model_path: str = field(metadata={"help": "Path where the model artifacts are stored."})
+    model_path: str = field(
+        metadata={"help": "Path where the model artifacts are stored."}
+    )
     training_name: str = field(metadata={"help": "Name used to identify the training."})
     epochs: int = field(default=10, metadata={"help": "Number of epochs."})
     batch_size: int = field(default=16, metadata={"help": "Size of the batch."})
-    learning_rate: float = field(default=1e-5, metadata={"help": "Learning rate used in training."})
-    log_interval: int = field(default=100, metadata={"help": "Number of steps between log intervals."})
-    gradient_interval: int = field(default=1, metadata={"help": "Gradient accumulation steps"})
-    num_worker: int = field(default=0, metadata={"help": "Number of CPU workers per GPU."})
+    learning_rate: float = field(
+        default=1e-5, metadata={"help": "Learning rate used in training."}
+    )
+    log_interval: int = field(
+        default=100, metadata={"help": "Number of steps between log intervals."}
+    )
+    gradient_interval: int = field(
+        default=1, metadata={"help": "Gradient accumulation steps"}
+    )
+    num_worker: int = field(
+        default=0, metadata={"help": "Number of CPU workers per GPU."}
+    )
     task: Optional[str] = field(
         default=None,
         metadata={
@@ -104,7 +120,8 @@ class TorchDrugDataArguments(TrainingPipelineArguments):
     dataset_path: str = field(
         default=DATA_ROOT,
         metadata={
-            "help": "Path where the TorchDrug dataset will be stored. This is ignored " "if `datase_name` is `custom`."
+            "help": "Path where the TorchDrug dataset will be stored. This is ignored "
+            "if `datase_name` is `custom`."
         },
     )
     target_field: str = field(
@@ -130,7 +147,9 @@ class TorchDrugDataArguments(TrainingPipelineArguments):
             "See torchdrug docs for details."
         },
     )
-    verbose: int = field(default=1, metadata={"help": "Output verbosity level for dataset."})
+    verbose: int = field(
+        default=1, metadata={"help": "Output verbosity level for dataset."}
+    )
     lazy: bool = field(
         default=False,
         metadata={
@@ -156,7 +175,9 @@ class TorchDrugDataArguments(TrainingPipelineArguments):
     )
     no_kekulization: bool = field(
         default=False,
-        metadata={"help": "Whether SMILES kekulization is used. Per default, it is used."},
+        metadata={
+            "help": "Whether SMILES kekulization is used. Per default, it is used."
+        },
     )
 
 
@@ -166,7 +187,9 @@ class TorchDrugSavingArguments(TrainingPipelineArguments):
 
     __name__ = "saving_args"
 
-    model_path: str = field(metadata={"help": "Path where the model artifacts are stored."})
+    model_path: str = field(
+        metadata={"help": "Path where the model artifacts are stored."}
+    )
     training_name: str = field(metadata={"help": "Name used to identify the training."})
     dataset_name: str = field(
         metadata={

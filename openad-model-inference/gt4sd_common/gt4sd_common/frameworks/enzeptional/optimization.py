@@ -47,7 +47,9 @@ logger.addHandler(logging.NullHandler())
 #: transition matrix representation
 TransitionMatrix = MutableMapping[str, MutableMapping[str, float]]
 #: transition matrix configuration
-TransitionConfiguration = MutableMapping[str, Union[MutableMapping[str, float], Sequence[str]]]
+TransitionConfiguration = MutableMapping[
+    str, Union[MutableMapping[str, float], Sequence[str]]
+]
 
 #: supported features
 SUPPORTED_FEATURE_SET = set(["substrate", "product", "sequence"])
@@ -100,7 +102,9 @@ class Mutations:
         Args:
             transition_configuration: transition configuration.
         """
-        self.transition_matrix = Mutations.transition_configuration_to_matrix(transition_configuration)
+        self.transition_matrix = Mutations.transition_configuration_to_matrix(
+            transition_configuration
+        )
 
     @staticmethod
     def transition_configuration_to_matrix(
@@ -124,7 +128,8 @@ class Mutations:
                 }
             else:
                 transition_matrix[transition_source] = {
-                    transition_target: 1 / len(transition_targets) for transition_target in transition_targets
+                    transition_target: 1 / len(transition_targets)
+                    for transition_target in transition_targets
                 }
         return transition_matrix
 
@@ -152,7 +157,9 @@ class Mutations:
 
 
 class AASequence:
-    def __init__(self, sequence: str, mutations: Mutations = Mutations(IUPAC_MUTATION_MAPPING)) -> None:
+    def __init__(
+        self, sequence: str, mutations: Mutations = Mutations(IUPAC_MUTATION_MAPPING)
+    ) -> None:
         """Initialize an AA sequence representation.
 
         Args:
@@ -183,7 +190,9 @@ class AASequence:
             )
             maximum_number_of_mutations = 1
         number_of_mutations = random.randint(1, maximum_number_of_mutations)
-        positions = sorted(random.sample(range(self.sequence_length), number_of_mutations))
+        positions = sorted(
+            random.sample(range(self.sequence_length), number_of_mutations)
+        )
         mutated_sequence = ""
         start_position = -1
         for position in positions:
@@ -280,7 +289,9 @@ class EnzymeOptimizer:
         """
         embedded_vectors = {"sequence": self.protein_embedding.embed_one(sequence)}
         embedded_vectors.update(self.embedded_vectors)
-        feature_vector = np.concatenate([embedded_vectors[feature] for feature in self._ordering], axis=1)
+        feature_vector = np.concatenate(
+            [embedded_vectors[feature] for feature in self._ordering], axis=1
+        )
         return self.scorer.predict_proba(feature_vector)[0][1]
 
     def score_sequences(self, sequences: List[str]) -> List[Dict[str, Any]]:
@@ -294,14 +305,22 @@ class EnzymeOptimizer:
         """
         number_of_sequences = len(sequences)
         embedded_matrices = {
-            "substrate": np.repeat(self.embedded_vectors["substrate"], number_of_sequences, axis=0),
-            "product": np.repeat(self.embedded_vectors["product"], number_of_sequences, axis=0),
+            "substrate": np.repeat(
+                self.embedded_vectors["substrate"], number_of_sequences, axis=0
+            ),
+            "product": np.repeat(
+                self.embedded_vectors["product"], number_of_sequences, axis=0
+            ),
         }
         embedded_matrices["sequence"] = self.protein_embedding(sequences)
-        feature_vector = np.concatenate([embedded_matrices[feature] for feature in self._ordering], axis=1)
+        feature_vector = np.concatenate(
+            [embedded_matrices[feature] for feature in self._ordering], axis=1
+        )
         return [
             {"sequence": sequence, "score": score}
-            for sequence, score in zip(sequences, self.scorer.predict_proba(feature_vector)[:, 1])
+            for sequence, score in zip(
+                sequences, self.scorer.predict_proba(feature_vector)[:, 1]
+            )
         ]
 
     def optimize(
@@ -344,20 +363,28 @@ class EnzymeOptimizer:
         if intervals is None:
             intervals = [(0, self.sequence_length)]
         else:
-            intervals = sanitize_intervals(intervals)  # here we merged and sorted the intervals
+            intervals = sanitize_intervals(
+                intervals
+            )  # here we merged and sorted the intervals
 
         # check that the intervals are in the range of the sequence length
         if intervals[-1][1] > self.sequence_length:
-            raise ValueError("check provided intervals, at least an interval is larger than the sequence length")
+            raise ValueError(
+                "check provided intervals, at least an interval is larger than the sequence length"
+            )
 
         # create a sequence from based on the intervals
-        sequence_from_intervals = "".join([self.sequence[start:end] for start, end in intervals])
+        sequence_from_intervals = "".join(
+            [self.sequence[start:end] for start, end in intervals]
+        )
 
         # mutate the sequence from intervals
         aa_sequence_range = AASequence(sequence_from_intervals, mutations=mutations)
         maximum_number_of_mutations = number_of_mutations
 
-        logger.info(f"maximum number of mutations for the intervals: {maximum_number_of_mutations}")
+        logger.info(
+            f"maximum number of mutations for the intervals: {maximum_number_of_mutations}"
+        )
         scored_original_sequence = {
             "score": self.score_sequence(self.sequence),
             "sequence": self.sequence,
@@ -400,12 +427,20 @@ class EnzymeOptimizer:
             elapsed_time = int(time.time() - start_time)
             if time_budget is not None:
                 if elapsed_time > time_budget:
-                    logger.warning(f"used all the given time budget of {time_budget}s, exting optimization loop")
+                    logger.warning(
+                        f"used all the given time budget of {time_budget}s, exting optimization loop"
+                    )
                     break
-        logger.info(f"optimization completed visiting {len(visited_sequences)} mutated sequences")
-        sorted_results = sorted(results, key=lambda result: result["score"], reverse=True)[:number_of_sequences]
+        logger.info(
+            f"optimization completed visiting {len(visited_sequences)} mutated sequences"
+        )
+        sorted_results = sorted(
+            results, key=lambda result: result["score"], reverse=True
+        )[:number_of_sequences]
         if len(sorted_results) < 2:
-            logger.error("optimization failed, could not find a mutated sequence more optimal than the original")
+            logger.error(
+                "optimization failed, could not find a mutated sequence more optimal than the original"
+            )
         else:
             logger.info(
                 f"found {len(sorted_results) -  1} optimal mutated sequences, best score: {sorted_results[0]['score']}"

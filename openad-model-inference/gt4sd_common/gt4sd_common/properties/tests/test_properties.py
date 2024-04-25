@@ -22,11 +22,15 @@
 # SOFTWARE.
 #
 """Test for properties."""
+
 import importlib_resources
 import numpy as np
 import pytest
 
-from gt4sd_common.properties import PROPERTY_PREDICTOR_FACTORY, PropertyPredictorRegistry
+from gt4sd_common.properties import (
+    PROPERTY_PREDICTOR_FACTORY,
+    PropertyPredictorRegistry,
+)
 from gt4sd_common.properties.crystals import CRYSTALS_PROPERTY_PREDICTOR_FACTORY
 from gt4sd_common.properties.molecules import MOLECULE_PROPERTY_PREDICTOR_FACTORY
 from gt4sd_common.properties.molecules.core import SimilaritySeed
@@ -118,7 +122,6 @@ crystal_ground_truths = {
 
 @pytest.mark.parametrize("property_key", crystal_ground_truths.keys())
 def test_crystals(property_key: str):
-
     property_class, parameters_class = CRYSTALS_PROPERTY_PREDICTOR_FACTORY[property_key]
     model = property_class(parameters_class(algorithm_version="v0"))  # type: ignore
 
@@ -132,9 +135,12 @@ def test_crystals(property_key: str):
 
 
 def test_molformer_regression():
-
-    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY["molformer_regression"]
-    model = property_class(parameters_class(algorithm_version="molformer_alpha_public_test"))  # type: ignore
+    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY[
+        "molformer_regression"
+    ]
+    model = property_class(
+        parameters_class(algorithm_version="molformer_alpha_public_test")
+    )  # type: ignore
 
     output = model(input=["OC12COC3=NCC1C23"])  # type: ignore
 
@@ -144,9 +150,12 @@ def test_molformer_regression():
 
 
 def test_molformer_classification():
-
-    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY["molformer_classification"]
-    model = property_class(parameters_class(algorithm_version="molformer_bace_public_test"))  # type: ignore
+    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY[
+        "molformer_classification"
+    ]
+    model = property_class(
+        parameters_class(algorithm_version="molformer_bace_public_test")
+    )  # type: ignore
 
     output = model(input=["OC12COC3=NCC1C23"])  # type: ignore
 
@@ -156,8 +165,9 @@ def test_molformer_classification():
 
 
 def test_molformer_multiclass_classification():
-
-    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY["molformer_multitask_classification"]
+    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY[
+        "molformer_multitask_classification"
+    ]
     model = property_class(parameters_class(algorithm_version="molformer_clintox_test"))  # type: ignore
 
     output = model(input=["OC12COC3=NCC1C23"])  # type: ignore
@@ -168,13 +178,14 @@ def test_molformer_multiclass_classification():
 
 
 def test_rfc():
-    property_class, parameters_class = CRYSTALS_PROPERTY_PREDICTOR_FACTORY["metal_nonmetal_classifier"]
+    property_class, parameters_class = CRYSTALS_PROPERTY_PREDICTOR_FACTORY[
+        "metal_nonmetal_classifier"
+    ]
     model = property_class(parameters_class(algorithm_version="v0"))  # type: ignore
 
     with importlib_resources.as_file(
         importlib_resources.files("gt4sd_common") / "properties/tests/crf_data.csv",
     ) as file_path:
-
         out = model(input=file_path)  # type: ignore
 
         pred_dict = dict(zip(out["formulas"], out["predictions"]))  # type: ignore
@@ -190,7 +201,9 @@ def test_rfc():
         assert pred_dict["BaMnVH6"] == "non-metal"
 
 
-@pytest.mark.parametrize("property_key", [(property_key) for property_key in ground_truths.keys()])
+@pytest.mark.parametrize(
+    "property_key", [(property_key) for property_key in ground_truths.keys()]
+)
 def test_property(property_key):
     property_class, parameters_class = PROPERTY_PREDICTOR_FACTORY[property_key]
     function = property_class(parameters_class())
@@ -199,23 +212,33 @@ def test_property(property_key):
 
 
 def test_similarity_seed():
-    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY["similarity_seed"]
+    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY[
+        "similarity_seed"
+    ]
     function = property_class(parameters_class(smiles=seed))  # type: ignore
-    assert np.isclose(function(molecule), molecule_further_ground_truths["similarity_seed"], atol=1e-2)  # type: ignore
+    assert np.isclose(
+        function(molecule), molecule_further_ground_truths["similarity_seed"], atol=1e-2
+    )  # type: ignore
 
 
 def test_activity_against_target():
-    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY["activity_against_target"]
+    property_class, parameters_class = MOLECULE_PROPERTY_PREDICTOR_FACTORY[
+        "activity_against_target"
+    ]
     function = property_class(parameters_class(target=target))  # type: ignore
     assert np.isclose(
-        function(molecule), molecule_further_ground_truths["activity_against_target"], atol=1e-2  # type: ignore
+        function(molecule),
+        molecule_further_ground_truths["activity_against_target"],
+        atol=1e-2,  # type: ignore
     )
 
 
 def test_charge_with_arguments():
     property_class, parameters_class = PROTEIN_PROPERTY_PREDICTOR_FACTORY["charge"]
     function = property_class(parameters_class(amide=True, ph=5.0))
-    assert np.isclose(function(protein), protein_further_ground_truths["charge"], atol=1e-2)  # type: ignore
+    assert np.isclose(
+        function(protein), protein_further_ground_truths["charge"], atol=1e-2
+    )  # type: ignore
 
 
 @pytest.mark.parametrize(
@@ -224,7 +247,9 @@ def test_charge_with_arguments():
 )
 def test_artifact_models(property_key):
     property_class, parameters_class = PROPERTY_PREDICTOR_FACTORY[property_key]
-    function = property_class(parameters_class(**artifact_model_data[property_key]["parameters"]))
+    function = property_class(
+        parameters_class(**artifact_model_data[property_key]["parameters"])
+    )
     sample = protein if property_key in PROTEIN_PROPERTY_PREDICTOR_FACTORY else molecule
     assert all(
         np.isclose(
@@ -236,12 +261,20 @@ def test_artifact_models(property_key):
 
 
 def test_property_predictor_registry():
-    predictor = PropertyPredictorRegistry.get_property_predictor("similarity_seed", {"smiles": seed})
+    predictor = PropertyPredictorRegistry.get_property_predictor(
+        "similarity_seed", {"smiles": seed}
+    )
     assert isinstance(predictor, SimilaritySeed)
-    assert np.isclose(predictor(molecule), molecule_further_ground_truths["similarity_seed"])  # type: ignore
-    predictor = PropertyPredictorRegistry.get_property_predictor("charge", {"amide": "True", "ph": 5.0})
+    assert np.isclose(
+        predictor(molecule), molecule_further_ground_truths["similarity_seed"]
+    )  # type: ignore
+    predictor = PropertyPredictorRegistry.get_property_predictor(
+        "charge", {"amide": "True", "ph": 5.0}
+    )
     assert isinstance(predictor, Charge)
     assert np.isclose(predictor(protein), protein_further_ground_truths["charge"])  # type: ignore
-    assert len(PropertyPredictorRegistry.list_available()) == len(PROTEIN_PROPERTY_PREDICTOR_FACTORY) + len(
-        MOLECULE_PROPERTY_PREDICTOR_FACTORY
-    ) + len(CRYSTALS_PROPERTY_PREDICTOR_FACTORY)
+    assert len(PropertyPredictorRegistry.list_available()) == len(
+        PROTEIN_PROPERTY_PREDICTOR_FACTORY
+    ) + len(MOLECULE_PROPERTY_PREDICTOR_FACTORY) + len(
+        CRYSTALS_PROPERTY_PREDICTOR_FACTORY
+    )

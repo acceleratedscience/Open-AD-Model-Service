@@ -22,19 +22,26 @@
 # SOFTWARE.
 #
 """Regression Transformer training utilities."""
+
 import os
 from dataclasses import dataclass, field
 from typing import Optional
 from gt4sd_common.configuration import gt4sd_configuration_instance
 from gt4sd_inference_regression.training_pipelines.core import TrainingPipelineArguments
-from gt4sd_inference_regression.training_pipelines.regression_transformer.utils import TransformersTrainingArgumentsCLI
+from gt4sd_inference_regression.training_pipelines.regression_transformer.utils import (
+    TransformersTrainingArgumentsCLI,
+)
 
-DATA_ROOT = os.path.join(gt4sd_configuration_instance.gt4sd_local_cache_path, "data", "RegressionTransformer")
+DATA_ROOT = os.path.join(
+    gt4sd_configuration_instance.gt4sd_local_cache_path, "data", "RegressionTransformer"
+)
 os.makedirs(DATA_ROOT, exist_ok=True)
 
 
 @dataclass
-class RegressionTransformerTrainingArguments(TrainingPipelineArguments, TransformersTrainingArgumentsCLI):
+class RegressionTransformerTrainingArguments(
+    TrainingPipelineArguments, TransformersTrainingArgumentsCLI
+):
     """
     Arguments related to RegressionTransformer trainer.
     NOTE: All arguments from `transformers.training_args.TrainingArguments` can be used.
@@ -43,20 +50,30 @@ class RegressionTransformerTrainingArguments(TrainingPipelineArguments, Transfor
 
     __name__ = "training_args"
 
-    training_name: str = field(default="rt_training", metadata={"help": "Name used to identify the training."})
+    training_name: str = field(
+        default="rt_training", metadata={"help": "Name used to identify the training."}
+    )
     num_train_epochs: int = field(default=10, metadata={"help": "Number of epochs."})
     batch_size: int = field(default=16, metadata={"help": "Size of the batch."})
-    log_interval: int = field(default=100, metadata={"help": "Number of steps between log intervals."})
-    gradient_interval: int = field(default=1, metadata={"help": "Gradient accumulation steps"})
+    log_interval: int = field(
+        default=100, metadata={"help": "Number of steps between log intervals."}
+    )
+    gradient_interval: int = field(
+        default=1, metadata={"help": "Gradient accumulation steps"}
+    )
     eval_steps: int = field(
         default=1000,
         metadata={"help": "The time interval at which validation is performed."},
     )
 
-    max_span_length: int = field(default=5, metadata={"help": "Max length of a span of masked tokens for PLM."})
+    max_span_length: int = field(
+        default=5, metadata={"help": "Max length of a span of masked tokens for PLM."}
+    )
     plm_probability: float = field(
         default=1 / 6,
-        metadata={"help": "Ratio of length of a span of masked tokens to surrounding context length for PLM."},
+        metadata={
+            "help": "Ratio of length of a span of masked tokens to surrounding context length for PLM."
+        },
     )
     alternate_steps: int = field(
         default=50,
@@ -154,7 +171,9 @@ class RegressionTransformerSavingArguments(TrainingPipelineArguments):
 
     __name__ = "saving_args"
 
-    model_path: str = field(metadata={"help": "Path where the model artifacts are stored."})
+    model_path: str = field(
+        metadata={"help": "Path where the model artifacts are stored."}
+    )
     checkpoint_name: str = field(
         default=str(),
         metadata={

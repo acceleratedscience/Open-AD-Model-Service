@@ -210,7 +210,6 @@ class TrajectoryBalance:
             epsilon = torch.tensor([self.epsilon], device=dev).float()
 
         for t in range(self.max_len) if self.max_len is not None else count(0):
-
             # Construct graphs for the trajectories that aren't yet done
             torch_graphs = [ctx.graph_to_data(i) for i in not_done(graphs)]
             not_done_mask = torch.tensor(done, device=dev).logical_not()

@@ -1,4 +1,3 @@
-import gt4sd_common
 from gt4sd_common.properties import PropertyPredictorRegistry
 from rdkit import Chem
 

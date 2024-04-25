@@ -32,9 +32,15 @@ from typing import Any, ClassVar, Dict, Optional, TypeVar
 
 from gt4sd_common.domains.materials import SMILES, MoleculeFormat, validate_molecules
 from gt4sd_common.exceptions import InvalidItem
-from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm, Untargeted
+from gt4sd_common.algorithms.core import (
+    AlgorithmConfiguration,
+    GeneratorAlgorithm,
+    Untargeted,
+)
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
-from gt4sd_inference_moler.algorithms.generation.moler.implementation import MoLeRGenerator
+from gt4sd_inference_moler.algorithms.generation.moler.implementation import (
+    MoLeRGenerator,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -91,10 +97,14 @@ class MoLeR(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: MoLeRGenerator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
+        implementation: MoLeRGenerator = configuration.get_conditional_generator(
+            self.local_artifacts
+        )  # type: ignore
         return implementation.generate
 
-    def validate_configuration(self, configuration: AlgorithmConfiguration[S, T]) -> AlgorithmConfiguration[S, T]:
+    def validate_configuration(
+        self, configuration: AlgorithmConfiguration[S, T]
+    ) -> AlgorithmConfiguration[S, T]:
         # TODO raise InvalidAlgorithmConfiguration
         assert isinstance(configuration, AlgorithmConfiguration)
         return configuration
@@ -110,7 +120,9 @@ class MoLeRDefaultGenerator(AlgorithmConfiguration[SMILES, Any]):
 
     scaffolds: str = field(
         default="",
-        metadata=dict(description="Scaffolds as '.'-separated SMILES. If empty, no scaffolds are used."),
+        metadata=dict(
+            description="Scaffolds as '.'-separated SMILES. If empty, no scaffolds are used."
+        ),
     )
     num_samples: int = field(
         default=32,
@@ -136,7 +148,9 @@ class MoLeRDefaultGenerator(AlgorithmConfiguration[SMILES, Any]):
     )
     sigma: float = field(
         default=0.0,
-        metadata=dict(description="Variance of Gaussian noise being added to latent code."),
+        metadata=dict(
+            description="Variance of Gaussian noise being added to latent code."
+        ),
     )
 
     def get_target_description(self) -> Optional[Dict[str, str]]:

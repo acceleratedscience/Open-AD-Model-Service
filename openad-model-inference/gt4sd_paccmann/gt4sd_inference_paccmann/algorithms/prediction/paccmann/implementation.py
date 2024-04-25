@@ -57,7 +57,9 @@ class MCAPredictor:
         Returns:
             predicted values as list.
         """
-        raise NotImplementedError("No values prediction implemented for base MCAPredictor")
+        raise NotImplementedError(
+            "No values prediction implemented for base MCAPredictor"
+        )
 
 
 class BimodalMCAAffinityPredictor(MCAPredictor):
@@ -99,8 +101,12 @@ class BimodalMCAAffinityPredictor(MCAPredictor):
             os.path.join(resources_path, "mca_weights.pt"),
             map_location=self.device,
         )
-        affinity_protein_language = ProteinLanguage.load(os.path.join(resources_path, "protein_language.pkl"))
-        affinity_smiles_language = SMILESLanguage.load(os.path.join(resources_path, "smiles_language.pkl"))
+        affinity_protein_language = ProteinLanguage.load(
+            os.path.join(resources_path, "protein_language.pkl")
+        )
+        affinity_smiles_language = SMILESLanguage.load(
+            os.path.join(resources_path, "smiles_language.pkl")
+        )
         self.affinity_predictor._associate_language(affinity_smiles_language)
         self.affinity_predictor._associate_language(affinity_protein_language)
         self.affinity_predictor.eval()
@@ -129,7 +135,9 @@ class BimodalMCAAffinityPredictor(MCAPredictor):
                 torch.unsqueeze(
                     self.to_tensor(
                         self.pad_smiles_predictor(
-                            self.affinity_predictor.smiles_language.smiles_to_token_indexes(ligand_smiles)
+                            self.affinity_predictor.smiles_language.smiles_to_token_indexes(
+                                ligand_smiles
+                            )
                         )
                     ),
                     0,
@@ -145,7 +153,9 @@ class BimodalMCAAffinityPredictor(MCAPredictor):
                 torch.unsqueeze(
                     self.to_tensor(
                         self.pad_protein_predictor(
-                            self.affinity_predictor.protein_language.sequence_to_token_indexes(protein_target)
+                            self.affinity_predictor.protein_language.sequence_to_token_indexes(
+                                protein_target
+                            )
                         )
                     ),
                     0,

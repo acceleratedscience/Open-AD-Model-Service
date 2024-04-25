@@ -77,7 +77,6 @@ class MolformerTrainingPipeline(PyTorchLightningTrainingPipeline):
         self,
         **kwargs,
     ):
-
         super().__init__(**kwargs)
 
         self.modules_getter = {
@@ -257,7 +256,6 @@ class MolformerTrainingPipeline(PyTorchLightningTrainingPipeline):
         tokenizer = MolTranBertTokenizer(bert_vocab_path)
 
         if model_args["pretrained_path"] is not None:
-
             model_module = RegressionLightningModule(
                 model_args, tokenizer
             ).load_from_checkpoint(

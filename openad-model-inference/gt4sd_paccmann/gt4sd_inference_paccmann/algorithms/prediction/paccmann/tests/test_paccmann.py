@@ -29,7 +29,10 @@ import numpy as np
 import pytest
 
 from gt4sd_common.algorithms.core import AlgorithmConfiguration
-from gt4sd_inference_paccmann.algorithms.prediction.paccmann.core import AffinityPredictor, PaccMann
+from gt4sd_inference_paccmann.algorithms.prediction.paccmann.core import (
+    AffinityPredictor,
+    PaccMann,
+)
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
 
 
@@ -93,10 +96,14 @@ def test_config_instance(config_class: Type[AlgorithmConfiguration]):
     ],
 )
 def test_generation_via_import(config, protein_targets, ligands, confidence, algorithm):
-    configuration = config(protein_targets=protein_targets, ligands=ligands, confidence=confidence)
+    configuration = config(
+        protein_targets=protein_targets, ligands=ligands, confidence=confidence
+    )
     algorithm_instance = algorithm(configuration=configuration)
 
-    predictor = configuration.get_conditional_generator(configuration.ensure_artifacts())
+    predictor = configuration.get_conditional_generator(
+        configuration.ensure_artifacts()
+    )
     predictions, _ = predictor.predict()
     assert np.isclose(predictions[0, 0].item(), 0.5492, atol=1e-4)
     assert np.isclose(predictions[1, 0].item(), 0.4799, atol=1e-4)

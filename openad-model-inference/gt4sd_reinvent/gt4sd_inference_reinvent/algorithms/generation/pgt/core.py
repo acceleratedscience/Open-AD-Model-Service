@@ -115,11 +115,9 @@ class PGT(GeneratorAlgorithm[S, T]):
         class AnyPGTConfiguration(Protocol):
             """Protocol for PGT configurations."""
 
-            def get_generator(self, resources_path: str) -> Generator:
-                ...
+            def get_generator(self, resources_path: str) -> Generator: ...
 
-            def validate_item(self, item: Any) -> S:
-                ...
+            def validate_item(self, item: Any) -> S: ...
 
         # TODO raise InvalidAlgorithmConfiguration
         assert isinstance(configuration, AnyPGTConfiguration)
@@ -228,9 +226,7 @@ class PGTAlgorithmConfiguration(AlgorithmConfiguration[str, None]):
         """
 
         if isinstance(training_pipeline_arguments, LanguageModelingSavingArguments):
-
             if training_pipeline_arguments.ckpt is not None:
-
                 convert_pl_to_hf(training_pipeline_arguments)
 
             model_files = os.listdir(training_pipeline_arguments.hf_model_path)
