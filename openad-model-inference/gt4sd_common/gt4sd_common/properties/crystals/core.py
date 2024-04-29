@@ -124,14 +124,10 @@ class _CGCNN(PredictorAlgorithm):
         """
 
         existing_models = os.listdir(resources_path)
-        existing_models = [
-            file for file in existing_models if file.endswith(".pth.tar")
-        ]
+        existing_models = [file for file in existing_models if file.endswith(".pth.tar")]
 
         if len(existing_models) > 1:
-            raise ValueError(
-                "Only one model should be located in the specified model path."
-            )
+            raise ValueError("Only one model should be located in the specified model path.")
         elif len(existing_models) == 0:
             raise ValueError("Model does not exist in the specified model path.")
 
@@ -144,9 +140,7 @@ class _CGCNN(PredictorAlgorithm):
         normalizer = Normalizer(torch.zeros(3))
         normalizer.load_state_dict(checkpoint["normalizer"])
 
-        atom_initialization = AtomCustomJSONInitializer(
-            os.path.join(resources_path, "atom_init.json")
-        )
+        atom_initialization = AtomCustomJSONInitializer(os.path.join(resources_path, "atom_init.json"))
 
         # Wrapper to get the predictions
         def informative_model(cif_path: str) -> Dict[str, List[float]]:
@@ -206,7 +200,11 @@ class _CGCNN(PredictorAlgorithm):
 
 
 class MetalNonMetalClassifier(PredictorAlgorithm):
-    """Metal/non-metal classifier class."""
+    """Metal/non-metal classifier class.
+
+    Example: <cmd>gt4sd_prop get crystal property metal_nonmetal_classifier for '/qualified/directory/' using(algorithm_version=v0)</cmd>
+
+    where the qualified directory contains a file called <cmd> crf_data.csv </cmd> with the target crystals"""
 
     def __init__(self, parameters: MetalNonMetalClassifierParameters):
         # Set up the configuration from the parameters
@@ -257,26 +255,57 @@ class MetalNonMetalClassifier(PredictorAlgorithm):
 
 
 class FormationEnergy(_CGCNN):
+    """
+    This model predicts the formation energy per atom using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property formation_energy for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
         This model predicts the formation energy per atom using the CGCNN framework.
         For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+        
         """
         return text
 
 
 class AbsoluteEnergy(_CGCNN):
+    """
+    This model predicts the absolute energy of crystals using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property absolute_energy for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
         This model predicts the absolute energy of crystals using the CGCNN framework.
         For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+    
         """
         return text
 
 
 class BandGap(_CGCNN):
+    """
+    This model predicts the band gap of crystals using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property band_gap for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
@@ -287,6 +316,15 @@ class BandGap(_CGCNN):
 
 
 class FermiEnergy(_CGCNN):
+    """
+    This model predicts the Fermi energy of crystals using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property fermi_energy for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
@@ -297,6 +335,15 @@ class FermiEnergy(_CGCNN):
 
 
 class BulkModuli(_CGCNN):
+    """
+    This model predicts the bulk moduli of crystals using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property bulk_moduli for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
@@ -307,6 +354,15 @@ class BulkModuli(_CGCNN):
 
 
 class ShearModuli(_CGCNN):
+    """
+     This model predicts the shear moduli of crystals using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property shear_moduli for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
@@ -317,6 +373,15 @@ class ShearModuli(_CGCNN):
 
 
 class PoissonRatio(_CGCNN):
+    """
+    This model predicts the Poisson ratio of crystals using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property poisson_ratio for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
@@ -327,6 +392,15 @@ class PoissonRatio(_CGCNN):
 
 
 class MetalSemiconductorClassifier(_CGCNN):
+    """
+     This model predicts whether a given crystal is metal or semiconductor using the CGCNN framework.
+    For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
+
+    Example: <cmd> %openadd gt4sd_prop get crystal property metal_semiconductor_classifier for '{directory}' using(algorithm_version=v0) </cmd>
+
+    where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
+    """
+
     @classmethod
     def get_description(cls) -> str:
         text = """
