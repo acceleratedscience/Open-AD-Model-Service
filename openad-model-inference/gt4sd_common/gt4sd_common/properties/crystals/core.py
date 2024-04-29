@@ -259,7 +259,7 @@ class FormationEnergy(_CGCNN):
     This model predicts the formation energy per atom using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property formation_energy for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property formation_energy for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
 
@@ -280,7 +280,7 @@ class AbsoluteEnergy(_CGCNN):
     This model predicts the absolute energy of crystals using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property absolute_energy for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property absolute_energy for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
 
@@ -301,7 +301,7 @@ class BandGap(_CGCNN):
     This model predicts the band gap of crystals using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property band_gap for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property band_gap for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
     """
@@ -320,7 +320,7 @@ class FermiEnergy(_CGCNN):
     This model predicts the Fermi energy of crystals using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property fermi_energy for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property fermi_energy for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
     """
@@ -339,7 +339,7 @@ class BulkModuli(_CGCNN):
     This model predicts the bulk moduli of crystals using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property bulk_moduli for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property bulk_moduli for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
     """
@@ -358,7 +358,7 @@ class ShearModuli(_CGCNN):
      This model predicts the shear moduli of crystals using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property shear_moduli for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property shear_moduli for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
     """
@@ -377,7 +377,7 @@ class PoissonRatio(_CGCNN):
     This model predicts the Poisson ratio of crystals using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property poisson_ratio for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property poisson_ratio for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
     """
@@ -396,7 +396,7 @@ class MetalSemiconductorClassifier(_CGCNN):
      This model predicts whether a given crystal is metal or semiconductor using the CGCNN framework.
     For more details see: https://doi.org/10.1103/PhysRevLett.120.145301.
 
-    Example: <cmd> %openadd gt4sd_prop get crystal property metal_semiconductor_classifier for '{directory}' using(algorithm_version=v0) </cmd>
+    Example: <cmd>  gt4sd_prop get crystal property metal_semiconductor_classifier for '<qualified directory>' using(algorithm_version=v0) </cmd>
 
     where the qualified directory contains a files with the suffix <cmd> *.cif </cmd> containing the target materials
     """
