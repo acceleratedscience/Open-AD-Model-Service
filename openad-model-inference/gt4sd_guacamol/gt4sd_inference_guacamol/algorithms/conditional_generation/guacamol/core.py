@@ -103,9 +103,7 @@ class GuacaMolGenerator(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(
-            self.local_artifacts
-        )  # type: ignore
+        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
         return implementation.generate_batch  # type: ignore
 
 
@@ -136,7 +134,14 @@ class GuacaMolAbstractGenerator(AlgorithmConfiguration[str, str]):
 
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class SMILESGAGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate optimizied molecules using SMILES Genetic algorithm"""
+    """Configuration to generate optimizied molecules using SMILES Genetic algorithm
+    
+    Example:
+
+    Assuming gt4sd_gen as the cataloged service name
+
+    <cmd>gt4sd_gen generate with SMILESGAGenerator data  for  "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}"  sample 20 using( random_start=True  ) </cmd>
+    """
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -165,15 +170,11 @@ class SMILESGAGenerator(GuacaMolAbstractGenerator):
     )
     gene_size: int = field(
         default=2,
-        metadata=dict(
-            description="size of the gene which is used in creation of genes"
-        ),
+        metadata=dict(description="size of the gene which is used in creation of genes"),
     )
     random_start: bool = field(
         default=False,
-        metadata=dict(
-            description="set to True to randomly choose list of SMILES for generating optimizied molecules"
-        ),
+        metadata=dict(description="set to True to randomly choose list of SMILES for generating optimizied molecules"),
     )
     generations: int = field(
         default=2,
@@ -222,7 +223,15 @@ class SMILESGAGenerator(GuacaMolAbstractGenerator):
 
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class GraphGAGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate optimizied molecules using Graph-Based Genetic algorithm"""
+    """Configuration to generate optimizied molecules using Graph-Based Genetic algorithm
+    
+    Example:
+
+    Assuming gt4sd_gen as the cataloged service name
+
+    <cmd>gt4sd_gen generate with GraphGAGenerator data  for  "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}"  sample 20 using( random_start=True  ) </cmd>
+
+    """
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -241,9 +250,7 @@ class GraphGAGenerator(GuacaMolAbstractGenerator):
     )
     mutation_rate: float = field(
         default=0.01,
-        metadata=dict(
-            description="frequency of the new mutations in a single gene or organism over time"
-        ),
+        metadata=dict(description="frequency of the new mutations in a single gene or organism over time"),
     )
     offspring_size: int = field(
         default=200,
@@ -255,9 +262,7 @@ class GraphGAGenerator(GuacaMolAbstractGenerator):
     )
     random_start: bool = field(
         default=False,
-        metadata=dict(
-            description="set to True to randomly choose list of SMILES for generating optimizied molecules"
-        ),
+        metadata=dict(description="set to True to randomly choose list of SMILES for generating optimizied molecules"),
     )
     generations: int = field(
         default=2,
@@ -306,7 +311,15 @@ class GraphGAGenerator(GuacaMolAbstractGenerator):
 
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class GraphMCTSGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate optimizied molecules using Graph-based Genetic Algorithm and Generative Model/Monte Carlo Tree Search for the Exploration of Chemical Space"""
+    """Configuration to generate optimizied molecules using Graph-based Genetic Algorithm and Generative Model/Monte Carlo Tree Search for the Exploration of Chemical Space
+    
+    Example:
+
+    Assuming gt4sd_gen as the cataloged service name
+
+    <cmd>gt4sd_gen generate with GraphMCTSGenerator data for "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}" Sample 20 using ( init_smiles=CC population_size=5 generations=5 num_sims=10  max_children=5 max_atoms=10)  </cmd>
+    
+    """
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -351,9 +364,7 @@ class GraphMCTSGenerator(GuacaMolAbstractGenerator):
     )
     max_atoms: int = field(
         default=60,
-        metadata=dict(
-            description="maximum number of atoms to explore to terminal the node state"
-        ),
+        metadata=dict(description="maximum number of atoms to explore to terminal the node state"),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -392,7 +403,12 @@ class GraphMCTSGenerator(GuacaMolAbstractGenerator):
 
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate optimized molecules using recurrent neural networks with hill climbing algorithm."""
+    """Configuration to generate optimized molecules using recurrent neural networks with hill climbing algorithm.
+    
+    Example:
+    Assuming model service cataloged name of gt4sd_gen
+
+    <cmd> gt4sd_gen generate with SMILESLSTMHCGenerator data for "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}" sample 20 using( mols_to_sample=10 max_len=2 optimize_batch_size=3 n_epochs=2 random_start=True) </cmd>"""
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -433,15 +449,11 @@ class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
     )
     benchmark_num_samples: int = field(
         default=4096,
-        metadata=dict(
-            description="number of molecules to generate from final model for the benchmark"
-        ),
+        metadata=dict(description="number of molecules to generate from final model for the benchmark"),
     )
     random_start: bool = field(
         default=False,
-        metadata=dict(
-            description="set to True to randomly choose list of SMILES for generating optimizied molecules"
-        ),
+        metadata=dict(description="set to True to randomly choose list of SMILES for generating optimizied molecules"),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -498,14 +510,18 @@ class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
                 "guacamol_v1_all.smiles": "",
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
 
 
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate optimizied molecules using recurrent neural networks with hill climbing algorithm"""
+    """Configuration to generate optimizied molecules using recurrent neural networks with hill climbing algorithm
+    
+    Example:
+    Assuming model service cataloged name of gt4sd_gen
+
+    <cmd>gt4sd_gen generate with SMILESLSTMPPOGenerator data for "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}" sample 20 using (num_epochs=2 episode_size=10 optimize_batch_size=2) </cmd>
+    """
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -522,9 +538,7 @@ class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
     )
     episode_size: int = field(
         default=8192,
-        metadata=dict(
-            description="number of molecules sampled by the policy at the start of a series of ppo updates"
-        ),
+        metadata=dict(description="number of molecules sampled by the policy at the start of a series of ppo updates"),
     )
     optimize_batch_size: int = field(
         default=1024,
@@ -536,15 +550,11 @@ class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
     )
     kl_div_weight: int = field(
         default=10,
-        metadata=dict(
-            description="used for calculating Kullback-Leibler divergence loss"
-        ),
+        metadata=dict(description="used for calculating Kullback-Leibler divergence loss"),
     )
     clip_param: float = field(
         default=0.2,
-        metadata=dict(
-            description="used for determining how far the new policy is from the old one"
-        ),
+        metadata=dict(description="used for determining how far the new policy is from the old one"),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -597,9 +607,7 @@ class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
                 "model_final_0.473.json": training_pipeline_arguments.model_config_filepath,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
 
 
 class MosesGenerator(GeneratorAlgorithm[S, T]):
@@ -650,15 +658,24 @@ class MosesGenerator(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(
-            self.local_artifacts
-        )  # type: ignore
+        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
         return implementation.generate_batch  # type: ignore
 
 
 @ApplicationsRegistry.register_algorithm_application(MosesGenerator)
 class AaeGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate molecules using an adversarial autoencoder."""
+    """Configuration to generate molecules using an adversarial autoencoder.
+    
+    Example:
+
+    Assuming gt4sd_gen is the service name
+
+    <cmd> gt4sd_gen generate with AaeGenerator data  for "{'target':'CCO'}"  sample 20 </cmd>
+
+    """
+
+    
+    """
 
     algorithm_name: ClassVar[str] = MosesGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -697,7 +714,16 @@ class AaeGenerator(GuacaMolAbstractGenerator):
 
 @ApplicationsRegistry.register_algorithm_application(MosesGenerator)
 class VaeGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate molecules using a variational autoencoder."""
+    """Configuration to generate molecules using a variational autoencoder.
+    
+    Example:
+
+    Assuming gt4sd_gen is the service name
+
+    <cmd> gt4sd_gen generate with VaeGenerator data  for "{'target':'CCO'}"  sample 20 </cmd>
+
+    """
+"""
 
     algorithm_name: ClassVar[str] = MosesGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -752,14 +778,20 @@ class VaeGenerator(GuacaMolAbstractGenerator):
                 "vocab.pt": training_pipeline_arguments.vocab_path,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
 
 
 @ApplicationsRegistry.register_algorithm_application(MosesGenerator)
 class OrganGenerator(GuacaMolAbstractGenerator):
-    """Configuration to generate molecules using Objective-Reinforced Generative Adversarial Network"""
+    """Configuration to generate molecules using Objective-Reinforced Generative Adversarial Network
+
+    Example:
+
+    Assuming gt4sd_gen is the service name
+
+    <cmd> gt4sd_gen generate with OrganGenerator data  for "{'target':'CCO'}"  sample 20 </cmd>
+
+    """
 
     algorithm_name: ClassVar[str] = MosesGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -814,6 +846,4 @@ class OrganGenerator(GuacaMolAbstractGenerator):
                 "vocab.pt": training_pipeline_arguments.vocab_path,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)

@@ -41,8 +41,8 @@ try:
 except:  # noqa: E722
     pass
 
-from .conditional_generation.key_bert import KeyBERTGenerator  # noqa: F401
-from .conditional_generation.molgx import MolGXQM9Generator  # noqa: F401
+from gt4sd_common.algorithms.conditional_generation.key_bert import KeyBERTGenerator  # noqa: F401
+from gt4sd_common.algorithms.conditional_generation.molgx import MolGXQM9Generator  # noqa: F401
 
 try:
     from gt4sd_inference_paccmann.algorithms.conditional_generation.paccmann_rl import (  # noqa: F401
@@ -50,6 +50,15 @@ try:
         PaccMannRLProteinBasedGenerator,
     )
 except:  # noqa: E722
+    pass
+
+try:
+    from gt4sd_inference_paccmann.algorithms.generation.paccmann_vae import (  # noqa: F401
+        PaccMannVAE,
+        PaccMannVAEGenerator,
+    )
+except:  # noqa: E722
+    print("nopacc")
     pass
 
 try:
@@ -66,10 +75,10 @@ try:
     )
 except:  # noqa: E722
     pass
-from .conditional_generation.template import TemplateGenerator  # noqa: F401
-from .controlled_sampling.advanced_manufacturing import CatalystGenerator  # noqa: F401
+from gt4sd_common.algorithms.conditional_generation.template import TemplateGenerator  # noqa: F401
+from gt4sd_common.algorithms.controlled_sampling.advanced_manufacturing import CatalystGenerator  # noqa: F401
 
-from .controlled_sampling.paccmann_gp import PaccMannGPGenerator  # noqa: F401
+from gt4sd_common.algorithms.controlled_sampling.paccmann_gp import PaccMannGPGenerator  # noqa: F401
 
 try:
     from gt4sd_inference_reinvent.algorithms.generation.diffusion import (  # noqa: F401
@@ -121,4 +130,4 @@ except:  # noqa: E722
     pass
 # extras requirements
 if EXTRAS_ENABLED:
-    from .controlled_sampling.class_controlled_sampling import PAG, CogMol  # noqa: F401
+    from gt4sd_common.algorithms.controlled_sampling.class_controlled_sampling import PAG, CogMol  # noqa: F401

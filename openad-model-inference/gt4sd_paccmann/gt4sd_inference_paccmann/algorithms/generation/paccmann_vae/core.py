@@ -54,9 +54,7 @@ S = TypeVar("S", bound=SMILES)
 class PaccMannVAE(GeneratorAlgorithm[S, T]):
     """Molecular VAE as in the PaccMann\\ :superscript:`RL` paper."""
 
-    def __init__(
-        self, configuration: AlgorithmConfiguration[S, T], target: Optional[T] = None
-    ):
+    def __init__(self, configuration: AlgorithmConfiguration[S, T], target: Optional[T] = None):
         """Instantiate PaccMannVAE ready to generate molecules.
 
         Args:
@@ -89,9 +87,7 @@ class PaccMannVAE(GeneratorAlgorithm[S, T]):
         Returns:
             callable with target generating a batch of items.
         """
-        implementation: PaccMannVaeDefaultGenerator = (
-            configuration.get_conditional_generator()
-        )  # type: ignore
+        implementation: PaccMannVaeDefaultGenerator = configuration.get_conditional_generator()  # type: ignore
         return implementation.generate
 
 
@@ -101,6 +97,13 @@ class PaccMannVAEGenerator(AlgorithmConfiguration[SMILES, Any]):
     Configuration to generate molecules with PaccMannVAE.
 
     Implementation from the paper: https://doi.org/10.1016/j.isci.2021.102269
+
+    Example:
+
+    Assuming gt4sd_gen is the service name
+
+    <cmd> gt4sd_gen generate with PaccMannVAEgenerator data sample 20  </cmd>
+
     """
 
     algorithm_type: ClassVar[str] = "generation"
@@ -113,15 +116,11 @@ class PaccMannVAEGenerator(AlgorithmConfiguration[SMILES, Any]):
     )
     temperature: float = field(
         default=1.4,
-        metadata=dict(
-            description="Temperature parameter for the softmax sampling in decoding."
-        ),
+        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
     )
     generated_length: int = field(
         default=100,
-        metadata=dict(
-            description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."
-        ),
+        metadata=dict(description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."),
     )
 
     def get_target_description(self) -> Optional[Dict[str, str]]:

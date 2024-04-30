@@ -51,25 +51,24 @@ S = TypeVar("S", bound=str)
 
 
 class TorchDrugGenerator(GeneratorAlgorithm[S, T]):
-    def __init__(
-        self, configuration: AlgorithmConfiguration, target: Optional[T] = None
-    ):
-        """TorchDrug generation algorithm.
+    """TorchDrug generation algorithm.
 
-        Args:
-            configuration: domain and application specification, defining types
-                and validations.  Currently supported algorithm versions are:
-                "zinc250k_v0", "qed_v0" and "plogp_v0".
-            target: unused since it is not a conditional generator.
+    Args:
+        configuration: domain and application specification, defining types
+            and validations.  Currently supported algorithm versions are:
+            "zinc250k_v0", "qed_v0" and "plogp_v0".
+        target: unused since it is not a conditional generator.
 
-        Example:
-            An example for using a generative algorithm from TorchDrug:
+    Example:
+        An example for using a generative algorithm from TorchDrug:
 
-                configuration = TorchDrugGCPN(algorithm_version="qed_v0")
-                algorithm = TorchDrugGenerator(configuration=configuration)
-                items = list(algorithm.sample(1))
-                print(items)
-        """
+            configuration = TorchDrugGCPN(algorithm_version="qed_v0")
+            algorithm = TorchDrugGenerator(configuration=configuration)
+            items = list(algorithm.sample(1))
+            print(items)
+    """
+
+    def __init__(self, configuration: AlgorithmConfiguration, target: Optional[T] = None):
 
         configuration = self.validate_configuration(configuration)
         super().__init__(
@@ -93,14 +92,10 @@ class TorchDrugGenerator(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(
-            self.local_artifacts
-        )  # type: ignore
+        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
         return implementation.sample
 
-    def validate_configuration(
-        self, configuration: AlgorithmConfiguration
-    ) -> AlgorithmConfiguration:
+    def validate_configuration(self, configuration: AlgorithmConfiguration) -> AlgorithmConfiguration:
         assert isinstance(configuration, AlgorithmConfiguration)
         return configuration
 
@@ -110,6 +105,11 @@ class TorchDrugGCPN(AlgorithmConfiguration[str, None]):
     """
     Interface for TorchDrug Graph-convolutional policy network (GCPN) algorithm.
     Currently supported algorithm versions are "zinc250k_v0", "qed_v0" and "plogp_v0".
+    Example:
+
+    Assuming gt4sd_gen is the service name
+
+    <cmd> gt4sd_gen generate with TorchDrugGCPN data sample 20 using ( algorithm_version=zinc250k_v0 ) </cmd>
     """
 
     algorithm_type: ClassVar[str] = "generation"
@@ -137,11 +137,7 @@ class TorchDrugGCPN(AlgorithmConfiguration[str, None]):
             a mapping between artifacts' files and training pipeline's output files.
         """
         if isinstance(training_pipeline_arguments, TorchDrugSavingArguments):
-            task_name = (
-                f"task={training_pipeline_arguments.task}_"
-                if training_pipeline_arguments.task
-                else ""
-            )
+            task_name = f"task={training_pipeline_arguments.task}_" if training_pipeline_arguments.task else ""
             data_name = "data=" + (
                 training_pipeline_arguments.dataset_name
                 + "_"
@@ -159,9 +155,7 @@ class TorchDrugGCPN(AlgorithmConfiguration[str, None]):
                 )
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
 
 
 @ApplicationsRegistry.register_algorithm_application(TorchDrugGenerator)
@@ -169,6 +163,13 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
     """
     Interface for TorchDrug flow-based autoregressive graph algorithm (GraphAF).
     Currently supported algorithm versions are "zinc250k_v0", "qed_v0" and "plogp_v0".
+
+    Example:
+
+    Assuming gt4sd_gen is the service name
+
+    <cmd> gt4sd_gen generate with TorchDrugGraphAF data sample 20 using ( algorithm_version=zinc250k_v0 ) </cmd>
+
     """
 
     algorithm_type: ClassVar[str] = "generation"
@@ -196,11 +197,7 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
             a mapping between artifacts' files and training pipeline's output files.
         """
         if isinstance(training_pipeline_arguments, TorchDrugSavingArguments):
-            task_name = (
-                f"task={training_pipeline_arguments.task}_"
-                if training_pipeline_arguments.task
-                else ""
-            )
+            task_name = f"task={training_pipeline_arguments.task}_" if training_pipeline_arguments.task else ""
             data_name = "data=" + (
                 training_pipeline_arguments.dataset_name
                 + "_"
@@ -218,6 +215,4 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
                 )
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)

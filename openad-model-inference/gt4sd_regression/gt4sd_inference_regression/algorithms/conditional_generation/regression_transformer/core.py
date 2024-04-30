@@ -117,22 +117,16 @@ class RegressionTransformer(GeneratorAlgorithm[S, T]):
         )
         if implementation.task == "regression" and configuration.search == "greedy":  # type: ignore
             self.max_samples = 1
-            logger.warning(
-                "max_samples was set to 1 due to regression task and greedy search"
-            )
+            logger.warning("max_samples was set to 1 due to regression task and greedy search")
 
         return implementation.generate_batch  # type: ignore
 
-    def validate_configuration(
-        self, configuration: AlgorithmConfiguration[S, T]
-    ) -> AlgorithmConfiguration[S, T]:
+    def validate_configuration(self, configuration: AlgorithmConfiguration[S, T]) -> AlgorithmConfiguration[S, T]:
         @runtime_checkable
         class AnyRegressionTransformerConfiguration(Protocol):
             """Protocol for RegressionTransformer configurations."""
 
-            def get_conditional_generator(
-                self, resources_path: str
-            ) -> ConditionalGenerator: ...
+            def get_conditional_generator(self, resources_path: str) -> ConditionalGenerator: ...
 
             def validate_item(self, item: Any) -> S: ...
 
@@ -150,27 +144,17 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
     Implementation from the paper: https://arxiv.org/abs/2202.01338.
 
     Examples:
+
+        Assuming gt4sd_gen is the cataloged name for the service:
+
         An example for generating a peptide around a desired property value::
 
-            config = RegressionTransformerMolecules(
-                algorithm_version='solubility', search='sample', temperature=2, tolerance=5
-            )
-            target = "<esol>-3.534|[Br][C][=C][C][MASK][MASK][=C][C][=C][C][=C][Ring1][MASK][MASK][Branch2_3][Ring1][Branch1_2]"
-            solubility_generator = RegressionTransformer(
-                configuration=config, target=target
-            )
-            list(solubility_generator.sample(5))
+            <cmd> gt4sd_gen generate with RegressionTransformerMolecules data for C12C=CC=NN1C(C#CC1=C(C)C=CC3C(NC4=CC(C(F)(F)F)=CC=C4)=NOC1=3)=CN=2 sample 5 using(algorithm_version=solubility  search=sample temperature=1.5 tolerance=60.0 sampling_wrapper = "{ "fraction_to_mask": 0.1, "property_goal": { "<esol>": 0.234 } }" ) </cmd>
 
         An example for predicting the solubility of a molecule::
 
-            config = RegressionTransformerMolecules(
-                algorithm_version='solubility', search='greedy'
-            )
-            target = "<esol>[MASK][MASK][MASK][MASK][MASK]|[Cl][C][Branch1_2][Branch1_2][=C][Branch1_1][C][Cl][Cl][Cl]"
-            solubility_generator = RegressionTransformer(
-                configuration=config, target=target
-            )
-            list(solubility_generator.sample(1))
+            <cmd> gt4sd_gen generate with RegressionTransformerMolecules data for '<esol>-3.53|[Br][C][=C][C][MASK][MASK][=C][C][=C][C][=C][Ring1][MASK][MASK][Branch2_3][Ring1][Branch1_2]' Sample 5 USING (algorithm_version=solubility search=sample temperature=2 tolerance=5.0 ) </cmd>
+
     """
 
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -194,9 +178,7 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
 
     temperature: float = field(
         default=1.4,
-        metadata=dict(
-            description="Temperature parameter for the softmax sampling in decoding."
-        ),
+        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
     )
     batch_size: int = field(
         default=8,
@@ -265,9 +247,7 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
             "type": "string",
         }
 
-    def get_conditional_generator(
-        self, resources_path: str, context: str
-    ) -> ChemicalLanguageRT:
+    def get_conditional_generator(self, resources_path: str, context: str) -> ChemicalLanguageRT:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -322,14 +302,10 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
         Returns:
             a mapping between artifacts' files and training pipeline's output files.
         """
-        if isinstance(
-            training_pipeline_arguments, RegressionTransformerSavingArguments
-        ):
+        if isinstance(training_pipeline_arguments, RegressionTransformerSavingArguments):
             training_path = os.path.abspath(training_pipeline_arguments.model_path)
             if training_pipeline_arguments.checkpoint_name:
-                model_path = os.path.join(
-                    training_path, training_pipeline_arguments.checkpoint_name
-                )
+                model_path = os.path.join(training_path, training_pipeline_arguments.checkpoint_name)
             else:
                 model_path = training_path
 
@@ -343,9 +319,7 @@ class RegressionTransformerMolecules(AlgorithmConfiguration[Sequence, Sequence])
             return mapper
 
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
 
 
 @ApplicationsRegistry.register_algorithm_application(RegressionTransformer)
@@ -358,23 +332,11 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
     Examples:
         An example for generating a peptide around a desired property value::
 
-            config = RegressionTransformerProteins(
-                search='sample', temperature=2, tolerance=5
-            )
-            target = "<stab>1.1234|TTIKNG[MASK][MASK][MASK]YTVPLSPEQAAK[MASK][MASK][MASK]KKRWPDYEVQIHGNTVKVT"
-            stability_generator = RegressionTransformer(
-                configuration=config, target=target
-            )
-            list(stability_generator.sample(5))
+        <cmd> gt4sd_gen generate with RegressionTransformerProteins data for '<stab>1.1234|TTIKNG[MASK][MASK][MASK]YTVPLSPEQAAK[MASK][MASK][MASK]KKRWPDYEVQIHGNTVKVT' sample 5 using (search=sample temperature=2 tolerance=5) </cmd>
 
         An example for predicting the stability of a peptide::
 
-            config = RegressionTransformerProteins(search='greedy')
-            target = "<stab>[MASK][MASK][MASK][MASK][MASK]|GSQEVNSNASPEEAEIARKAGATTWTEKGNKWEIRI"
-            stability_generator = RegressionTransformer(
-                configuration=config, target=target
-            )
-            list(stability_generator.sample(1))
+        <cmd> gt4sd_gen generate with RegressionTransformerProteins data for '<stab>[MASK][MASK][MASK][MASK][MASK]|GSQEVNSNASPEEAEIARKAGATTWTEKGNKWEIRI' sample 1 using ( algorithm_version=stability search=greedy ) </cmd>
     """
 
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -389,16 +351,12 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
 
     search: str = field(
         default="sample",
-        metadata=dict(
-            description="Search algorithm to use for the generation: sample or greedy"
-        ),
+        metadata=dict(description="Search algorithm to use for the generation: sample or greedy"),
     )
 
     temperature: float = field(
         default=1.4,
-        metadata=dict(
-            description="Temperature parameter for the softmax sampling in decoding."
-        ),
+        metadata=dict(description="Temperature parameter for the softmax sampling in decoding."),
     )
     batch_size: int = field(
         default=32,
@@ -449,9 +407,7 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
             "type": "string",
         }
 
-    def get_conditional_generator(
-        self, resources_path: str, context: str
-    ) -> ProteinLanguageRT:
+    def get_conditional_generator(self, resources_path: str, context: str) -> ProteinLanguageRT:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -494,8 +450,6 @@ class RegressionTransformerProteins(AlgorithmConfiguration[Sequence, Sequence]):
                 detail = f'"{item}" does not adhere to IUPAC convention for AAS'
             else:
                 title = "InvalidNumerical"
-                detail = (
-                    f'"{item}" is not a valid Sequence with a floating point number'
-                )
+                detail = f'"{item}" is not a valid Sequence with a floating point number'
             raise InvalidItem(title=title, detail=detail)
         return item

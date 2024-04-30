@@ -89,17 +89,23 @@ class Reinvent(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: ReinventConditionalGenerator = (
-            configuration.get_conditional_generator(  # type: ignore
-                self.local_artifacts
-            )
+        implementation: ReinventConditionalGenerator = configuration.get_conditional_generator(  # type: ignore
+            self.local_artifacts
         )
         return implementation.generate_samples
 
 
 @ApplicationsRegistry.register_algorithm_application(Reinvent)
 class ReinventGenerator(AlgorithmConfiguration[str, str]):
-    """Configuration to generate molecules using the REINVENT algorithm. It generates the molecules minimizing the distances between the scaffolds."""
+    """Configuration to generate molecules using the REINVENT algorithm. It generates the molecules minimizing the distances between the scaffolds.
+
+    Example:
+    Assuming model service cataloged name of gt4sd_gen
+
+    <cmd> gt4sd_gen generate with ReinventGenerator data  for  N1CCN(CC1)CCCCN sample 20 USING (randomize=True sample_uniquely=True batch_size=5) </cmd>
+
+
+    """
 
     algorithm_name: ClassVar[str] = Reinvent.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -137,9 +143,7 @@ class ReinventGenerator(AlgorithmConfiguration[str, str]):
             "type": "string",
         }
 
-    def get_conditional_generator(
-        self, resources_path: str
-    ) -> ReinventConditionalGenerator:
+    def get_conditional_generator(self, resources_path: str) -> ReinventConditionalGenerator:
         """Instantiate the actual generator implementation.
 
         Args:
@@ -168,9 +172,7 @@ class ReinventGenerator(AlgorithmConfiguration[str, str]):
         Returns:
             the validated SMILES.
         """
-        molecules, _ = validate_molecules(
-            pattern_list=[item], input_type=MoleculeFormat.smiles
-        )
+        molecules, _ = validate_molecules(pattern_list=[item], input_type=MoleculeFormat.smiles)
 
         if molecules[0] is None:
             raise InvalidItem(

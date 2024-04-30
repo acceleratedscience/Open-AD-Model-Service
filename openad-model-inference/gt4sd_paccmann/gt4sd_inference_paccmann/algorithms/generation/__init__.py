@@ -21,3 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+"""PaccMannVAE initialization."""
+
+from gt4sd_inference_paccmann.algorithms.generation.paccmann_vae.core import PaccMannVAE, PaccMannVAEGenerator
+
+__all__ = ["PaccMannVAE", "PaccMannVAEGenerator"]

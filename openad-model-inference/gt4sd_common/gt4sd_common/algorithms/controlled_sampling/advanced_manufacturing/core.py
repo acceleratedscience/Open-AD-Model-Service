@@ -93,15 +93,26 @@ class AdvancedManufacturing(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: Generator = configuration.get_conditional_generator(  # type: ignore
-            self.local_artifacts
-        )
+        implementation: Generator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
         return implementation.generate_samples
 
 
 @ApplicationsRegistry.register_algorithm_application(AdvancedManufacturing)
 class CatalystGenerator(AlgorithmConfiguration[SmallMolecule, float]):
-    """Configuration to generate catalysts with a desired binding energy."""
+    """Configuration to generate catalysts with a desired binding energy.
+
+    Example:
+    Assuming model service cataloged name of gt4sd_gen
+
+    <cmd> gt4sd_gen generate with CatalystGenerator data for 1 sample 20 </cmd>
+
+
+
+    Example:
+    Assuming gt4sd_gen is the given model service name:
+
+    <cmd>gt4sd_gen generate with CatalystGenerator data for 1 sample 20</cmd>
+    """
 
     algorithm_type: ClassVar[str] = "controlled_sampling"
     domain: ClassVar[str] = "materials"
@@ -109,27 +120,19 @@ class CatalystGenerator(AlgorithmConfiguration[SmallMolecule, float]):
 
     number_of_points: int = field(
         default=32,
-        metadata=dict(
-            description="Number of points to sample with the Gaussian Process."
-        ),
+        metadata=dict(description="Number of points to sample with the Gaussian Process."),
     )
     number_of_steps: int = field(
         default=50,
-        metadata=dict(
-            description="Number of optimization steps in the Gaussian Process optimization."
-        ),
+        metadata=dict(description="Number of optimization steps in the Gaussian Process optimization."),
     )
     generated_length: int = field(
         default=100,
-        metadata=dict(
-            description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."
-        ),
+        metadata=dict(description="Maximum length in tokens of the generated molcules (relates to the SMILES length)."),
     )
     primer_smiles: str = field(
         default="",
-        metadata=dict(
-            description="Primer molecule to initiate the sampling in SMILES format. Defaults to no primer."
-        ),
+        metadata=dict(description="Primer molecule to initiate the sampling in SMILES format. Defaults to no primer."),
     )
 
     def get_target_description(self) -> Dict[str, str]:
@@ -178,6 +181,4 @@ class CatalystGenerator(AlgorithmConfiguration[SmallMolecule, float]):
                 "epoch=199-step=5799.ckpt": training_pipeline_arguments.model_path,
             }
         else:
-            return super().get_filepath_mappings_for_training_pipeline_arguments(
-                training_pipeline_arguments
-            )
+            return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)

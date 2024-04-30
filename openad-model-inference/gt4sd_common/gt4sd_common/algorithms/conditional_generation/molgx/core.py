@@ -90,14 +90,10 @@ class MolGX(GeneratorAlgorithm[S, T]):
         """
         logger.info("ensure artifacts for the application are present.")
         self.local_artifacts = configuration.ensure_artifacts()
-        implementation: MolGXGenerator = configuration.get_conditional_generator(  # type: ignore
-            self.local_artifacts
-        )
+        implementation: MolGXGenerator = configuration.get_conditional_generator(self.local_artifacts)  # type: ignore
         return implementation.generate
 
-    def validate_configuration(
-        self, configuration: AlgorithmConfiguration[S, T]
-    ) -> AlgorithmConfiguration[S, T]:
+    def validate_configuration(self, configuration: AlgorithmConfiguration[S, T]) -> AlgorithmConfiguration[S, T]:
         # TODO raise InvalidAlgorithmConfiguration
         assert isinstance(configuration, AlgorithmConfiguration)
         return configuration
@@ -112,9 +108,7 @@ class MolGX(GeneratorAlgorithm[S, T]):
             the items.
         """
         if hasattr(self.configuration, "maximum_number_of_solutions"):
-            maxiumum_number_of_molecules = int(
-                getattr(self.configuration, "maximum_number_of_solutions")
-            )
+            maxiumum_number_of_molecules = int(getattr(self.configuration, "maximum_number_of_solutions"))
             if number_of_items > maxiumum_number_of_molecules:
                 logger.warning(
                     f"current MolGX configuration can not support generation of {number_of_items} molecules..."
@@ -130,7 +124,13 @@ class MolGX(GeneratorAlgorithm[S, T]):
 
 @ApplicationsRegistry.register_algorithm_application(MolGX)
 class MolGXQM9Generator(AlgorithmConfiguration[SMILES, Any]):
-    """Configuration to generate compounds with given HOMO and LUMO energies."""
+    """Configuration to generate compounds with given HOMO and LUMO energies.
+
+    Example:
+    Assuming model service cataloged name of gt4sd_gen
+
+    <cmd> gt4sd_gen generate with MolGXQM9Generator data  sample 20 </cmd>
+    """
 
     algorithm_type: ClassVar[str] = "conditional_generation"
     domain: ClassVar[str] = "materials"
