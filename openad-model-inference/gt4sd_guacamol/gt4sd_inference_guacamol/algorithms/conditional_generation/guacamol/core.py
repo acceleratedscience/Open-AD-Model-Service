@@ -34,7 +34,7 @@ from gt4sd_inference_guacamol.training_pipelines.guacamol_baselines.core import 
 from gt4sd_inference_guacamol.training_pipelines.moses.core import MosesSavingArguments
 from gt4sd_common.algorithms.core import AlgorithmConfiguration, GeneratorAlgorithm
 from gt4sd_common.algorithms.registry import ApplicationsRegistry
-from .implementation import (
+from gt4sd_inference_guacamol.algorithms.conditional_generation.guacamol.implementation import (
     AaeIterator,
     Generator,
     GraphGAIterator,
