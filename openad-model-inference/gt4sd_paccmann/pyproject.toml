@@ -32,7 +32,7 @@ paccmann_chemistry = {git =  "https://github.com/PhillipDowney/paccmann_chemistr
 paccmann_generator = {git =  "https://github.com/PhillipDowney/paccmann_generator",rev = "0.0.2", optional = false}
 paccmann_predictor = {git = "https://github.com/PhillipDowney/paccmann_predictor", rev = "0.0.2" ,optional = false}
 paccmann_omics = {git =  "https://github.com/PaccMann/paccmann_omics" , optional = false}
-
+paccmann_gp = {git = "https://github.com/PaccMann/paccmann_gp" , optional = false}
 [tool.poetry.group.dev.dependencies]
 pytest = "8.0.2"
 pyright = "^1.1.352"
