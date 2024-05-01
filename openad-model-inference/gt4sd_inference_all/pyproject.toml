@@ -6,15 +6,6 @@ description = "gt4sd Inference for paccmannrl prediction"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
 
-[[tool.poetry.source]]
-name = "torch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-priority = "explicit"
-
-[[tool.poetry.source]]
-name = "torch-cu118"
-url = "https://download.pytorch.org/whl/cu118"
-priority = "explicit"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"

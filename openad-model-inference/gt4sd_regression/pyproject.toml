@@ -6,15 +6,6 @@ description = "gt4sd Inference for regression"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
 
-[[tool.poetry.source]]
-name = "torch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-priority = "explicit"
-
-[[tool.poetry.source]]
-name = "torch-cu118"
-url = "https://download.pytorch.org/whl/cu118"
-priority = "explicit"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
@@ -35,13 +26,11 @@ psutil = "^5.9.8"
 pyright = "^1.1.352"
 python-lsp-server = {extras = ["all"], version = "^1.10.0"}
 mols2grid = { version = "^2.0.0", optional = true}
-# torch = [
-#     { version = ">=1.7.1", source = "pypi", platform = "darwin" },
-#     { version = ">=1.7.1+cu118", source = "torch-cu118", platform = "linux" },
-#     { version = ">=1.7.1+cpu", source = "torch-cpu", platform = "win32" },
-# ]
-torch = "^1.7.1"
-
+torch = [
+  {url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp38-cp38-linux_x86_64.whl" , platform = "linux"},
+  {url = "https://download.pytorch.org/whl/cpu/torch-2.2.1%2Bcpu-cp310-cp310-win_amd64.whl" , platform = "win32" },
+  {url = "https://download.pytorch.org/whl/cpu/torch-2.2.1-cp310-none-macosx_10_9_x86_64.whl" , platform = "darwin" }
+]
 
 
 [build-system]
