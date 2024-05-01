@@ -26,7 +26,8 @@ python = ">=3.9,<3.11"
 
 gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
 
-torch = "^1.7.1"
+#torch = "^1.7.1"
+torch = "^2.2.1"
 torch-scatter = [
   {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcu118/torch_scatter-2.1.2%2Bpt22cu118-cp310-cp310-linux_x86_64.whl" , platform = "linux"},
   {url = "https://data.pyg.org/whl/torch-2.2.0%2Bcu118/torch_scatter-2.1.2%2Bpt22cu118-cp310-cp310-win_amd64.whl" , platform = "win32" },

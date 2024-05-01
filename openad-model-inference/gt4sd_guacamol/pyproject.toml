@@ -26,7 +26,8 @@ gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Serv
 guacamol_baselines = {git = "https://github.com/PhillipDowney/guacamol_baselines.git", rev = "0.0.4" ,optional = false }
 guacamol = {git = "https://github.com/brian316/guacamol.git", rev = "", optional = false}
 molecule_generation = ">=0.4.1"
-torch = "^1.7.1"
+#torch = "^1.7.1"
+torch = "2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.0.2"
