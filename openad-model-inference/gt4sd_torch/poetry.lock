@@ -1041,14 +1041,18 @@ rdkit = ">=2022.9.5, <2023.0.0"
 scikit-learn = "1.2.2"
 tensorflow = "2.9.3"
 tensorflow-io-gcs-filesystem = "<0.32.0"
-torch = "2.2.1"
+torch = [
+    {url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp310-cp310-linux_x86_64.whl", markers = "sys_platform == \"linux\""},
+    {url = "https://download.pytorch.org/whl/cpu/torch-2.2.1%2Bcpu-cp310-cp310-win_amd64.whl", markers = "sys_platform == \"win32\""},
+    {url = "https://download.pytorch.org/whl/cpu/torch-2.2.1-cp310-none-macosx_10_9_x86_64.whl", markers = "sys_platform == \"darwin\""},
+]
 transformers = "^4.38.2"
 
 [package.source]
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "7d3d9b31412d4ab1b441ecc5500498eab87368ef"
+resolved_reference = "aee88d5c8a3a869a1f1a39e2c3c92a15ee9262fc"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -4334,7 +4338,7 @@ description = "Tensors and Dynamic neural networks in Python with strong GPU acc
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "torch-2.2.1+cu118-cp38-cp38-linux_x86_64.whl", hash = "sha256:d1b7dd92dd7c27f03ac80f8805459d90ae836f0c207e6a22f12618a64591c1c5"},
+    {file = "torch-2.2.1+cu118-cp310-cp310-linux_x86_64.whl", hash = "sha256:438668ad1eec3a7d1a0473ebf8b60f4557e51548d6be0497d32cc6c3a26a1945"},
 ]
 
 [package.dependencies]
@@ -4363,7 +4367,7 @@ optree = ["optree (>=0.9.1)"]
 
 [package.source]
 type = "url"
-url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp38-cp38-linux_x86_64.whl"
+url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp310-cp310-linux_x86_64.whl"
 
 [[package]]
 name = "torch_cluster"
@@ -5034,4 +5038,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "8776902599a24c91f78e203c20ae5893fb561b6d4706dbbe6361ac8a5a3dfc97"
+content-hash = "c4bbbe2f5295c51d6d9c9d3d8e3e0ba7b706a406cb06c8d4b8c00b958a212278"
