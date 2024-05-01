@@ -15,7 +15,7 @@ gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Serv
 #torch = "^1.7.1"
 #torch = "^2.2.1"
 torch = [
-  {url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp38-cp38-linux_x86_64.whl" , platform = "linux"},
+  {url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp310-cp310-linux_x86_64.whl" , platform = "linux"},
   {url = "https://download.pytorch.org/whl/cpu/torch-2.2.1%2Bcpu-cp310-cp310-win_amd64.whl" , platform = "win32" },
   {url = "https://download.pytorch.org/whl/cpu/torch-2.2.1-cp310-none-macosx_10_9_x86_64.whl" , platform = "darwin" }
 ]
