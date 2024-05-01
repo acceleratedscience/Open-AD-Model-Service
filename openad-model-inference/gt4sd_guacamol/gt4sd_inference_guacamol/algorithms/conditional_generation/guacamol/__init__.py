@@ -23,7 +23,7 @@
 #
 """GuacaMol initialization."""
 
-from .core import (
+from gt4sd_inference_guacamol.algorithms.conditional_generation.guacamol.core import (
     AaeGenerator,
     GraphGAGenerator,
     GraphMCTSGenerator,

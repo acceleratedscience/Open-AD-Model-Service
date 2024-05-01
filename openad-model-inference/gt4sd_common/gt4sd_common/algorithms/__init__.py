@@ -38,7 +38,9 @@ try:
         SMILESLSTMPPOGenerator,
         VaeGenerator,
     )
+
 except:  # noqa: E722
+    print("not loading guacamol")
     pass
 
 from gt4sd_common.algorithms.conditional_generation.key_bert import KeyBERTGenerator  # noqa: F401
