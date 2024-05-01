@@ -135,7 +135,7 @@ class GuacaMolAbstractGenerator(AlgorithmConfiguration[str, str]):
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class SMILESGAGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate optimizied molecules using SMILES Genetic algorithm
-    
+
     Example:
 
     Assuming gt4sd_gen as the cataloged service name
@@ -224,7 +224,7 @@ class SMILESGAGenerator(GuacaMolAbstractGenerator):
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class GraphGAGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate optimizied molecules using Graph-Based Genetic algorithm
-    
+
     Example:
 
     Assuming gt4sd_gen as the cataloged service name
@@ -312,13 +312,13 @@ class GraphGAGenerator(GuacaMolAbstractGenerator):
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class GraphMCTSGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate optimizied molecules using Graph-based Genetic Algorithm and Generative Model/Monte Carlo Tree Search for the Exploration of Chemical Space
-    
+
     Example:
 
     Assuming gt4sd_gen as the cataloged service name
 
     <cmd>gt4sd_gen generate with GraphMCTSGenerator data for "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}" Sample 20 using ( init_smiles=CC population_size=5 generations=5 num_sims=10  max_children=5 max_atoms=10)  </cmd>
-    
+
     """
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
@@ -404,11 +404,12 @@ class GraphMCTSGenerator(GuacaMolAbstractGenerator):
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate optimized molecules using recurrent neural networks with hill climbing algorithm.
-    
+
     Example:
     Assuming model service cataloged name of gt4sd_gen
 
-    <cmd> gt4sd_gen generate with SMILESLSTMHCGenerator data for "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}" sample 20 using( mols_to_sample=10 max_len=2 optimize_batch_size=3 n_epochs=2 random_start=True) </cmd>"""
+    <cmd> gt4sd_gen generate with SMILESLSTMHCGenerator data for "{'isomer_scorer': {'target': 5.0, 'target_smile': 'NCCCCC'}}" sample 20 using( mols_to_sample=10 max_len=2 optimize_batch_size=3 n_epochs=2 random_start=True) </cmd>
+    """
 
     algorithm_name: ClassVar[str] = GuacaMolGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
@@ -516,7 +517,7 @@ class SMILESLSTMHCGenerator(GuacaMolAbstractGenerator):
 @ApplicationsRegistry.register_algorithm_application(GuacaMolGenerator)
 class SMILESLSTMPPOGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate optimizied molecules using recurrent neural networks with hill climbing algorithm
-    
+
     Example:
     Assuming model service cataloged name of gt4sd_gen
 
@@ -665,16 +666,13 @@ class MosesGenerator(GeneratorAlgorithm[S, T]):
 @ApplicationsRegistry.register_algorithm_application(MosesGenerator)
 class AaeGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate molecules using an adversarial autoencoder.
-    
+
     Example:
 
     Assuming gt4sd_gen is the service name
 
     <cmd> gt4sd_gen generate with AaeGenerator data  for "{'target':'CCO'}"  sample 20 </cmd>
 
-    """
-
-    
     """
 
     algorithm_name: ClassVar[str] = MosesGenerator.__name__
@@ -715,7 +713,7 @@ class AaeGenerator(GuacaMolAbstractGenerator):
 @ApplicationsRegistry.register_algorithm_application(MosesGenerator)
 class VaeGenerator(GuacaMolAbstractGenerator):
     """Configuration to generate molecules using a variational autoencoder.
-    
+
     Example:
 
     Assuming gt4sd_gen is the service name
@@ -723,7 +721,6 @@ class VaeGenerator(GuacaMolAbstractGenerator):
     <cmd> gt4sd_gen generate with VaeGenerator data  for "{'target':'CCO'}"  sample 20 </cmd>
 
     """
-"""
 
     algorithm_name: ClassVar[str] = MosesGenerator.__name__
     algorithm_type: ClassVar[str] = "conditional_generation"
