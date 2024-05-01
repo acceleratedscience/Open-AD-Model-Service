@@ -3810,7 +3810,7 @@ description = "Tensors and Dynamic neural networks in Python with strong GPU acc
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "torch-2.2.1+cu118-cp38-cp38-linux_x86_64.whl", hash = "sha256:d1b7dd92dd7c27f03ac80f8805459d90ae836f0c207e6a22f12618a64591c1c5"},
+    {file = "torch-2.2.1+cu118-cp310-cp310-linux_x86_64.whl", hash = "sha256:438668ad1eec3a7d1a0473ebf8b60f4557e51548d6be0497d32cc6c3a26a1945"},
 ]
 
 [package.dependencies]
@@ -3839,7 +3839,7 @@ optree = ["optree (>=0.9.1)"]
 
 [package.source]
 type = "url"
-url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp38-cp38-linux_x86_64.whl"
+url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp310-cp310-linux_x86_64.whl"
 
 [[package]]
 name = "tqdm"
@@ -4240,4 +4240,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "bec0d5d2d02860071697dd0ab05efe92bfe2eed653410ad6298b9ea2b41bf07c"
+content-hash = "38858d87a7aeed0dc2fcf2d82619931afbc7c0b094994d9daa99ed89a96f0540"
