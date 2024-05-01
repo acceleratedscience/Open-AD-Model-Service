@@ -23,6 +23,10 @@
 #
 """TorchDrugGenerationAlgorithm initialization."""
 
-from .core import TorchDrugGCPN, TorchDrugGenerator, TorchDrugGraphAF
+from gt4sd_inference_torch_drug.algorithms.generation.torchdrug.core import (
+    TorchDrugGCPN,
+    TorchDrugGenerator,
+    TorchDrugGraphAF,
+)
 
 __all__ = ["TorchDrugGenerator", "TorchDrugGCPN", "TorchDrugGraphAF"]

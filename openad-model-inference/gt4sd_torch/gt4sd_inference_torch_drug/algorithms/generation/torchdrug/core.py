@@ -214,5 +214,7 @@ class TorchDrugGraphAF(AlgorithmConfiguration[str, None]):
                     f"graphaf_data={data_name}_{task_name}epoch={epochs}.pkl",
                 )
             }
+
         else:
+
             return super().get_filepath_mappings_for_training_pipeline_arguments(training_pipeline_arguments)
