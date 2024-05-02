@@ -84,7 +84,7 @@ class ConditionalGenerator(ABC):
 
         # generate molecules as tokens list
         # Torchfix
-        latent = latent.to(torch.device)
+        latent = latent.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         generated_molecules = self.selfies_conditional_generator.generate(
             latent,
             prime_input=torch.tensor([self.smiles_language.start_index], device=self.device).long(),
