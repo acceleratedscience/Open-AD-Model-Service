@@ -36,9 +36,7 @@ def get_gpu_device_names() -> List[str]:
     """
     gpu_device_names = []
     if torch.cuda.is_available():
-        gpu_device_names = [
-            f"cuda:{index}" for index in range(torch.cuda.device_count())
-        ]
+        gpu_device_names = [f"cuda:{index}" for index in range(torch.cuda.device_count())]
     return gpu_device_names
 
 
@@ -75,11 +73,7 @@ def device_claim(device: Optional[Union[torch.device, str]] = None) -> torch.dev
     """
     if isinstance(device, str):
         device = torch.device(device)
-    device = (
-        get_device()
-        if (device is None or not isinstance(device, torch.device))
-        else device
-    )
+    device = get_device() if (device is None or not isinstance(device, torch.device)) else device
     return device
 
 
@@ -97,9 +91,7 @@ def get_device_from_tensor(tensor: torch.Tensor) -> torch.device:
     return device_claim(device)
 
 
-def map_tensor_dict(
-    tensor_dict: Dict[str, torch.Tensor], device: torch.device
-) -> Dict[str, torch.Tensor]:
+def map_tensor_dict(tensor_dict: Dict[str, torch.Tensor], device: torch.device) -> Dict[str, torch.Tensor]:
     """
     Maps a dictionary of tensors to a specific device.
 

@@ -153,7 +153,6 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         """
         # device
         self.device = device_claim(device)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # setting sampling parameters
         self.temperature = temperature
         self.generated_length = generated_length
