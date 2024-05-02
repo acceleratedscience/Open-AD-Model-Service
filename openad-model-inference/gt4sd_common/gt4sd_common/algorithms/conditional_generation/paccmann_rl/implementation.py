@@ -149,8 +149,6 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
         # device
-        # torchfix
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.device = device_claim(device)
         # setting sampling parameters

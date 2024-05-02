@@ -96,8 +96,6 @@ class ConditionalGenerator:
                 Note that the tolerance is *only* used for post-hoc filtering of the generated molecules.
         """
         # device
-        # torchfix
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.device = device_claim(device)
         # Set up the data preparation pipeline

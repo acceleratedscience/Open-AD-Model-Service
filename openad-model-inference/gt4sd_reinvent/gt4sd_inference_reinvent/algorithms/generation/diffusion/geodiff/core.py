@@ -50,9 +50,7 @@ class GeoDiffPipeline:
     GeoDiff: a Geometric Diffusion Model for Molecular Conformation Generation, Minkai Xu, Lantao Yu, Yang Song, Chence Shi, Stefano Ermon, Jian Tang - https://arxiv.org/abs/2203.02923
     """
 
-    def __init__(
-        self, model_name_or_path: str, params_json: Optional[str] = None
-    ) -> None:
+    def __init__(self, model_name_or_path: str, params_json: Optional[str] = None) -> None:
         """GeoDiff pipeline for molecular conformation generation. Code adapted from colab:
                 https://colab.research.google.com/drive/1pLYYWQhdLuv1q-JtEHGZybxp2RBF8gPs#scrollTo=-3-P4w5sXkRU written by Nathan Lambert.
 
@@ -108,9 +106,7 @@ class GeoDiffPipeline:
         self.model.to(self.device)
 
     @classmethod
-    def from_pretrained(
-        self, model_name_or_path: str, params_json: Optional[str] = None
-    ) -> "GeoDiffPipeline":
+    def from_pretrained(self, model_name_or_path: str, params_json: Optional[str] = None) -> "GeoDiffPipeline":
         """Load pretrained model.
 
         Args:
@@ -120,14 +116,10 @@ class GeoDiffPipeline:
         Returns:
             a GeoDiff pipeline.
         """
-        return GeoDiffPipeline(
-            model_name_or_path=model_name_or_path, params_json=params_json
-        )
+        return GeoDiffPipeline(model_name_or_path=model_name_or_path, params_json=params_json)
 
     @torch.no_grad()
-    def __call__(
-        self, batch_size: int, prompt: Dict[str, Any]
-    ) -> Dict[str, List[Chem.Mol]]:
+    def __call__(self, batch_size: int, prompt: Dict[str, Any]) -> Dict[str, List[Chem.Mol]]:
         """Generate conformations for a molecule.
 
         Args:
@@ -162,14 +154,10 @@ class GeoDiffPipeline:
                 batch.pos = pos
 
                 # generate geometry with model, then filter it
-                epsilon = self.model.forward(
-                    batch, t, sigma=self.sigmas[t], return_dict=False
-                )[0]
+                epsilon = self.model.forward(batch, t, sigma=self.sigmas[t], return_dict=False)[0]
 
                 # Update
-                reconstructed_pos = self.scheduler.step(epsilon, t, pos)[
-                    "prev_sample"
-                ].to(self.device)
+                reconstructed_pos = self.scheduler.step(epsilon, t, pos)["prev_sample"].to(self.device)
 
                 pos = reconstructed_pos
 
@@ -203,9 +191,7 @@ class GeoDiffPipeline:
         mols_gen, mols_orig = self.postprocess_output(results)
         return {"sample": mols_gen}
 
-    def postprocess_output(
-        self, results: List[Data]
-    ) -> Tuple[List[Chem.Mol], List[Chem.Mol]]:
+    def postprocess_output(self, results: List[Data]) -> Tuple[List[Chem.Mol], List[Chem.Mol]]:
         """Postprocess output of diffusion pipeline.
 
         Args:
@@ -222,14 +208,10 @@ class GeoDiffPipeline:
         mols_orig = []
         for to_process in results:
             # store the reference 3d position
-            to_process["pos_ref"] = to_process["pos_ref"].reshape(
-                -1, to_process["rdmol"].GetNumAtoms(), 3
-            )
+            to_process["pos_ref"] = to_process["pos_ref"].reshape(-1, to_process["rdmol"].GetNumAtoms(), 3)
 
             # store the generated 3d position
-            to_process["pos_gen"] = to_process["pos_gen"].reshape(
-                -1, to_process["rdmol"].GetNumAtoms(), 3
-            )
+            to_process["pos_gen"] = to_process["pos_gen"].reshape(-1, to_process["rdmol"].GetNumAtoms(), 3)
 
             # copy data to new object
             new_mol = set_rdmol_positions(to_process.rdmol, to_process["pos_gen"][0])
