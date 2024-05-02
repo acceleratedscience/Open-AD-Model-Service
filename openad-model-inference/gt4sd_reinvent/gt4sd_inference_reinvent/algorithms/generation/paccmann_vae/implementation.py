@@ -70,9 +70,7 @@ class PaccMannVaeDefaultGenerator:
         self.batch_size = batch_size
 
         self.algorithm = PaccMannRL(configuration=self.configuration, target="")
-        self.model = self.configuration.get_conditional_generator(
-            self.algorithm.local_artifacts
-        )
+        self.model = self.configuration.get_conditional_generator(self.algorithm.local_artifacts)
 
     def generate(self) -> List[str]:
         """
@@ -85,6 +83,7 @@ class PaccMannVaeDefaultGenerator:
             list of SMILES generated.
         """
         smiles: List = []
+        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         print("We are in Actions")
         while len(smiles) < self.batch_size:
             # Define latent code
@@ -93,14 +92,7 @@ class PaccMannVaeDefaultGenerator:
             generated_smiles = self.model.get_smiles_from_latent(latent)
             _, valid_ids = self.model.validate_molecules(generated_smiles)
             valid_ids = [
-                i
-                for i in valid_ids
-                if len(
-                    Chem.DetectChemistryProblems(
-                        Chem.MolFromSmiles(generated_smiles[i])
-                    )
-                )
-                == 0
+                i for i in valid_ids if len(Chem.DetectChemistryProblems(Chem.MolFromSmiles(generated_smiles[i]))) == 0
             ]
             generated_molecules = list([generated_smiles[index] for index in valid_ids])
             smiles.extend(generated_molecules)
