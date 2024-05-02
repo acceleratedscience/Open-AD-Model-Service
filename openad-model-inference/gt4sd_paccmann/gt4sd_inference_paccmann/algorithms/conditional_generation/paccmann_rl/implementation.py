@@ -51,7 +51,9 @@ class ConditionalGenerator(ABC):
     """Abstract interface for a conditional generator."""
 
     #: device where the inference is running.
+
     device: torch.device
+
     #: temperature for the sampling.
     temperature: float
     #: maximum length of the generated molecules.
@@ -83,12 +85,8 @@ class ConditionalGenerator(ABC):
         # generate molecules as tokens list
         generated_molecules = self.selfies_conditional_generator.generate(
             latent,
-            prime_input=torch.tensor(
-                [self.smiles_language.start_index], device=self.device
-            ).long(),
-            end_token=torch.tensor(
-                [self.smiles_language.stop_index], device=self.device
-            ).long(),
+            prime_input=torch.tensor([self.smiles_language.start_index], device=self.device).long(),
+            end_token=torch.tensor([self.smiles_language.stop_index], device=self.device).long(),
             generate_len=self.generated_length,
             search=SamplingSearch(temperature=self.temperature),
         )
@@ -100,10 +98,7 @@ class ConditionalGenerator(ABC):
 
         # convert SELFIES to SMILES
         if "selfies" in self.smiles_language.name:
-            molecules = [
-                self.smiles_language.selfies_to_smiles(a_selfies)
-                for a_selfies in molecules
-            ]
+            molecules = [self.smiles_language.selfies_to_smiles(a_selfies) for a_selfies in molecules]
         return molecules
 
     @staticmethod
@@ -157,7 +152,8 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
         # device
-        self.device = device_claim(device)
+        # self.device = device_claim(device)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # setting sampling parameters
         self.temperature = temperature
         self.generated_length = generated_length
@@ -165,9 +161,7 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         # instantiate protein embedding encoder
         with open(os.path.join(resources_path, "protein_embedding_params.json")) as fp:
             self.protein_embedding_encoder_params = json.load(fp)
-        self.protein_embedding_encoder = ENCODER_FACTORY["dense"](
-            self.protein_embedding_encoder_params
-        ).to(self.device)
+        self.protein_embedding_encoder = ENCODER_FACTORY["dense"](self.protein_embedding_encoder_params).to(self.device)
         self.protein_embedding_encoder.load(
             os.path.join(resources_path, "protein_embedding_encoder.pt"),
             map_location=self.device,
@@ -175,9 +169,7 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         self.protein_embedding_encoder.eval()
         self.encoder_latent_size = self.protein_embedding_encoder.latent_size
         # instantiate selfies conditional generator
-        with open(
-            os.path.join(resources_path, "selfies_conditional_generator.json")
-        ) as fp:
+        with open(os.path.join(resources_path, "selfies_conditional_generator.json")) as fp:
             self.selfies_conditional_generator_params = json.load(fp)
         self.selfies_conditional_generator = TeacherVAE(
             StackGRUEncoder(self.selfies_conditional_generator_params),
@@ -188,13 +180,9 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
             map_location=self.device,
         )
         self.selfies_conditional_generator.eval()
-        self.generator_latent_size = (
-            self.selfies_conditional_generator.decoder.latent_dim
-        )
+        self.generator_latent_size = self.selfies_conditional_generator.decoder.latent_dim
         # loading SMILES language for decoding and conversion of SELFIES to SMILES
-        self.smiles_language = SMILESLanguage.load(
-            os.path.join(resources_path, "selfies_language.pkl")
-        )
+        self.smiles_language = SMILESLanguage.load(os.path.join(resources_path, "selfies_language.pkl"))
         # @Dean @Phil Deprecated PYTODA fix
         if not hasattr(self.smiles_language, "special_indexes"):
             self.smiles_language.special_indexes = {
@@ -225,9 +213,7 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         """
         # encode embedded sequence once, ignore the returned dummy ids
         embeddings, _ = self.primary_sequence_embedder.forward([[protein]])
-        protein_mu, protein_logvar = self.protein_embedding_encoder(
-            embeddings.to(self.device)
-        )
+        protein_mu, protein_logvar = self.protein_embedding_encoder(embeddings.to(self.device))
 
         # now stack as batch to generate different samples
         proteins_mu = torch.cat([protein_mu] * self.samples_per_protein, dim=0)
@@ -284,9 +270,7 @@ class TranscriptomicConditionalGenerator(ConditionalGenerator):
         # instantiate protein embedding encoder
         with open(os.path.join(resources_path, "transcriptomic_params.json")) as fp:
             self.transcriptomic_encoder_params = json.load(fp)
-        self.transcriptomic_encoder = ENCODER_FACTORY["dense"](
-            self.transcriptomic_encoder_params
-        ).to(self.device)
+        self.transcriptomic_encoder = ENCODER_FACTORY["dense"](self.transcriptomic_encoder_params).to(self.device)
         self.transcriptomic_encoder.load(
             os.path.join(resources_path, "transcriptomic_encoder.pt"),
             map_location=self.device,
@@ -294,9 +278,7 @@ class TranscriptomicConditionalGenerator(ConditionalGenerator):
         self.transcriptomic_encoder.eval()
         self.encoder_latent_size = self.transcriptomic_encoder.latent_size
         # instantiate selfies conditional generator
-        with open(
-            os.path.join(resources_path, "selfies_conditional_generator.json")
-        ) as fp:
+        with open(os.path.join(resources_path, "selfies_conditional_generator.json")) as fp:
             self.selfies_conditional_generator_params = json.load(fp)
         self.selfies_conditional_generator = TeacherVAE(
             StackGRUEncoder(self.selfies_conditional_generator_params),
@@ -307,13 +289,9 @@ class TranscriptomicConditionalGenerator(ConditionalGenerator):
             map_location=self.device,
         )
         self.selfies_conditional_generator.eval()
-        self.generator_latent_size = (
-            self.selfies_conditional_generator.decoder.latent_dim
-        )
+        self.generator_latent_size = self.selfies_conditional_generator.decoder.latent_dim
         # loading SMILES language for decoding and conversion of SELFIES to SMILES
-        self.smiles_language = SMILESLanguage.load(
-            os.path.join(resources_path, "selfies_language.pkl")
-        )
+        self.smiles_language = SMILESLanguage.load(os.path.join(resources_path, "selfies_language.pkl"))
 
     def get_latent(self, profile: Union[np.ndarray, pd.Series, str]) -> torch.Tensor:
         """
@@ -336,9 +314,7 @@ class TranscriptomicConditionalGenerator(ConditionalGenerator):
             logger.warning("profile passed as string, serializing it to a list")
             profile = np.array(json.loads(profile))
         if profile.size != len(self.genes):
-            raise ValueError(
-                f"provided profile size ({profile.size}) does not match required size {len(self.genes)}"
-            )
+            raise ValueError(f"provided profile size ({profile.size}) does not match required size {len(self.genes)}")
         # encode embedded progiles
         transcriptomic_mu, transcriptomic_logvar = self.transcriptomic_encoder(
             torch.from_numpy(
@@ -348,9 +324,7 @@ class TranscriptomicConditionalGenerator(ConditionalGenerator):
             .to(self.device)
         )
         # get latent representation
-        return torch.unsqueeze(
-            reparameterize(transcriptomic_mu, transcriptomic_logvar), 0
-        )
+        return torch.unsqueeze(reparameterize(transcriptomic_mu, transcriptomic_logvar), 0)
 
     def generate_batch(self, profile: Union[np.ndarray, pd.Series]) -> List[str]:
         return super().generate_batch(condition=profile)
