@@ -83,6 +83,8 @@ class Mlp(nn.Module):
         Returns:
             model output.
         """
+        # torchfix
+        z = self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         z = self.first_layer(x)
         z = self.relu(z)
         z = self.middle_layers(z)
@@ -193,13 +195,9 @@ class RnnEncoder(nn.Module):
             bidirectional=bidirectional,
             batch_first=True,
         )
-        self.embedding = nn.Embedding(
-            num_embeddings=vocab_size, embedding_dim=embedding_size
-        )
+        self.embedding = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_size)
 
-    def forward(
-        self, input_sequence: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, input_sequence: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """Forward pass in the model.
 
         Args:
@@ -248,14 +246,10 @@ class RnnDecoder(nn.Module):
             num_layers=n_layers,
             batch_first=True,
         )
-        self.latent2hidden = torch.nn.Linear(
-            latent_size, hidden_size * self.hidden_factor
-        )
+        self.latent2hidden = torch.nn.Linear(latent_size, hidden_size * self.hidden_factor)
         self.outputs2vocab = torch.nn.Linear(hidden_size, vocab_size)
 
-    def forward(
-        self, latent: torch.Tensor, input_embedding: torch.Tensor
-    ) -> torch.Tensor:
+    def forward(self, latent: torch.Tensor, input_embedding: torch.Tensor) -> torch.Tensor:
         """Forward pass in the model.
 
         Args:
@@ -299,9 +293,7 @@ class RnnDecoder(nn.Module):
         hidden = hidden.view(batch_size, self.hidden_factor, self.hidden_size)
         hidden = hidden.permute(1, 0, 2).contiguous()
         hidden = torch.tanh(hidden)
-        input_sequence = torch.full(
-            (batch_size, 1), tokenizer.sos_token_id, device=latent.device
-        ).long()
+        input_sequence = torch.full((batch_size, 1), tokenizer.sos_token_id, device=latent.device).long()
         logits_list = []
         for t in range(max_len):
             input_embedding = embedding(input_sequence)
@@ -314,10 +306,7 @@ class RnnDecoder(nn.Module):
         token_indices = torch.argmax(logits_tensor, dim=-1)
         decoded_texts = []
         for index in range(batch_size):
-            tokens = [
-                tokenizer.convert_id_to_token(vocab_index.item())
-                for vocab_index in token_indices[index]
-            ]
+            tokens = [tokenizer.convert_id_to_token(vocab_index.item()) for vocab_index in token_indices[index]]
             text = "".join(tokens).split()[0]
             decoded_texts.append(text)
         return decoded_texts, token_indices
@@ -542,9 +531,7 @@ class ConvBottleneck(nn.Module):
                 kernel_size = 8
             if i == 2:
                 out_d = 64
-            conv_layers.append(
-                nn.Sequential(nn.Conv1d(in_d, out_d, kernel_size), nn.MaxPool1d(2))
-            )
+            conv_layers.append(nn.Sequential(nn.Conv1d(in_d, out_d, kernel_size), nn.MaxPool1d(2)))
             in_d = out_d
         self.conv_layers = ListModule(*conv_layers)
 
@@ -673,9 +660,7 @@ class PositionalEncoding(nn.Module):
         # compute the positional encodings once in log space
         pe = torch.zeros(max_len, d_model)
         position = torch.arange(0, max_len).unsqueeze(1)
-        div_term = torch.exp(
-            torch.arange(0, d_model, 2) * -(math.log(10000.0) / d_model)
-        )
+        div_term = torch.exp(torch.arange(0, d_model, 2) * -(math.log(10000.0) / d_model))
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0)
@@ -805,15 +790,11 @@ class TransformerEncoder(nn.Module):
         super().__init__()
 
         self.position = PositionalEncoding(hidden_size, dropout)
-        self.embedding = nn.Sequential(
-            Embeddings(hidden_size, vocab_size * 2), self.position
-        )
+        self.embedding = nn.Sequential(Embeddings(hidden_size, vocab_size * 2), self.position)
 
         self.self_attn = MultiHeadedAttention(heads, hidden_size)
         self.feed_forward = PositionwiseFeedForward(hidden_size, ff_size, dropout)
-        layer = TransformerEncoderLayer(
-            hidden_size, seq_len, self.self_attn, self.feed_forward, dropout
-        )
+        layer = TransformerEncoderLayer(hidden_size, seq_len, self.self_attn, self.feed_forward, dropout)
         self.layers = clones(layer, n_layers_enc)
 
         self.conv_bottleneck = ConvBottleneck(hidden_size)
@@ -885,9 +866,7 @@ class TransformerEncoderLayer(nn.Module):
         self.feed_forward = feed_forward
         self.sublayer = clones(SublayerConnection(self.size, dropout), 2)
 
-    def forward(
-        self, x: torch.Tensor, mask: torch.Tensor, return_attn: bool = False
-    ) -> Any:
+    def forward(self, x: torch.Tensor, mask: torch.Tensor, return_attn: bool = False) -> Any:
         """Forward pass in the model.
 
         Args:
@@ -946,9 +925,7 @@ class TransformerDecoder(nn.Module):
         super().__init__()
 
         self.position = PositionalEncoding(hidden_size, dropout)
-        self.embedding = nn.Sequential(
-            Embeddings(hidden_size, vocab_size), self.position
-        )
+        self.embedding = nn.Sequential(Embeddings(hidden_size, vocab_size), self.position)
         self.attn_enc = MultiHeadedAttention(heads, hidden_size)
         self.ff_enc = PositionwiseFeedForward(hidden_size, ff_size, dropout)
         self.attn_dec_1 = MultiHeadedAttention(heads, hidden_size)
@@ -956,9 +933,7 @@ class TransformerDecoder(nn.Module):
 
         self.ff_dec = PositionwiseFeedForward(hidden_size, ff_size, dropout)
 
-        encoder_layers = TransformerEncoderLayer(
-            hidden_size, seq_len, self.attn_enc, self.ff_enc, dropout
-        )
+        encoder_layers = TransformerEncoderLayer(hidden_size, seq_len, self.attn_enc, self.ff_enc, dropout)
         decoder_layers = TransformerDecoderLayer(
             hidden_size,
             seq_len,
@@ -976,9 +951,7 @@ class TransformerDecoder(nn.Module):
         self.seq_len = seq_len
         self.outputs2vocab = torch.nn.Linear(hidden_size, vocab_size)
         self.deconv_shape = deconv_shape
-        self.deconv_bottleneck = DeconvBottleneck(
-            hidden_size, seq_len=seq_len, dim_factor=deconv_shape[2]
-        )
+        self.deconv_bottleneck = DeconvBottleneck(hidden_size, seq_len=seq_len, dim_factor=deconv_shape[2])
         self.linear = nn.Linear(latent_size, deconv_shape[2] * deconv_shape[1])
 
     def forward(
@@ -1032,9 +1005,7 @@ class TransformerDecoder(nn.Module):
         """
         device = get_device_from_tensor(latent)
         batch_size = latent.size(0)
-        token_indices = torch.full(
-            (batch_size, 1), tokenizer.sos_token_id, device=device
-        ).long()
+        token_indices = torch.full((batch_size, 1), tokenizer.sos_token_id, device=device).long()
 
         src_mask = torch.zeros((latent.shape[0], 1, self.seq_len), device=device)
 
@@ -1044,9 +1015,7 @@ class TransformerDecoder(nn.Module):
         self.eval()
         for i in range(self.seq_len - 1):
             trg_mask = subsequent_mask(token_indices.size(1)).long().to(device)
-            logits = self(
-                torch.autograd.Variable(token_indices), latent, src_mask, trg_mask
-            )
+            logits = self(torch.autograd.Variable(token_indices), latent, src_mask, trg_mask)
 
             prob = F.softmax(logits[:, i, :], dim=-1)
             _, next_token = torch.max(prob, dim=1)
@@ -1056,10 +1025,7 @@ class TransformerDecoder(nn.Module):
 
         decoded_texts = []
         for index in range(batch_size):
-            tokens = [
-                tokenizer.convert_id_to_token(vocab_index.item())
-                for vocab_index in token_indices[index]
-            ]
+            tokens = [tokenizer.convert_id_to_token(vocab_index.item()) for vocab_index in token_indices[index]]
             text = "".join(tokens).split()[0]
             decoded_texts.append(text)
         return decoded_texts, token_indices
