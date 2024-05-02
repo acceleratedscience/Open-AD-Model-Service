@@ -162,7 +162,8 @@ class GCPNGenerator(Generator):
             hidden_dims=self.hidden_dims,
             resources_path=resources_path,
         )
-
+        # Torchfox
+        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         self.task = tasks.GCPNGeneration(
             self.model,
             self.atom_types,
@@ -213,6 +214,8 @@ class GAFGenerator(Generator):
         edge_prior = distribution.IndependentGaussian(
             torch.zeros(self.num_relation + 1), torch.ones(self.num_relation + 1)
         )
+        # Torchfix
+        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         node_flow = models.GraphAF(self.model, node_prior, num_layer=12)
         edge_flow = models.GraphAF(self.model, edge_prior, use_edge=True, num_layer=12)
 
