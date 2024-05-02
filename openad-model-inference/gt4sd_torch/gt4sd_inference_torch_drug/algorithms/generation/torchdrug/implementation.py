@@ -96,7 +96,9 @@ class Generator:
                 is running either as a dedicated class or a string. If not provided,
                 it is inferred.
         """
+
         self.device = device_claim(device)
+
         self.resources_path = resources_path
 
         self.model = models.RGCN(
@@ -105,7 +107,8 @@ class Generator:
             hidden_dims=hidden_dims,
             batch_norm=batch_norm,
         )
-
+        # torchfix
+        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         self.dataset = DummyDataset(atom_types)
 
     def load_model(self, resources_path: str):
@@ -118,9 +121,7 @@ class Generator:
         Returns:
             a generated SMILES string wrapped into a list.
         """
-        results = self.task.generate(
-            num_sample=self.num_sample, max_resample=self.max_resample
-        )
+        results = self.task.generate(num_sample=self.num_sample, max_resample=self.max_resample)
         return results.to_smiles()
 
 
@@ -205,9 +206,7 @@ class GAFGenerator(Generator):
             resources_path=resources_path,
         )
 
-        node_prior = distribution.IndependentGaussian(
-            torch.zeros(self.input_dim), torch.ones(self.input_dim)
-        )
+        node_prior = distribution.IndependentGaussian(torch.zeros(self.input_dim), torch.ones(self.input_dim))
         edge_prior = distribution.IndependentGaussian(
             torch.zeros(self.num_relation + 1), torch.ones(self.num_relation + 1)
         )
