@@ -109,7 +109,7 @@ class Generator:
             hidden_dims=hidden_dims,
             batch_norm=batch_norm,
         )
-
+        self.model.to(device)
         self.dataset = DummyDataset(atom_types)
 
     def load_model(self, resources_path: str):

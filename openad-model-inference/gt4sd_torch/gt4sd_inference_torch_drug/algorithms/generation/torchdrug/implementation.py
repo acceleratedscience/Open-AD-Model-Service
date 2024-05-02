@@ -121,6 +121,7 @@ class Generator:
         Returns:
             a generated SMILES string wrapped into a list.
         """
+        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         results = self.task.generate(num_sample=self.num_sample, max_resample=self.max_resample)
         return results.to_smiles()
 
