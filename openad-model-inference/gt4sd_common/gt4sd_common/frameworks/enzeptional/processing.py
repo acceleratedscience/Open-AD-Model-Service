@@ -87,12 +87,13 @@ class TAPEEmbedding(StringEmbedding):
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
         # get device
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.device = device_claim(device)
         # task and model definition
         self.task_specification = registry.get_task_spec("embed")
-        self.model = registry.get_task_model(
-            model_type, self.task_specification.name, load_dir=model_dir
-        )
+        self.model = registry.get_task_model(model_type, self.task_specification.name, load_dir=model_dir)
         self.model = self.model.to(self.device)
         self.model.eval()
         self.tokenizer = TAPETokenizer(vocab=aa_vocabulary)
@@ -119,9 +120,7 @@ class TAPEEmbedding(StringEmbedding):
             a numpy array containing the embedding vectors.
         """
         # prepare input
-        token_ids, masks = zip(
-            *[self._encode_and_mask(sequence) for sequence in samples]
-        )
+        token_ids, masks = zip(*[self._encode_and_mask(sequence) for sequence in samples])
         input_data = {
             "input_ids": torch.from_numpy(pad_sequences(token_ids)).to(self.device),
             "input_mask": torch.from_numpy(pad_sequences(masks)).to(self.device),
@@ -178,9 +177,7 @@ class HuggingFaceTransformerEmbedding(StringEmbedding):
             self.model(
                 **{
                     key: tensor.to(self.device)
-                    for key, tensor in self.tokenizer(
-                        samples, return_tensors="pt", padding=True
-                    ).items()
+                    for key, tensor in self.tokenizer(samples, return_tensors="pt", padding=True).items()
                 }
             )[0][:, 0, :]
             .detach()
@@ -248,9 +245,7 @@ def reconstruct_sequence_with_mutation_range(
     for start, end in intervals:
         mutated_sequence += sequence[mutated_sequence_offset:start]
         chunk_length = end - start + 1
-        mutated_sequence += mutated_sequence_range[
-            mutated_range_offset : mutated_range_offset + chunk_length
-        ]
+        mutated_sequence += mutated_sequence_range[mutated_range_offset : mutated_range_offset + chunk_length]
         mutated_range_offset += chunk_length
         mutated_sequence_offset = end + 1
     mutated_sequence += sequence[end + 1 :]

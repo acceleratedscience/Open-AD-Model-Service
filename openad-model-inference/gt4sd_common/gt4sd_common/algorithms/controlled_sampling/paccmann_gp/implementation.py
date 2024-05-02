@@ -100,6 +100,9 @@ class GPConditionalGenerator:
             device: . Defaults to None, a.k.a, picking a default one ("gpu" if present, "cpu" otherwise).
         """
         # device
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.device = device_claim(device)
         # setting sampling parameters
         self.temperature = temperature
@@ -109,9 +112,7 @@ class GPConditionalGenerator:
         self.svae_params = dict()
         with open(os.path.join(resources_path, "vae_model_params.json"), "r") as f:
             self.svae_params.update(json.load(f))
-        smiles_language = SMILESLanguage.load(
-            os.path.join(resources_path, "selfies_language.pkl")
-        )
+        smiles_language = SMILESLanguage.load(os.path.join(resources_path, "selfies_language.pkl"))
         # initialize encoder, decoder, testVAE, and GP_generator_MW
         self.gru_encoder = StackGRUEncoder(self.svae_params).to(self.device)
         self.gru_decoder = StackGRUDecoder(self.svae_params).to(self.device)
@@ -133,19 +134,13 @@ class GPConditionalGenerator:
         # setting affinity predictor parameters
         with open(os.path.join(resources_path, "mca_model_params.json")) as f:
             self.predictor_params = json.load(f)
-        self.affinity_predictor = MODEL_FACTORY["bimodal_mca"](
-            self.predictor_params
-        ).to(self.device)
+        self.affinity_predictor = MODEL_FACTORY["bimodal_mca"](self.predictor_params).to(self.device)
         self.affinity_predictor.load(
             os.path.join(resources_path, "mca_weights.pt"),
             map_location=self.device,
         )
-        affinity_protein_language = ProteinLanguage.load(
-            os.path.join(resources_path, "protein_language.pkl")
-        )
-        affinity_smiles_language = SMILESLanguage.load(
-            os.path.join(resources_path, "smiles_language.pkl")
-        )
+        affinity_protein_language = ProteinLanguage.load(os.path.join(resources_path, "protein_language.pkl"))
+        affinity_smiles_language = SMILESLanguage.load(os.path.join(resources_path, "smiles_language.pkl"))
         self.affinity_predictor._associate_language(affinity_smiles_language)
         self.affinity_predictor._associate_language(affinity_protein_language)
         self.affinity_predictor.eval()
@@ -170,9 +165,7 @@ class GPConditionalGenerator:
         self.samples_for_evaluation = samples_for_evaluation
         self.maximum_number_of_sampling_steps = maximum_number_of_sampling_steps
 
-    def target_to_minimization_function(
-        self, target: Union[Dict[str, Dict[str, Any]], str]
-    ) -> CombinedMinimization:
+    def target_to_minimization_function(self, target: Union[Dict[str, Dict[str, Any]], str]) -> CombinedMinimization:
         """Use the target to configure a minimization function.
 
         Args:
@@ -254,9 +247,7 @@ class GPConditionalGenerator:
         log_params["dimensions"] = np.mean(optimization_parameters["dimensions"])  # type:ignore
         logger.info(f"running optimization with the following parameters: {log_params}")
         smiles_set = set()
-        logger.info(
-            f"running at most {self.number_of_optimization_rounds} optmization rounds"
-        )
+        logger.info(f"running at most {self.number_of_optimization_rounds} optmization rounds")
         for optimization_round in range(self.number_of_optimization_rounds):
             logger.info(f"starting round {optimization_round + 1}")
             optimization_parameters["random_state"] += optimization_round  # type:ignore
@@ -271,8 +262,7 @@ class GPConditionalGenerator:
                     + torch.cat(
                         (
                             torch.zeros(1, 1, self.latent_dim),
-                            (self.sampling_variance**0.5)
-                            * torch.randn(1, self.batch_size - 1, self.latent_dim),
+                            (self.sampling_variance**0.5) * torch.randn(1, self.batch_size - 1, self.latent_dim),
                         ),
                         dim=1,
                     )

@@ -58,6 +58,9 @@ class Generator:
             device: device where the inference is running either as a dedicated class or a string.
                 If not provided is inferred.
         """
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.device = device_claim(device)
         self.generated_length = generated_length
         self.batch_size = batch_size
@@ -69,9 +72,7 @@ class Generator:
             self.batch_size,
         )
 
-    def load_pretrained_paccmann(
-        self, params_file: str, lang_file: str, weights_file: str, batch_size: int
-    ) -> None:
+    def load_pretrained_paccmann(self, params_file: str, lang_file: str, weights_file: str, batch_size: int) -> None:
         """Load a pretrained PaccMann model.
 
         Args:
@@ -104,9 +105,7 @@ class Generator:
         transforms += [ToTensor(device=self.device)]
         self.transform = Compose(transforms)
 
-    def decode(
-        self, latent_z: torch.Tensor, search: SamplingSearch = SamplingSearch()
-    ) -> List[int]:
+    def decode(self, latent_z: torch.Tensor, search: SamplingSearch = SamplingSearch()) -> List[int]:
         """Decodes a sequence of tokens given a position in the latent space.
 
         Args:
@@ -119,17 +118,12 @@ class Generator:
         latent_z = latent_z.view(1, latent_z.shape[0], latent_z.shape[1]).float()
         molecule_iter = self.gru_vae.generate(
             latent_z,
-            prime_input=torch.tensor([self.smiles_language.start_index]).to(
-                self.device
-            ),
+            prime_input=torch.tensor([self.smiles_language.start_index]).to(self.device),
             end_token=torch.tensor([self.smiles_language.stop_index]).to(self.device),
             generate_len=self.generated_length,
             search=search,
         )
-        return [
-            [self.smiles_language.start_index] + m.cpu().detach().tolist()
-            for m in molecule_iter
-        ]
+        return [[self.smiles_language.start_index] + m.cpu().detach().tolist() for m in molecule_iter]
 
     def sample(self) -> List[str]:
         """Sample random molecules.
@@ -139,11 +133,7 @@ class Generator:
         """
         mol: List[str] = []
         while len(mol) < 1:
-            indexes = self.decode(
-                torch.randn(
-                    self.batch_size, self.gru_decoder.latent_dim, device=self.device
-                )
-            )
+            indexes = self.decode(torch.randn(self.batch_size, self.gru_decoder.latent_dim, device=self.device))
             mol = [self.smiles_language.token_indexes_to_smiles(m) for m in indexes]
             mol = [m for m in mol if Chem.MolFromSmiles(m) is not None and m != ""]
         return mol

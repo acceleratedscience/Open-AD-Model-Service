@@ -60,14 +60,10 @@ def adjust_length_to_model(length: int, maximum_sequence_length: int):
         the adjusted length.
     """
     if length < 0 and maximum_sequence_length > 0:
-        logger.warning(
-            f"negative length, adjusting to model supported length {maximum_sequence_length}"
-        )
+        logger.warning(f"negative length, adjusting to model supported length {maximum_sequence_length}")
         length = maximum_sequence_length
     elif 0 < maximum_sequence_length < length:
-        logger.warning(
-            f"longer then model supported length, adjusting to {maximum_sequence_length}"
-        )
+        logger.warning(f"longer then model supported length, adjusting to {maximum_sequence_length}")
         length = maximum_sequence_length
     elif length < 0:
         logger.warning(f"negative length, adjusting to maximal length {MAXIMUM_LENGTH}")
@@ -105,6 +101,9 @@ class Generator:
             device: device where the inference
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.device = device_claim(device)
         self.resources_path = resources_path
         self.model_type = model_type
@@ -120,10 +119,7 @@ class Generator:
     def load_model(self) -> None:
         """Load a pretrained PGT model."""
 
-        if (
-            os.path.exists(self.resources_path)
-            and len(os.listdir(self.resources_path)) > 0
-        ):
+        if os.path.exists(self.resources_path) and len(os.listdir(self.resources_path)) > 0:
             model_name_or_path = self.resources_path
         else:
             logger.error(f"{self.resources_path} not found")
@@ -139,9 +135,7 @@ class Generator:
         self.model.resize_token_embeddings(len(self.tokenizer))
         self.model.to(self.device)
         # adjusting length
-        self.length = adjust_length_to_model(
-            self.length, self.model.config.max_position_embeddings
-        )
+        self.length = adjust_length_to_model(self.length, self.model.config.max_position_embeddings)
 
     def generate_case(self) -> Union[List[str], List[Tuple[str, ...]]]:
         """Sample text snippets.
@@ -294,9 +288,7 @@ class EditGenerator(Generator):
         """
 
         if input_type not in EDITING_TYPES:
-            raise ValueError(
-                f"{input_type} is not a valid option for editing input type."
-            )
+            raise ValueError(f"{input_type} is not a valid option for editing input type.")
 
         prompt = f"{input_text} <|sep|> Replace the [MASK] tokens in the above {input_type} <|sep|>"
 
@@ -383,7 +375,9 @@ class CoherenceCheckGenerator(Generator):
 
         type_a, type_b = self.extract_coherence_types(coherence_type)
 
-        prompt = f"{input_a} <|sep|> {input_b} <|sep|> Do the above {type_a} and {type_b} belong to the same patent? <|sep|>"
+        prompt = (
+            f"{input_a} <|sep|> {input_b} <|sep|> Do the above {type_a} and {type_b} belong to the same patent? <|sep|>"
+        )
 
         super().__init__(
             resources_path=resources_path,
@@ -428,15 +422,9 @@ class CoherenceCheckGenerator(Generator):
            formatted generated sequences.
         """
 
-        if (
-            "yes" in generated_sequences[0].lower()
-            and "no" not in generated_sequences[0].lower()
-        ):
+        if "yes" in generated_sequences[0].lower() and "no" not in generated_sequences[0].lower():
             return ["yes"]
-        elif (
-            "no" in generated_sequences[0].lower()
-            and "yes" not in generated_sequences[0].lower()
-        ):
+        elif "no" in generated_sequences[0].lower() and "yes" not in generated_sequences[0].lower():
             return ["no"]
         else:
             return ["NA"]

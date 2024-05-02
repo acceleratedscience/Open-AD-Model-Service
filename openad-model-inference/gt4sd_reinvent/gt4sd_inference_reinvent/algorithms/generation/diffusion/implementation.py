@@ -50,9 +50,7 @@ from packaging import version
 from ....frameworks.torch import device_claim
 from .geodiff.core import GeoDiffPipeline
 
-DIFFUSERS_VERSION_LT_0_6_0 = version.parse(
-    importlib_metadata.version("diffusers")
-) < version.parse("0.6.0")
+DIFFUSERS_VERSION_LT_0_6_0 = version.parse(importlib_metadata.version("diffusers")) < version.parse("0.6.0")
 
 
 def set_seed(seed: int = 42) -> None:
@@ -110,6 +108,9 @@ class Generator:
             device: device where the inference
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.device = device_claim(device)
         self.resources_path = resources_path
         self.model_type = model_type
@@ -127,10 +128,7 @@ class Generator:
         except KeyError:
             raise KeyError(f"model type: {self.model_type} not supported")
 
-        if (
-            os.path.exists(self.resources_path)
-            and len(os.listdir(self.resources_path)) > 0
-        ):
+        if os.path.exists(self.resources_path) and len(os.listdir(self.resources_path)) > 0:
             model_name_or_path = self.resources_path
         else:
             model_name_or_path = self.model_name

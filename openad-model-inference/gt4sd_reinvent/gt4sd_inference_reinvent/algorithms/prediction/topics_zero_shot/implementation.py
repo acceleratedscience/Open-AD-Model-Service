@@ -56,6 +56,9 @@ class ZeroShotClassifier:
             device: device where the inference
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         device = device_claim(device)
         self.device = -1 if device.type == "cpu" else int(device.type.split(":")[1])
         self.resources_path = resources_path
@@ -72,9 +75,7 @@ class ZeroShotClassifier:
                 self.hypothesis_template = metadata["hypothesis_template"]
             self.model_name_or_path = os.path.join(self.resources_path, self.model_name)
             if not os.path.exists(self.model_name_or_path):
-                logger.info(
-                    f"no model named {self.model_name_or_path} in cache, using HuggingFace"
-                )
+                logger.info(f"no model named {self.model_name_or_path} in cache, using HuggingFace")
                 self.model_name_or_path = self.model_name
         else:
             message = f"could not retrieve the MLNI pipeline from the cache: {metadata_filepath} does not exists!"

@@ -85,18 +85,13 @@ def set_seed(seed: int = 42) -> None:
 
 def prepare_ctrl_input(tokenizer: BasicTokenizer, prompt: str, **kwargs):
     if kwargs.get("temperature", 1.0) > 0.7:
-        logger.warning(
-            "CTRL typically works better with lower temperatures (and lower k)."
-        )
+        logger.warning("CTRL typically works better with lower temperatures (and lower k).")
 
     encoded_prompt = tokenizer.encode(prompt, add_special_tokens=False)  # type:ignore
     if not any(
-        encoded_prompt[0] == x
-        for x in tokenizer.control_codes.values()  # type:ignore
+        encoded_prompt[0] == x for x in tokenizer.control_codes.values()  # type:ignore
     ):
-        logger.warning(
-            "not starting generation from a control code so you will not get good results"
-        )
+        logger.warning("not starting generation from a control code so you will not get good results")
     return prompt
 
 
@@ -117,14 +112,10 @@ def adjust_length_to_model(length: int, maximum_sequence_length: int):
         the adjusted length.
     """
     if length < 0 and maximum_sequence_length > 0:
-        logger.warning(
-            f"negative length, adjusting to model supported length {maximum_sequence_length}"
-        )
+        logger.warning(f"negative length, adjusting to model supported length {maximum_sequence_length}")
         length = maximum_sequence_length
     elif 0 < maximum_sequence_length < length:
-        logger.warning(
-            f"longer then model supported length, adjusting to {maximum_sequence_length}"
-        )
+        logger.warning(f"longer then model supported length, adjusting to {maximum_sequence_length}")
         length = maximum_sequence_length
     elif length < 0:
         logger.warning(f"negative length, adjusting to maximal length {MAXIMUM_LENGTH}")
@@ -182,6 +173,9 @@ class Generator:
             device: device where the inference
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
+        # torchfix
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.device = device_claim(device)
         self.resources_path = resources_path
         self.model_type = model_type
@@ -203,15 +197,10 @@ class Generator:
         """Load a pretrained HuggingFace generation model."""
 
         try:
-            model_class, tokenizer_class, preprocessing_function = MODEL_TYPES[
-                self.model_type
-            ]
+            model_class, tokenizer_class, preprocessing_function = MODEL_TYPES[self.model_type]
         except KeyError:
             raise KeyError(f"model type: {self.model_type} not supported")
-        if (
-            os.path.exists(self.resources_path)
-            and len(os.listdir(self.resources_path)) > 0
-        ):
+        if os.path.exists(self.resources_path) and len(os.listdir(self.resources_path)) > 0:
             model_name_or_path = self.resources_path
         else:
             model_name_or_path = self.model_name
@@ -224,13 +213,9 @@ class Generator:
 
         # adjusting length
         if self.model_type == "auto-seq2seq-lm":
-            self.length = adjust_length_to_model(
-                self.length, self.tokenizer.model_max_length
-            )
+            self.length = adjust_length_to_model(self.length, self.tokenizer.model_max_length)
         else:
-            self.length = adjust_length_to_model(
-                self.length, self.model.config.max_position_embeddings
-            )
+            self.length = adjust_length_to_model(self.length, self.model.config.max_position_embeddings)
 
     def sample(self) -> List[str]:
         """Sample text snippets.
@@ -289,9 +274,7 @@ class Generator:
 
         for generated_sequence in output_sequences:
             generated_sequence = generated_sequence.tolist()
-            text = self.tokenizer.decode(
-                generated_sequence, clean_up_tokenization_spaces=True
-            )
+            text = self.tokenizer.decode(generated_sequence, clean_up_tokenization_spaces=True)
 
             text = text[: text.find(self.stop_token) if self.stop_token else None]
 
