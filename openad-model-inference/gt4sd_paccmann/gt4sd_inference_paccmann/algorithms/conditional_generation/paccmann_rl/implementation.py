@@ -83,6 +83,7 @@ class ConditionalGenerator(ABC):
             latent = latent.repeat(1, 1, 2)
 
         # generate molecules as tokens list
+        # Torchfix
         latent = latent.to(torch.device)
         generated_molecules = self.selfies_conditional_generator.generate(
             latent,
