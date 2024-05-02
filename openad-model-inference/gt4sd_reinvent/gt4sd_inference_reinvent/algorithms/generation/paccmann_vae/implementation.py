@@ -83,7 +83,7 @@ class PaccMannVaeDefaultGenerator:
             list of SMILES generated.
         """
         smiles: List = []
-        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+
         print("We are in Actions")
         while len(smiles) < self.batch_size:
             # Define latent code

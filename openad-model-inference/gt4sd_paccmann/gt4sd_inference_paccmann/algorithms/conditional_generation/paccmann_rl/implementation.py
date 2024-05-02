@@ -83,6 +83,7 @@ class ConditionalGenerator(ABC):
             latent = latent.repeat(1, 1, 2)
 
         # generate molecules as tokens list
+        latent = latent.to(torch.device)
         generated_molecules = self.selfies_conditional_generator.generate(
             latent,
             prime_input=torch.tensor([self.smiles_language.start_index], device=self.device).long(),
@@ -153,6 +154,7 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         """
         # device
         self.device = device_claim(device)
+
         # setting sampling parameters
         self.temperature = temperature
         self.generated_length = generated_length
