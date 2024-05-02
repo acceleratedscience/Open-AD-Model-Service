@@ -814,7 +814,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "da6a0f7a6eeb1360e60ea07f465bcef301148b52"
+resolved_reference = "39185ee280507d264d864a4a717ad089b692a4c8"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -3960,13 +3960,13 @@ url = "https://download.pytorch.org/whl/cu118/torch-2.2.1%2Bcu118-cp310-cp310-li
 
 [[package]]
 name = "tqdm"
-version = "4.66.2"
+version = "4.66.3"
 description = "Fast, Extensible Progress Meter"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "tqdm-4.66.2-py3-none-any.whl", hash = "sha256:1ee4f8a893eb9bef51c6e35730cebf234d5d0b6bd112b0271e10ed7c24a02bd9"},
-    {file = "tqdm-4.66.2.tar.gz", hash = "sha256:6cd52cdf0fef0e0f543299cfc96fec90d7b8a7e88745f411ec33eb44d5ed3531"},
+    {file = "tqdm-4.66.3-py3-none-any.whl", hash = "sha256:4f41d54107ff9a223dca80b53efe4fb654c67efaba7f47bada3ee9d50e05bd53"},
+    {file = "tqdm-4.66.3.tar.gz", hash = "sha256:23097a41eba115ba99ecae40d06444c15d1c0c698d527a01c6c8bd1c5d0647e5"},
 ]
 
 [package.dependencies]
