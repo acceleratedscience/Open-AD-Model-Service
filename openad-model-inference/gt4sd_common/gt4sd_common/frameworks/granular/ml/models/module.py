@@ -86,13 +86,12 @@ class Mlp(nn.Module):
         """
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         x.to(device)
-
+        self.first_layer.to(device)
         z = self.first_layer(x)
         z = self.relu(z)
         z = self.middle_layers(z)
         z = self.last_layer(z)
         if self.activation:
-            self.activation.to(device)
             z = self.activation(z)
         return z
 
