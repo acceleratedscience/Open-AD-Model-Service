@@ -363,14 +363,10 @@ class SMILESLSTMHCIterator(Generator):
 
         logger.info("generating molecules")
         # index batch 0 patch
-        if self.batch_size > 0:
-            molecules = self.smiles_lstm_hc_generator.generate_optimized_molecules(
-                self.scoring_function, self.batch_size
-            )
-        else:
-            print("Batch Size = 0 ")
-            return []
+
         print("batch_size =" + str(self.batch_size))
+        molecules = self.smiles_lstm_hc_generator.generate_optimized_molecules(self.scoring_function, self.batch_size)
+
         return molecules
 
 

@@ -83,7 +83,8 @@ class Mlp(nn.Module):
         Returns:
             model output.
         """
-        x.to("cuda" if torch.cuda.is_available() else "cpu")
+
+        x.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         z = self.first_layer(x)
         z = self.relu(z)
         z = self.middle_layers(z)
