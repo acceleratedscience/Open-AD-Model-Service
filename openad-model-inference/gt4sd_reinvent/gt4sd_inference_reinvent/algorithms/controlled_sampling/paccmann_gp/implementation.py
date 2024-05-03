@@ -100,6 +100,7 @@ class GPConditionalGenerator:
             device: . Defaults to None, a.k.a, picking a default one ("gpu" if present, "cpu" otherwise).
         """
         # device
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.device = device_claim(device)
         # setting sampling parameters
         self.temperature = temperature

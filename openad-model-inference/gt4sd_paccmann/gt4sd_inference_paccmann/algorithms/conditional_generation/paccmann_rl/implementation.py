@@ -264,6 +264,7 @@ class TranscriptomicConditionalGenerator(ConditionalGenerator):
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
         # device
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.device = device_claim(device)
         # setting sampling parameters
         self.temperature = temperature

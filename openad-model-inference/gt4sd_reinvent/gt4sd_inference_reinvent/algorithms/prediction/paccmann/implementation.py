@@ -85,7 +85,7 @@ class BimodalMCAAffinityPredictor(MCAPredictor):
             device: device where the inference
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
-
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.device = device_claim(device)
         self.resources_path = resources_path
         self.protein_targets = protein_targets
