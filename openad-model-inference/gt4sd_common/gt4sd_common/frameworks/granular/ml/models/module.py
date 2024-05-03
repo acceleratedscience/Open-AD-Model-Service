@@ -62,15 +62,16 @@ class Mlp(nn.Module):
         """
         super().__init__()
         activation = activation.lower()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.activation = ACTIVATION_FACTORY.get(activation, None)
-        self.first_layer = nn.Linear(input_size, hidden_size)
+        self.first_layer = nn.Linear(input_size, hidden_size, device=device)
         middle_layers: List[nn.Module] = list()
         for _ in range(n_layers):
-            middle_layers.append(nn.Linear(hidden_size, hidden_size))
+            middle_layers.append(nn.Linear(hidden_size, hidden_size, device=device))
             middle_layers.append(nn.ReLU())
             middle_layers.append(nn.Dropout(p=dropout))
         self.middle_layers = nn.Sequential(*middle_layers)
-        self.last_layer = nn.Linear(hidden_size, output_size)
+        self.last_layer = nn.Linear(hidden_size, output_size, device=device)
         self.relu = nn.ReLU()
         self.output_dim = output_size
 
@@ -85,10 +86,7 @@ class Mlp(nn.Module):
         """
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         x.to(device)
-        self.first_layer.to(device)
-        self.relu.to(device)
-        self.middle_layers.to(device)
-        self.last_layer.to(device)
+
         z = self.first_layer(x)
         z = self.relu(z)
         z = self.middle_layers(z)
