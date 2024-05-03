@@ -29,8 +29,9 @@ import re
 from typing import List, Union, cast
 
 import torch
-import sys, gt4sd_common
-from gt4sd_common import *
+import sys
+import gt4sd_common
+from gt4sd_common import *  # noqa: F403
 
 sys.modules["gt4sd"] = gt4sd_common
 
@@ -77,11 +78,15 @@ class CatalystVAE(Representation):
             checkpoint_filename: checkpoint filename. Defaults to "epoch=199-step=5799.ckpt".
         """
         self.vocabulary_filepath = os.path.join(resources_path, "vocab_combined.csv")
-        self.checkpoint_filepath = os.path.join(resources_path, "epoch=199-step=5799.ckpt")
+        self.checkpoint_filepath = os.path.join(
+            resources_path, "epoch=199-step=5799.ckpt"
+        )
         self.tokenizer = SmilesTokenizer(self.vocabulary_filepath)
         self.model = cast(
             GranularEncoderDecoderModel,
-            GranularModule.load_from_checkpoint(self.checkpoint_filepath).autoencoders[0],
+            GranularModule.load_from_checkpoint(self.checkpoint_filepath).autoencoders[
+                0
+            ],
         )
         self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         self.model.eval()
@@ -93,8 +98,12 @@ class CatalystVAE(Representation):
             self.primer_point = self.smiles_to_latent(self.primer_smiles)
         else:
             self.primer_point = torch.zeros(1, self.z_dimension)
-        self.clean_regex = re.compile(r"{}|{}".format(self.tokenizer.sos_token, self.tokenizer.unk_token))
-        self.end_regex = re.compile(r"{}|{}".format(self.tokenizer.eos_token, self.tokenizer.pad_token))
+        self.clean_regex = re.compile(
+            r"{}|{}".format(self.tokenizer.sos_token, self.tokenizer.unk_token)
+        )
+        self.end_regex = re.compile(
+            r"{}|{}".format(self.tokenizer.eos_token, self.tokenizer.pad_token)
+        )
 
     def smiles_to_latent(self, smiles: str) -> Point:
         """Encode a SMILES into a latent point.
@@ -110,7 +119,9 @@ class CatalystVAE(Representation):
                 [
                     self.tokenizer.add_padding_tokens(
                         self.tokenizer.convert_tokens_to_ids(
-                            [self.tokenizer.sos_token] + self.tokenizer.tokenize(smiles) + [self.tokenizer.eos_token]
+                            [self.tokenizer.sos_token]
+                            + self.tokenizer.tokenize(smiles)
+                            + [self.tokenizer.eos_token]
                         ),
                         length=self.padding_length,
                     )
@@ -127,7 +138,8 @@ class CatalystVAE(Representation):
         Returns:
             a catalyst in SMILES format.
         """
-        z = torch.unsqueeze(point_to_tensor(z), dim=0)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        z = torch.unsqueeze(point_to_tensor(z), dim=0).to(device)
         reconstructed = self.model.decode(z, max_len=self.maximum_length)[0][0]  # type:ignore
         reconstructed = self.clean_regex.sub("", reconstructed)
         match_ending = self.end_regex.search(reconstructed)
@@ -141,7 +153,9 @@ class CatalystBindingEnergyPredictor(PropertyPredictor):
 
     model: MlpPredictor
 
-    def __init__(self, resources_path: str, checkpoint_filename: str = "epoch=199-step=5799.ckpt") -> None:
+    def __init__(
+        self, resources_path: str, checkpoint_filename: str = "epoch=199-step=5799.ckpt"
+    ) -> None:
         """Constructs a CatalystBindingEnergyPredictor.
 
         Args:
@@ -153,7 +167,9 @@ class CatalystBindingEnergyPredictor(PropertyPredictor):
         self.tokenizer = SmilesTokenizer(self.vocabulary_filepath)
         self.model = cast(
             MlpPredictor,
-            GranularModule.load_from_checkpoint(self.checkpoint_filepath).latent_models[0],
+            GranularModule.load_from_checkpoint(self.checkpoint_filepath).latent_models[
+                0
+            ],
         )
         self.model.eval()
 
@@ -167,12 +183,9 @@ class CatalystBindingEnergyPredictor(PropertyPredictor):
             the predicted binding energy.
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        z = point_to_tensor(z)
-        z.to(self.device)
-
-        self.model.to(self.device)
-
-        return self.model(z)[0][0].item().to(self.device)
+        tensor = point_to_tensor(z).to(self.device)
+        result = self.model(tensor)[0][0].item()
+        return result
 
 
 class CatalystGenerator(Generator):
@@ -209,7 +222,9 @@ class CatalystGenerator(Generator):
             primer_smiles=primer_smiles,
             checkpoint_filename=checkpoint_filename,
         )
-        self.predictor = CatalystBindingEnergyPredictor(resources_path, checkpoint_filename=checkpoint_filename)
+        self.predictor = CatalystBindingEnergyPredictor(
+            resources_path, checkpoint_filename=checkpoint_filename
+        )
         self.minimum_latent_coordinate = -100.0
         self.maximum_latent_coordinate = 100.0
 
@@ -223,7 +238,9 @@ class CatalystGenerator(Generator):
             catalysts sampled for the target value.
         """
         if isinstance(target_energy, str):
-            logger.warning(f"target energy ({target_energy}) passed as string, casting to float")
+            logger.warning(
+                f"target energy ({target_energy}) passed as string, casting to float"
+            )
             target_energy = float(target_energy)
         sampler = GaussianProcessRepresentationsSampler(
             {"energy": target_energy},
@@ -244,5 +261,7 @@ class CatalystGenerator(Generator):
             )
             if len(sample["smiles"])
         ]
-        _, valid_indexes = validate_molecules(pattern_list=smiles_list, input_type=MoleculeFormat.smiles)
+        _, valid_indexes = validate_molecules(
+            pattern_list=smiles_list, input_type=MoleculeFormat.smiles
+        )
         return [smiles_list[index] for index in valid_indexes]

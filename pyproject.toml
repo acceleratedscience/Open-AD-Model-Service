@@ -34,4 +34,5 @@ show-fixes = true
 ignore = [
     "E722", # Do not use bare `except`
     "F401", # imported but unused
+    "E402", # gt4sd top level submodule
 ]
