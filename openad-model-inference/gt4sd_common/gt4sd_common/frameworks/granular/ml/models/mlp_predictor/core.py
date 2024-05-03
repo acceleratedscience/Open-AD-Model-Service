@@ -31,6 +31,9 @@ from ....arg_parser.utils import str2bool
 from ..base_model import GranularBaseModel
 from ..loss import LOSS_FACTORY
 from ..module import Mlp
+import torch
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -100,6 +103,8 @@ class MlpPredictor(GranularBaseModel):
         Returns:
             model step output.
         """
+        x.to(device)
+
         return self.mlp(x)
 
     def predict(self, x: Any, *args, **kwargs) -> Any:
@@ -111,6 +116,7 @@ class MlpPredictor(GranularBaseModel):
         Returns:
             model output.
         """
+        x.to(device)
         return self._run_step(x)
 
     def step(
@@ -170,9 +176,7 @@ class MlpPredictor(GranularBaseModel):
         return output, loss, logs
 
     @staticmethod
-    def add_model_specific_args(
-        parent_parser: ArgumentParser, name: str, *args, **kwargs
-    ) -> ArgumentParser:
+    def add_model_specific_args(parent_parser: ArgumentParser, name: str, *args, **kwargs) -> ArgumentParser:
         """Adding to a parser model specific arguments.
 
         Args:
