@@ -368,8 +368,9 @@ class SMILESLSTMHCIterator(Generator):
                 self.scoring_function, self.batch_size
             )
         else:
+            print("Batch Size = 0 ")
             return []
-
+        print("batch_size =" + str(self.batch_size))
         return molecules
 
 
