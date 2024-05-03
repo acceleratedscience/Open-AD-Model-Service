@@ -48,11 +48,7 @@ def point_to_tensor(point: Point) -> torch.Tensor:
     Returns:
         tensor representing a point.
     """
-    return (
-        point.clone().detach().float()
-        if isinstance(point, torch.Tensor)
-        else torch.tensor(point).float()
-    )
+    return point.clone().detach().float() if isinstance(point, torch.Tensor) else torch.tensor(point).float()
 
 
 @dataclass
@@ -85,9 +81,7 @@ class Representation:
         reconstructed = self.model.decode(z)  # type: ignore
         return reconstructed
 
-    def deserialize(
-        self, filepath: str, device: Optional[Union[torch.device, str]] = None
-    ) -> None:
+    def deserialize(self, filepath: str, device: Optional[Union[torch.device, str]] = None) -> None:
         """
         Deserialize a representation from file.
 
@@ -195,9 +189,7 @@ class Objective:
                 weights_dictionary[target] = 1.0
             self.weights = weights_dictionary
 
-    def construct_property_representation(
-        self, z: torch.Tensor, property_name: str
-    ) -> torch.Tensor:
+    def construct_property_representation(self, z: torch.Tensor, property_name: str) -> torch.Tensor:
         """Construct a representation for a specific property.
 
         The encoded point and fixed encodings (or slices thereof) if available
@@ -242,12 +234,14 @@ class Objective:
         z = point_to_tensor(z)
         # predict all properties
         predicted_properties = dict()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         with torch.no_grad():
             for property_name in self.targets.keys():
                 property_predictor = self.property_predictors[property_name]
-                latent_z = self.construct_property_representation(
-                    z=z, property_name=property_name
-                )
+                latent_z = self.construct_property_representation(z=z, property_name=property_name)
+
+                latent_z.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+
                 predicted_properties[property_name] = property_predictor(latent_z)
 
                 # TODO aggregate the following scores over different properties,
@@ -281,9 +275,7 @@ class GaussianProcessRepresentationsSampler:
         property_predictors: Dict[str, PropertyPredictor],
         representations: RepresentationsDict,
         representation_order: Optional[List[str]] = None,
-        bounds: Optional[
-            Dict[str, Union[List[Tuple[float, float]], Tuple[float, float]]]
-        ] = None,
+        bounds: Optional[Dict[str, Union[List[Tuple[float, float]], Tuple[float, float]]]] = None,
         # TODO Any should be type of scaler; default to lambda returning 0?
         scalers: Optional[Dict[str, Scaler]] = None,
         weights: Optional[Dict[str, float]] = None,
@@ -348,9 +340,7 @@ class GaussianProcessRepresentationsSampler:
 
     def set_bounds(
         self,
-        bounds: Optional[
-            Dict[str, Union[List[Tuple[float, float]], Tuple[float, float]]]
-        ] = None,
+        bounds: Optional[Dict[str, Union[List[Tuple[float, float]], Tuple[float, float]]]] = None,
     ) -> None:
         """Set the bounds for the optimization.
 
@@ -361,16 +351,12 @@ class GaussianProcessRepresentationsSampler:
         for representation_name, bounds in self.bounds.items():  # type:ignore
             z_dimension = self.representations[representation_name].z_dimension
             if isinstance(bounds, tuple):
-                self.bounds[representation_name] = self._get_bounds(
-                    bounds[0], bounds[1], z_dimension
-                )
+                self.bounds[representation_name] = self._get_bounds(bounds[0], bounds[1], z_dimension)
             else:
                 self.bounds[representation_name] = bounds  # type:ignore
         for representation_name in self.representations.keys() - self.bounds.keys():
             z_dimension = self.representations[representation_name].z_dimension
-            self.bounds[representation_name] = self._get_bounds(  # type: ignore
-                MINIMUM_REAL, MAXIMUM_REAL, z_dimension
-            )
+            self.bounds[representation_name] = self._get_bounds(MINIMUM_REAL, MAXIMUM_REAL, z_dimension)  # type: ignore
 
     def define_dimensions(self, representation_order: List[str]) -> List[Real]:
         """Define the dimensions of the optimization space.
@@ -386,14 +372,11 @@ class GaussianProcessRepresentationsSampler:
         for representation_name in representation_order:
             representation = self.representations[representation_name]
             representation_bounds = self.bounds[representation_name]
-            representation.z_index = slice(
-                latent_index, latent_index + representation.z_dimension
-            )
+            representation.z_index = slice(latent_index, latent_index + representation.z_dimension)
             latent_index += representation.z_dimension
             dimensions.extend(  # type: ignore
                 [  # type: ignore
-                    Real(lower_bound, upper_bound)  # type: ignore
-                    for lower_bound, upper_bound in representation_bounds
+                    Real(lower_bound, upper_bound) for lower_bound, upper_bound in representation_bounds  # type: ignore
                 ]
             )
         return dimensions
@@ -478,11 +461,7 @@ class GaussianProcessRepresentationsSampler:
         )
 
         objective_values, points = zip(
-            *sorted(
-                zip(
-                    gaussian_process_results.func_vals, gaussian_process_results.x_iters
-                )
-            )
+            *sorted(zip(gaussian_process_results.func_vals, gaussian_process_results.x_iters))
         )
 
         results_list = []
@@ -494,9 +473,7 @@ class GaussianProcessRepresentationsSampler:
                 if representation.fixed_representation is None
             ]
 
-        for point, objective_value in zip(
-            points[:number_of_points], objective_values[:number_of_points]
-        ):
+        for point, objective_value in zip(points[:number_of_points], objective_values[:number_of_points]):
             optimization_result = {"objective": objective_value, "z": point}
             for representation_name in relevant_representations:
                 representation = self.representations[representation_name]
