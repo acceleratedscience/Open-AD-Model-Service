@@ -128,6 +128,7 @@ class ConditionalGenerator:
         config = AutoConfig.from_pretrained(config_name, mem_len=1024)
         xlnet_model = AutoModelWithLMHead.from_pretrained(resources_path, from_tf=False, config=config)
         xlnet_model.resize_token_embeddings(len(self.tokenizer))
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         xlnet_model.to(self.device)
         xlnet_model.eval()
         logger.info(f"Model restored from {resources_path}")

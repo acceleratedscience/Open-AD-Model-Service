@@ -79,6 +79,7 @@ class CatalystVAE(Representation):
         self.vocabulary_filepath = os.path.join(resources_path, "vocab_combined.csv")
         self.checkpoint_filepath = os.path.join(resources_path, "epoch=199-step=5799.ckpt")
         self.tokenizer = SmilesTokenizer(self.vocabulary_filepath)
+        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         self.model = cast(
             GranularEncoderDecoderModel,
             GranularModule.load_from_checkpoint(self.checkpoint_filepath).autoencoders[0],
