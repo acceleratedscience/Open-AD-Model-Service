@@ -154,6 +154,7 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
                 is running either as a dedicated class or a string. If not provided is inferred.
         """
         # device
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.device = device_claim(device)
 
         # setting sampling parameters
@@ -163,6 +164,7 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         # instantiate protein embedding encoder
         with open(os.path.join(resources_path, "protein_embedding_params.json")) as fp:
             self.protein_embedding_encoder_params = json.load(fp)
+
         self.protein_embedding_encoder = ENCODER_FACTORY["dense"](self.protein_embedding_encoder_params).to(self.device)
         self.protein_embedding_encoder.load(
             os.path.join(resources_path, "protein_embedding_encoder.pt"),
