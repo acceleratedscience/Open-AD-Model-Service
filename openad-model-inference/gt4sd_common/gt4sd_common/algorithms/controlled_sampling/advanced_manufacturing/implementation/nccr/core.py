@@ -166,9 +166,12 @@ class CatalystBindingEnergyPredictor(PropertyPredictor):
         Returns:
             the predicted binding energy.
         """
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         z = point_to_tensor(z)
+        z.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         z.to((torch.device("cuda" if torch.cuda.is_available() else "cpu")))
         self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+
         return self.model(z)[0][0].item()
 
 
