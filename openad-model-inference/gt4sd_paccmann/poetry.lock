@@ -1199,7 +1199,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "51ee181b2716f3e99ce56ee1a2577c95dfea9fd1"
+resolved_reference = "beb81ebf881ccfbc444e2ff7aeffbacb212cb069"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -1226,7 +1226,7 @@ torch = [
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "51ee181b2716f3e99ce56ee1a2577c95dfea9fd1"
+resolved_reference = "beb81ebf881ccfbc444e2ff7aeffbacb212cb069"
 subdirectory = "openad-model-inference/gt4sd_guacamol"
 
 [[package]]
