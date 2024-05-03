@@ -168,7 +168,6 @@ class CatalystBindingEnergyPredictor(PropertyPredictor):
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         z = point_to_tensor(z)
-        z.device = self.device
         z.to(self.device)
 
         self.model.to(self.device)
