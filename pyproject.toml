@@ -5,20 +5,11 @@ license="MIT"
 description = "Openad_model_Service"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
-
-[[tool.poetry.source]]
-name = "torch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-priority = "supplemental"
-
-[[tool.poetry.source]]
-name = "torch-cu118"
-url = "https://download.pytorch.org/whl/cu118"
-priority = "supplemental"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-gt4sd_inference_all = { path = "openad-model-inference/gt4sd_inference_all"}
+gt4sd_inference_all = { path = "openad-model-inference/gt4sd_inference_all" }
 
 [build-system]
 requires = ["poetry-core"]
