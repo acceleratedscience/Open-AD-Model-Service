@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "gt4sd_inference_reinvent"
+version = "0.1.0"
+license="MIT"
+description = "gt4sd Inference for paccmannrl prediction"
+authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+readme = "README.md"
+
+
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+
+gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "gt4sd/gt4sd_common", branch = "gt4sd" }
+reinvent_models ={ git = "https://github.com/GT4SD/reinvent_models" , rev = "v0.0.1" ,optional = false}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.0.2"
+pyright = "^1.1.352"
+python-lsp-server = {extras = ["all"], version = "^1.10.0"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

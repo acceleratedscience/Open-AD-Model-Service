@@ -1,24 +1,19 @@
 [tool.poetry]
-name = "openad-model-inference"
+name = "gt4sd"
 version = "0.1.0"
 license="MIT"
 description = "Openad_model_Service"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
 
-[[tool.poetry.source]]
-name = "torch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-priority = "supplemental"
-
-[[tool.poetry.source]]
-name = "torch-cu118"
-url = "https://download.pytorch.org/whl/cu118"
-priority = "supplemental"
-
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-gt4sd_inference_all = { path = "openad-model-inference/gt4sd_inference_all"}
+
+gt4sd_inference_guacamol = { path = "gt4sd/gt4sd_guacamol" }
+gt4sd-inference-moler = { path = "gt4sd/gt4sd_moler"}
+gt4sd-inference-regression = { path = "gt4sd/gt4sd_regression" }
+gt4sd-inference-reinvent = { path = "gt4sd/gt4sd_reinvent" }
+gt4sd-inference-torch-drug = { path = "gt4sd/gt4sd_torch" }
 
 [build-system]
 requires = ["poetry-core"]
