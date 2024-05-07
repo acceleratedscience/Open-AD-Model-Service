@@ -1041,7 +1041,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "37307f45a0157c690020f4ddeda3b5a9961c8657"
+resolved_reference = "6e47042a8ddcbb8057cd7b732787df52b5b6c1f5"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -1094,7 +1094,7 @@ tqdm = "*"
 type = "git"
 url = "https://github.com/PhillipDowney/guacamol_baselines.git"
 reference = "0.0.4"
-resolved_reference = "58e39ed6ac1bd7c43110ab0771832ec9a2941f39"
+resolved_reference = "8f7373cf12d03e93578775733841f4cbe28661af"
 
 [[package]]
 name = "h5py"
