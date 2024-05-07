@@ -54,8 +54,10 @@ class VAE:
             max_len: max length of SMILES.
             device: device used for computation. Defaults to cpu.
         """
-        if torch.cuda.is_available():
-            device = "cuda"
+        # if torch.cuda.is_available():
+        #    device = "cuda"
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.config = argparse.Namespace(
             model_load=model_path,
             config_load=model_config_path,
