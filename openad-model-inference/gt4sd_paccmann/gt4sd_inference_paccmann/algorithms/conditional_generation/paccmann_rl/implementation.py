@@ -218,7 +218,6 @@ class ProteinSequenceConditionalGenerator(ConditionalGenerator):
         # encode embedded sequence once, ignore the returned dummy ids
         embeddings, _ = self.primary_sequence_embedder.forward([[protein]])
         protein_mu, protein_logvar = self.protein_embedding_encoder(embeddings.to(self.device))
-
         # now stack as batch to generate different samples
         proteins_mu = torch.cat([protein_mu] * self.samples_per_protein, dim=0)
         proteins_logvar = torch.cat([protein_logvar] * self.samples_per_protein, dim=0)
