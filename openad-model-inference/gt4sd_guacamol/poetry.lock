@@ -1041,7 +1041,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "72ce6080da38377ade999fd376cd9ff388e2dbfd"
+resolved_reference = "4332ae3a8c7c15565ce6f184afd90df9b14ac252"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
