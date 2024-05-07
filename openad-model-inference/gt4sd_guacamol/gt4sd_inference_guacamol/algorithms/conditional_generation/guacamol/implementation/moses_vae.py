@@ -56,7 +56,6 @@ class VAE:
         """
         # if torch.cuda.is_available():
         #    device = "cuda"
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.config = argparse.Namespace(
             model_load=model_path,
@@ -65,8 +64,10 @@ class VAE:
             n_samples=n_samples,
             n_batch=n_batch,
             max_len=max_len,
-            device=device,
+            device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         )
+
+    torch.load()
 
     def get_generator(self) -> VaeGenerator:
         """Create an instance of the VaeGenerator.
