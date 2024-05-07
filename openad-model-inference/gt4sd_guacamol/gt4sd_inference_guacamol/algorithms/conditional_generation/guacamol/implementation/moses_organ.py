@@ -24,7 +24,7 @@
 """Moses Organ implementation."""
 
 import argparse
-
+import torch
 from guacamol_baselines.moses_baselines.organ_distribution_learning import (
     OrganGenerator,
 )
@@ -52,6 +52,8 @@ class Organ:
             max_len: max length of SMILES.
             device: device used for computation. Defaults to cpu.
         """
+        if torch.cuda.is_available():
+            device = "cuda"
         self.config = argparse.Namespace(
             model_load=model_path,
             config_load=model_config_path,
@@ -68,5 +70,6 @@ class Organ:
         Returns:
             an instance of OrganGenerator.
         """
+
         optimiser = OrganGenerator(self.config)
         return optimiser

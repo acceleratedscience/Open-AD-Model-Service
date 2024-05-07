@@ -25,7 +25,7 @@
 
 import argparse
 import logging
-
+import torch
 from guacamol_baselines.moses_baselines.vae_distribution_learning import VaeGenerator
 
 logger = logging.getLogger(__name__)
@@ -54,6 +54,8 @@ class VAE:
             max_len: max length of SMILES.
             device: device used for computation. Defaults to cpu.
         """
+        if torch.cuda.is_available():
+            device = "cuda"
         self.config = argparse.Namespace(
             model_load=model_path,
             config_load=model_config_path,

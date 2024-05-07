@@ -26,6 +26,7 @@
 import argparse
 
 from guacamol_baselines.moses_baselines.aae_distribution_learning import AaeGenerator
+import torch
 
 
 class AAE:
@@ -50,6 +51,8 @@ class AAE:
             max_len: max length of SMILES.
             device: device used for computation. Defaults to cpu.
         """
+        if torch.cuda.is_available():
+            device = "cuda"
         self.config = argparse.Namespace(
             model_load=model_path,
             config_load=model_config_path,
