@@ -161,23 +161,23 @@ msal-extensions = ">=0.3.0"
 
 [[package]]
 name = "azure-storage-blob"
-version = "12.19.1"
+version = "12.20.0"
 description = "Microsoft Azure Blob Storage Client Library for Python"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "azure-storage-blob-12.19.1.tar.gz", hash = "sha256:13e16ba42fc54ac2c7e8f976062173a5c82b9ec0594728e134aac372965a11b0"},
-    {file = "azure_storage_blob-12.19.1-py3-none-any.whl", hash = "sha256:c5530dc51c21c9564e4eb706cd499befca8819b10dd89716d3fc90d747556243"},
+    {file = "azure-storage-blob-12.20.0.tar.gz", hash = "sha256:eeb91256e41d4b5b9bad6a87fd0a8ade07dd58aa52344e2c8d2746e27a017d3b"},
+    {file = "azure_storage_blob-12.20.0-py3-none-any.whl", hash = "sha256:de6b3bf3a90e9341a6bcb96a2ebe981dffff993e9045818f6549afea827a52a9"},
 ]
 
 [package.dependencies]
-azure-core = ">=1.28.0,<2.0.0"
+azure-core = ">=1.28.0"
 cryptography = ">=2.1.4"
 isodate = ">=0.6.1"
-typing-extensions = ">=4.3.0"
+typing-extensions = ">=4.6.0"
 
 [package.extras]
-aio = ["azure-core[aio] (>=1.28.0,<2.0.0)"]
+aio = ["azure-core[aio] (>=1.28.0)"]
 
 [[package]]
 name = "cachetools"
@@ -1041,7 +1041,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "a1df65b9d9a13271005ec90492add22635ac01c1"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -4389,13 +4389,13 @@ files = [
 
 [[package]]
 name = "tomlkit"
-version = "0.12.4"
+version = "0.12.5"
 description = "Style preserving TOML library"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "tomlkit-0.12.4-py3-none-any.whl", hash = "sha256:5cd82d48a3dd89dee1f9d64420aa20ae65cfbd00668d6f094d7578a78efbb77b"},
-    {file = "tomlkit-0.12.4.tar.gz", hash = "sha256:7ca1cfc12232806517a8515047ba66a19369e71edf2439d0f5824f91032b6cc3"},
+    {file = "tomlkit-0.12.5-py3-none-any.whl", hash = "sha256:af914f5a9c59ed9d0762c7b64d3b5d5df007448eb9cd2edc8a46b1eafead172f"},
+    {file = "tomlkit-0.12.5.tar.gz", hash = "sha256:eef34fba39834d4d6b73c9ba7f3e4d1c417a4e56f89a7e96e090dd0d24b8fb3c"},
 ]
 
 [[package]]

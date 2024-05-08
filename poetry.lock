@@ -356,23 +356,23 @@ msal-extensions = ">=0.3.0"
 
 [[package]]
 name = "azure-storage-blob"
-version = "12.19.1"
+version = "12.20.0"
 description = "Microsoft Azure Blob Storage Client Library for Python"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "azure-storage-blob-12.19.1.tar.gz", hash = "sha256:13e16ba42fc54ac2c7e8f976062173a5c82b9ec0594728e134aac372965a11b0"},
-    {file = "azure_storage_blob-12.19.1-py3-none-any.whl", hash = "sha256:c5530dc51c21c9564e4eb706cd499befca8819b10dd89716d3fc90d747556243"},
+    {file = "azure-storage-blob-12.20.0.tar.gz", hash = "sha256:eeb91256e41d4b5b9bad6a87fd0a8ade07dd58aa52344e2c8d2746e27a017d3b"},
+    {file = "azure_storage_blob-12.20.0-py3-none-any.whl", hash = "sha256:de6b3bf3a90e9341a6bcb96a2ebe981dffff993e9045818f6549afea827a52a9"},
 ]
 
 [package.dependencies]
-azure-core = ">=1.28.0,<2.0.0"
+azure-core = ">=1.28.0"
 cryptography = ">=2.1.4"
 isodate = ">=0.6.1"
-typing-extensions = ">=4.3.0"
+typing-extensions = ">=4.6.0"
 
 [package.extras]
-aio = ["azure-core[aio] (>=1.28.0,<2.0.0)"]
+aio = ["azure-core[aio] (>=1.28.0)"]
 
 [[package]]
 name = "babel"
@@ -468,17 +468,17 @@ css = ["tinycss2 (>=1.1.0,<1.3)"]
 
 [[package]]
 name = "boto3"
-version = "1.34.100"
+version = "1.34.101"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "boto3-1.34.100-py3-none-any.whl", hash = "sha256:bbe2bb0dfcd92380da2a2fa2c2f586ba06c118b796380b2d0f3d0ebd103ec28d"},
-    {file = "boto3-1.34.100.tar.gz", hash = "sha256:016f6d66900bb1a835dea2063f1e91fc7057dbf7fb7df8add0706f0da9492631"},
+    {file = "boto3-1.34.101-py3-none-any.whl", hash = "sha256:79b93f3370ea96ce838042bc2eac0c996aee204b01e7e6452eb77abcbe697d6a"},
+    {file = "boto3-1.34.101.tar.gz", hash = "sha256:1d854b5880e185db546b4c759fcb664bf3326275064d2b44229cc217e8be9d7e"},
 ]
 
 [package.dependencies]
-botocore = ">=1.34.100,<1.35.0"
+botocore = ">=1.34.101,<1.35.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.10.0,<0.11.0"
 
@@ -487,13 +487,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.34.100"
+version = "1.34.101"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "botocore-1.34.100-py3-none-any.whl", hash = "sha256:ee516fb9e9e906d311f2a9921afaf79c594db239a5b4b626e89e6960401aad0b"},
-    {file = "botocore-1.34.100.tar.gz", hash = "sha256:513bea60c6531af8e1ae1fdb2947e3ef99712f39c58f4656b5efef9cb6f75a13"},
+    {file = "botocore-1.34.101-py3-none-any.whl", hash = "sha256:f145e8b4b8fc9968f5eb695bdc2fcc8e675df7fbc3c56102dc1f5471be6baf35"},
+    {file = "botocore-1.34.101.tar.gz", hash = "sha256:01f3802d25558dd7945d83884bf6885e2f84e1ff27f90b5f09614966fe18c18f"},
 ]
 
 [package.dependencies]
@@ -1689,7 +1689,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -1738,7 +1738,7 @@ torch = [
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_guacamol"
 
 [[package]]
@@ -1758,7 +1758,7 @@ molecule_generation = ">=0.4.1"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_moler"
 
 [[package]]
@@ -1787,7 +1787,7 @@ toxsmi = {git = "https://github.com/PhillipDowney/chemical_representation_learni
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_paccmann"
 
 [[package]]
@@ -1811,7 +1811,7 @@ terminator = {git = "https://github.com/PhillipDowney/regression-transformer", r
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_regression"
 
 [[package]]
@@ -1831,7 +1831,7 @@ reinvent_models = {git = "https://github.com/GT4SD/reinvent_models", rev = "v0.0
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_reinvent"
 
 [[package]]
@@ -1867,7 +1867,7 @@ torchdrug = ">=0.2.0"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "bb0b2dd56fa1d3157436f6e2dd7fc216406f7020"
+resolved_reference = "d3da73b3783a5cf7ed4b27c9270d42e038582ee8"
 subdirectory = "openad-model-inference/gt4sd_torch"
 
 [[package]]
