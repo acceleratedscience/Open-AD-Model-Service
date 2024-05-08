@@ -50,7 +50,7 @@ def claim_device_name() -> str:
     gpu_device_names = get_gpu_device_names()
     if len(gpu_device_names) > 0:
         device_name = gpu_device_names[0]
-    return device_name
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def get_device() -> torch.device:

@@ -51,7 +51,8 @@ class AAE:
             max_len: max length of SMILES.
             device: device used for computation. Defaults to cpu.
         """
-
+        if torch.cuda.is_available():
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.config = argparse.Namespace(
             model_load=model_path,
             config_load=model_config_path,
@@ -59,7 +60,7 @@ class AAE:
             n_samples=n_samples,
             n_batch=n_batch,
             max_len=max_len,
-            device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+            device=device,
         )
 
     def get_generator(self) -> AaeGenerator:
