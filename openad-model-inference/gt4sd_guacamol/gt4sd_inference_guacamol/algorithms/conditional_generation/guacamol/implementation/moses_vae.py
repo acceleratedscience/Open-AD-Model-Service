@@ -67,8 +67,6 @@ class VAE:
             device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         )
 
-    torch.load()
-
     def get_generator(self) -> VaeGenerator:
         """Create an instance of the VaeGenerator.
 

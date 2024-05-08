@@ -169,7 +169,8 @@ class GCPNGenerator(Generator):
             resources_path=resources_path,
         )
         # Torchfox
-        self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+
+        # self.model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         self.task = tasks.GCPNGeneration(
             self.model,
             self.atom_types,
@@ -177,7 +178,8 @@ class GCPNGenerator(Generator):
             max_node=38,
             criterion="nll",
         )
-        self.task.device = self.device
+        # self.task.device = self.device
+        self.task.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         optimizer = optim.Adam(self.task.parameters(), lr=1e-3)
         self.solver = core.Engine(self.task, self.dataset, None, None, optimizer)
         self.load_model(resources_path)
