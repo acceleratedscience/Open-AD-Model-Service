@@ -22,7 +22,7 @@
 # SOFTWARE.
 #
 """GuacaMol algorithms implementation module."""
-
+import torch
 import logging
 import os
 from typing import Any, List
@@ -461,7 +461,8 @@ class AaeIterator:
         self.n_batch = n_batch
         self.max_len = max_len
         self.aae_generator: AaeGenerator = None
-        self.device_name = claim_device_name()
+        # self.device_name = claim_device_name()
+        self.device_name = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def generate_batch(self, target=None) -> List[Any]:
         """Generate a batch of molecules.
@@ -512,7 +513,8 @@ class VaeIterator:
         self.n_batch = n_batch
         self.max_len = max_len
         self.vae_generator: VaeGenerator = None
-        self.device_name = claim_device_name()
+        self.device_name = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # self.device_name = claim_device_name()
 
     def generate_batch(self, target=None) -> List[Any]:
         """Generate a batch of molecules.
@@ -563,7 +565,7 @@ class OrganIterator:
         self.n_batch = n_batch
         self.max_len = max_len
         self.organ_generator: OrganGenerator = None
-        self.device_name = claim_device_name()
+        self.device_name = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def generate_batch(self, target=None) -> List[Any]:
         """Generate a batch of molecules.
