@@ -1689,7 +1689,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -1738,7 +1738,7 @@ torch = [
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_guacamol"
 
 [[package]]
@@ -1758,7 +1758,7 @@ molecule_generation = ">=0.4.1"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_moler"
 
 [[package]]
@@ -1787,7 +1787,7 @@ toxsmi = {git = "https://github.com/PhillipDowney/chemical_representation_learni
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_paccmann"
 
 [[package]]
@@ -1811,7 +1811,7 @@ terminator = {git = "https://github.com/PhillipDowney/regression-transformer", r
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_regression"
 
 [[package]]
@@ -1831,7 +1831,7 @@ reinvent_models = {git = "https://github.com/GT4SD/reinvent_models", rev = "v0.0
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_reinvent"
 
 [[package]]
@@ -1867,7 +1867,7 @@ torchdrug = ">=0.2.0"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "33caad391729cb466bc2052e1022ff6d5f802c2c"
+resolved_reference = "5830db6da99ebe55debf3c272a1320ea6ba4fe93"
 subdirectory = "openad-model-inference/gt4sd_torch"
 
 [[package]]

@@ -12,3 +12,6 @@ done
 
 echo "[i] Running lock for openad-model-inference"
 poetry lock
+git add .
+git commit -m "openad-model-inferencelock update"
+git push
