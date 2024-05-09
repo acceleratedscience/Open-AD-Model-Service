@@ -100,8 +100,9 @@ class Generator:
                 is running either as a dedicated class or a string. If not provided,
                 it is inferred.
         """
-        a_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.device = device_claim(a_device)
+        self.device = torch.device(
+            "cuda" if torch.cuda.is_available() else "cpu"
+        )  # openad
 
         self.resources_path = resources_path
 
@@ -112,8 +113,7 @@ class Generator:
             batch_norm=batch_norm,
         )
         # torchfix
-
-        self.model.to(a_device)
+        self.model.to(self.device)  # openad
         self.dataset = DummyDataset(atom_types)
 
     def load_model(self, resources_path: str):
