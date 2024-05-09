@@ -5,6 +5,9 @@ for dir in $DIRS; do
     echo "[i] Running lock for $dir"
     cd openad-model-inference/$dir && poetry lock
     cd - > /dev/null
+    git add .
+    git commit -m "$dir lock update"
+    git push
 done
 
 echo "[i] Running lock for openad-model-inference"
