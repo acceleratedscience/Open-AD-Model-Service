@@ -40,12 +40,17 @@ try:
     )
 
 except:  # noqa: E722
-    print("not loading guacamol")
     pass
 
-from gt4sd_common.algorithms.conditional_generation.key_bert import KeyBERTGenerator  # noqa: F401
-from gt4sd_common.algorithms.conditional_generation.molgx import MolGXQM9Generator  # noqa: F401
+try:
+    from gt4sd_common.algorithms.conditional_generation.key_bert import KeyBERTGenerator  # noqa: F401
+except:  # noqa: E722
+    pass
 
+try:
+    from gt4sd_common.algorithms.conditional_generation.molgx import MolGXQM9Generator  # noqa: F401
+except:  # noqa: E722
+    pass
 try:
     from gt4sd_inference_paccmann.algorithms.conditional_generation.paccmann_rl import (  # noqa: F401
         PaccMannRLOmicBasedGenerator,
@@ -60,7 +65,7 @@ try:
         PaccMannVAEGenerator,
     )
 except:  # noqa: E722
-    print("nopacc")
+
     pass
 
 try:
@@ -77,11 +82,20 @@ try:
     )
 except:  # noqa: E722
     pass
-from gt4sd_common.algorithms.conditional_generation.template import TemplateGenerator  # noqa: F401
-from gt4sd_common.algorithms.controlled_sampling.advanced_manufacturing import CatalystGenerator  # noqa: F401
 
-from gt4sd_common.algorithms.controlled_sampling.paccmann_gp import PaccMannGPGenerator  # noqa: F401
 
+try:
+    from gt4sd_common.algorithms.conditional_generation.template import TemplateGenerator  # noqa: F401
+except:  # noqa: E722
+    pass
+try:
+    from gt4sd_common.algorithms.controlled_sampling.advanced_manufacturing import CatalystGenerator  # noqa: F401
+except:  # noqa: E722
+    pass
+try:
+    from gt4sd_common.algorithms.controlled_sampling.paccmann_gp import PaccMannGPGenerator  # noqa: F401
+except:  # noqa: E722
+    pass
 try:
     from gt4sd_inference_reinvent.algorithms.generation.diffusion import (  # noqa: F401
         DDIMGenerator,
