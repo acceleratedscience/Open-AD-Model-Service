@@ -106,7 +106,7 @@ class ReinventConditionalGenerator(ReinventBase):
             self.scaffold_seqs = scaffold_seqs.expand(self.batch_size - 1, scaffold_seqs.shape[1])
             self.scaffold_seq_lengths = scaffold_seq_lengths.expand(self.batch_size - 1)
         logger.info("started generating samples with an nll score value")
-
+        self.model.network.to("cuda" if torch.cuda.is_available() else "cpu")
         sampled_sequences = list(self.model.sample_decorations(self.scaffold_seqs, self.scaffold_seq_lengths))
         if self.sample_uniquely:
             sampled_sequences = self.sample_unique_sequences(sampled_sequences)
