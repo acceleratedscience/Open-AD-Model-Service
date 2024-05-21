@@ -398,19 +398,6 @@ docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
-name = "dacite"
-version = "1.8.1"
-description = "Simple creation of data classes from dictionaries."
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "dacite-1.8.1-py3-none-any.whl", hash = "sha256:cc31ad6fdea1f49962ea42db9421772afe01ac5442380d9a99fcf3d188c61afe"},
-]
-
-[package.extras]
-dev = ["black", "coveralls", "mypy", "pre-commit", "pylint", "pytest (>=5)", "pytest-benchmark", "pytest-cov"]
-
-[[package]]
 name = "dataclasses"
 version = "0.6"
 description = "A backport of the dataclasses module for Python 3.6"
@@ -817,7 +804,7 @@ transformers = "^4.38.2"
 type = "git"
 url = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 reference = "main"
-resolved_reference = "5859fc6ab970489f734a05e150df67aa05844f01"
+resolved_reference = "ef896e1e61944e1d0c500a4792a6c9e6ae7e598d"
 subdirectory = "openad-model-inference/gt4sd_common"
 
 [[package]]
@@ -3017,23 +3004,18 @@ files = [
 
 [[package]]
 name = "reinvent_models"
-version = "0.0.7"
-description = "Generative models for Reinvent adapted for PaccMann"
+version = "0.0.15rc1"
+description = "Generative models for Reinvent"
 optional = false
 python-versions = ">=3.7"
 files = []
 develop = false
 
-[package.dependencies]
-dacite = "*"
-numpy = "*"
-torch = "*"
-
 [package.source]
 type = "git"
-url = "https://github.com/GT4SD/reinvent_models"
-reference = "v0.0.1"
-resolved_reference = "6eb81f2be468eecca7e63996618aa9307d9d8319"
+url = "https://github.com/GT4SD/reinvent-models"
+reference = "main"
+resolved_reference = "f378f9412bc7eb74d6a7c61fc4af307baa40d41b"
 
 [[package]]
 name = "requests"
@@ -4364,4 +4346,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "f497c7095b722b20c23c893b6997c42976af5664390854e3d8561435bbf3880f"
+content-hash = "da01d36be5163d3c96229f0bfec02ab2f788fd80818e4521bba0b88ba20195fc"
