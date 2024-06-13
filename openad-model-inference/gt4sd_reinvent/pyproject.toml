@@ -13,7 +13,8 @@ python = ">=3.9,<3.11"
 
 gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
 #reinvent_models ={ git = "https://github.com/GT4SD/reinvent_models" , rev = "v0.0.1" ,optional = false}
-reinvent_models ={git = "https://github.com/GT4SD/reinvent-models" , branch = "main" ,optional = false}
+# reinvent_models ={git = "https://github.com/GT4SD/reinvent-models" , branch = "main" ,optional = false}
+reinvent_models = {git = "https://github.com/GT4SD/reinvent_models", rev = "v0.0.2", optional = false}
 [tool.poetry.group.dev.dependencies]
 pytest = "8.0.2"
 pyright = "^1.1.352"
