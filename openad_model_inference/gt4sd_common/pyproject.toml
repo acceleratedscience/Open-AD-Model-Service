@@ -1,9 +1,9 @@
 
 [tool.poetry]
 name = "gt4sd_common"
-version = "0.1.0"
+version = "0.2.0"
 license="MIT"
-description = "gt4sd common commpoents"
+description = "gt4sd common components"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
 

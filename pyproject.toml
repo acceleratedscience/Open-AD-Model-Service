@@ -1,22 +1,21 @@
 [tool.poetry]
-name = "openad-model-inference"
-version = "0.1.0"
+name = "openad_model_inference"
+version = "0.2.0"
 license="MIT"
-description = "Openad_model_Service"
+description = "Wrapper for all GT4SD model models in the OpenAD Model Service"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
-# package-mode = false
 
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-gt4sd_common = { path = "openad-model-inference/gt4sd_common", optional = false}
-gt4sd_inference_reinvent = { path = "openad-model-inference/gt4sd_reinvent", optional = true}
-gt4sd_inference_torch_drug = { path = "openad-model-inference/gt4sd_torch", optional = true}
-gt4sd_inference_guacamol = { path = "openad-model-inference/gt4sd_guacamol", optional = true}
-gt4sd_inference_moler = { path = "openad-model-inference/gt4sd_moler", optional = true}
-gt4sd_inference_paccmann = { path = "openad-model-inference/gt4sd_paccmann", optional = true}
-gt4sd_inference_regression = { path = "openad-model-inference/gt4sd_regression", optional = true}
+gt4sd_common = { path = "openad_model_inference/gt4sd_common", optional = false}
+gt4sd_inference_reinvent = { path = "openad_model_inference/gt4sd_reinvent", optional = true}
+gt4sd_inference_torch_drug = { path = "openad_model_inference/gt4sd_torch", optional = true}
+gt4sd_inference_guacamol = { path = "openad_model_inference/gt4sd_guacamol", optional = true}
+gt4sd_inference_paccmann = { path = "openad_model_inference/gt4sd_paccmann", optional = true}
+gt4sd_inference_moler = { path = "openad_model_inference/gt4sd_moler", optional = true}
+gt4sd_inference_regression = { path = "openad_model_inference/gt4sd_regression", optional = true}
 
 
 [tool.poetry.extras]
