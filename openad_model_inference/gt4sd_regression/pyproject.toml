@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gt4sd_inference_regression"
-version = "0.1.0"
+version = "0.2.0"
 license="MIT"
 description = "gt4sd Inference for regression"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
@@ -14,7 +14,7 @@ gt4sd-trainer-hf-pl = "^1.0.0"
 terminator = {git =  "https://github.com/PhillipDowney/regression-transformer", rev = "gt4sd", optional = false}
 pytoda = {git = "https://github.com/PhillipDowney/paccmann_datasets", rev = "1.1.3", optional = false}
 # gt4sd_common = {path =  "../gt4sd_common/"}
-gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
+# gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_common", branch = "main" }
 
 sentencepiece = "0.2.0"
 #psutil = "^5.9.8"

@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "gt4sd_inference_all"
+version = "0.2.0"
+license="MIT"
+description = "gt4sd Inference for all models"
+authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+mols2grid = "*"
+
+gt4sd_inference_guacamol = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_guacamol", branch = "main" }
+gt4sd_inference_regression = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_regression", branch = "main" }
+gt4sd_inference_paccmann = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_paccmann", branch = "main" }
+gt4sd_inference_reinvent = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_reinvent", branch = "main" }
+gt4sd_inference_moler = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_moler", branch = "main" }
+gt4sd_inference_torch_drug = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_torch", branch = "main" }
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.0.2"
+pyright = "^1.1.352"
+python-lsp-server = {extras = ["all"], version = "^1.10.0"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

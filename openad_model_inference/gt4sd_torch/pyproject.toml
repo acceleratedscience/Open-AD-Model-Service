@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "gt4sd_inference_torch_drug"
-version = "0.1.0"
+version = "0.2.0"
 license="MIT"
-description = "gt4sd Inference for paccmannrl prediction"
+description = "gt4sd Inference for torch drug prediction"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
 readme = "README.md"
 
@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
 
-gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
+# gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad_model_inference/gt4sd_common", branch = "main" }
 
 #torch = "^1.7.1"
 #torch = "^2.2.1"
