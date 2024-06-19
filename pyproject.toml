@@ -4,19 +4,18 @@ version = "0.2.0"
 license="MIT"
 description = "Wrapper for all GT4SD model models in the OpenAD Model Service"
 authors = ["Daniel Choi <choi@ibm.com>", "Phil Downey <Phil.Downey1@ibm.com>", "Brian Duenas <Brian.Duenas@ibm.com>"]
+repository = "https://github.com/acceleratedscience/Open-AD-Model-Service"
 readme = "README.md"
-
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-gt4sd_common = { path = "openad_model_inference/gt4sd_common", optional = false}
-gt4sd_inference_reinvent = { path = "openad_model_inference/gt4sd_reinvent", optional = true}
-gt4sd_inference_torch_drug = { path = "openad_model_inference/gt4sd_torch", optional = true}
-gt4sd_inference_guacamol = { path = "openad_model_inference/gt4sd_guacamol", optional = true}
-gt4sd_inference_paccmann = { path = "openad_model_inference/gt4sd_paccmann", optional = true}
-gt4sd_inference_moler = { path = "openad_model_inference/gt4sd_moler", optional = true}
-gt4sd_inference_regression = { path = "openad_model_inference/gt4sd_regression", optional = true}
-
+gt4sd_common = { path = "openad_model_inference/gt4sd_common", optional = false, develop = true }
+gt4sd_inference_reinvent = { path = "openad_model_inference/gt4sd_reinvent", optional = true, develop = true }
+gt4sd_inference_torch_drug = { path = "openad_model_inference/gt4sd_torch", optional = true, develop = true }
+gt4sd_inference_guacamol = { path = "openad_model_inference/gt4sd_guacamol", optional = true, develop = true }
+gt4sd_inference_paccmann = { path = "openad_model_inference/gt4sd_paccmann", optional = true, develop = true }
+gt4sd_inference_moler = { path = "openad_model_inference/gt4sd_moler", optional = true, develop = true }
+gt4sd_inference_regression = { path = "openad_model_inference/gt4sd_regression", optional = true, develop = true }
 
 [tool.poetry.extras]
 reinvent = ["gt4sd_inference_reinvent"]
@@ -27,18 +26,15 @@ paccmann = ["gt4sd_inference_paccmann", "gt4sd_inference_guacamol"]
 regression = ["gt4sd_inference_regression"]
 all = ["gt4sd_inference_reinvent", "gt4sd_inference_torch_drug", "gt4sd_inference_guacamol", "gt4sd_inference_moler", "gt4sd_inference_paccmann", "gt4sd_inference_regression"]
 
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
 
 [tool.ruff]
 fix = true
 line-length = 120
 target-version = "py310"
 show-fixes = true
-
 
 [tool.ruff.lint]
 ignore = [

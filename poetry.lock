@@ -1404,7 +1404,7 @@ description = "gt4sd common components"
 optional = false
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 deepchem = "*"
@@ -1438,7 +1438,7 @@ description = "gt4sd Inference for guacamol prediction"
 optional = true
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 guacamol = {git = "https://github.com/brian316/guacamol.git"}
@@ -1461,7 +1461,7 @@ description = "gt4sd Inference for moler prediction"
 optional = true
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 molecule_generation = ">=0.4.1"
@@ -1477,7 +1477,7 @@ description = "gt4sd Inference for paccmannrl prediction"
 optional = true
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 paccmann_chemistry = {git = "https://github.com/PhillipDowney/paccmann_chemistry", rev = "0.0.4"}
@@ -1501,7 +1501,7 @@ description = "gt4sd Inference for regression"
 optional = true
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 gt4sd-trainer-hf-pl = "^1.0.0"
@@ -1521,7 +1521,7 @@ description = "gt4sd Inference for reinvent prediction"
 optional = true
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 reinvent_models = {git = "https://github.com/acceleratedscience/reinvent_models.git", branch = "main"}
@@ -1537,7 +1537,7 @@ description = "gt4sd Inference for torch drug prediction"
 optional = true
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 torch = [
@@ -6269,4 +6269,4 @@ torch-drug = ["gt4sd_inference_torch_drug"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "e80e92b61d40122029f9b59706aaf1c536b6df8e6a6ff114c32141486cc1c9c3"
+content-hash = "9a57fa9a52e318b034b08c5f6740f338ef74c09f91203d680376411bc1027d98"
