@@ -28,6 +28,7 @@ import os
 from typing import List, NamedTuple, Optional, Set, Tuple
 
 from reinvent_models.lib_invent.models.model import DecoratorModel
+from reinvent_models.model_factory.enums.model_mode_enum import ModelModeEnum
 import torch
 from gt4sd_inference_reinvent.algorithms.conditional_generation.reinvent.reinvent_core.core import (
     ReinventBase,
@@ -72,7 +73,7 @@ class ReinventConditionalGenerator(ReinventBase):
             logger.debug("reinvent model files does not exist locally")
             raise OSError(f"artifacts file {self.model_path} does not exist locally")
 
-        self.model = DecoratorModel.load_from_file(path=self.model_path)
+        self.model = DecoratorModel.load_from_file(path=self.model_path, mode=ModelModeEnum.INFERENCE)
         if torch.cuda.is_available():
             self.model.network.cuda()
         self.model.max_sequence_length = max_sequence_length
