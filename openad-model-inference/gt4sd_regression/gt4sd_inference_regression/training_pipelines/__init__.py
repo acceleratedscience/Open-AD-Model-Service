@@ -29,7 +29,8 @@ from typing import Any, Dict
 
 import sentencepiece as _sentencepiece
 import torch as _torch
-import tensorflow as _tensorflow
+
+# import tensorflow as _tensorflow
 from gt4sd_trainer.hf_pl.core import (  # noqa: F401
     LanguageModelingDataArguments,
     LanguageModelingModelArguments,
@@ -138,7 +139,7 @@ from .torchdrug.graphaf.core import (
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
-_tensorflow
+# _tensorflow
 _torch
 
 logger = logging.getLogger(__name__)
@@ -179,9 +180,7 @@ def training_pipeline_name_to_metadata(name: str) -> Dict[str, Any]:
     metadata: Dict[str, Any] = {"training_pipeline": name, "parameters": {}}
     if name in TRAINING_PIPELINE_NAME_METADATA_MAPPING:
         try:
-            path = exitclose_file_creator(
-                f"training_pipelines/{TRAINING_PIPELINE_NAME_METADATA_MAPPING[name]}"
-            )
+            path = exitclose_file_creator(f"training_pipelines/{TRAINING_PIPELINE_NAME_METADATA_MAPPING[name]}")
             with open(path, "rt") as fp:
                 metadata["parameters"] = json.load(fp)
         except Exception:
@@ -195,10 +194,6 @@ def training_pipeline_name_to_metadata(name: str) -> Dict[str, Any]:
             metadata["parameters"].update(field_types)
 
     else:
-        logger.warning(
-            f'training pipeline "{name}" metadata not found, returning an empty metadata dictionary'
-        )
-    metadata["description"] = metadata["parameters"].pop(
-        "description", "A training pipeline."
-    )
+        logger.warning(f'training pipeline "{name}" metadata not found, returning an empty metadata dictionary')
+    metadata["description"] = metadata["parameters"].pop("description", "A training pipeline.")
     return metadata

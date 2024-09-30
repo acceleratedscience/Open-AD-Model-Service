@@ -29,7 +29,8 @@ from typing import Any, Dict
 
 import sentencepiece as _sentencepiece
 import torch as _torch
-import tensorflow as _tensorflow
+
+# import tensorflow as _tensorflow
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
@@ -50,7 +51,7 @@ from ..ml.module import GFlowNetModule
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
-_tensorflow
+# _tensorflow
 _torch
 
 logger = logging.getLogger(__name__)
@@ -115,9 +116,7 @@ def train_gflownet(
         model=model,
     )
 
-    tensorboard_logger = TensorBoardLogger(
-        "logs", name=getattr(arguments, "basename", "default")
-    )
+    tensorboard_logger = TensorBoardLogger("logs", name=getattr(arguments, "basename", "default"))
     checkpoint_callback = ModelCheckpoint(
         save_top_k=-1,
     )

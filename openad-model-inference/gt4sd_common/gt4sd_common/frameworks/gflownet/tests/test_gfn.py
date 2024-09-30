@@ -40,7 +40,7 @@ from gt4sd_common.frameworks.gflownet.tests.qm9 import QM9Dataset, QM9GapTask
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
-_tensorflow
+# _tensorflow
 _torch
 
 configuration = {

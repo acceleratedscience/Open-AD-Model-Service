@@ -31,7 +31,8 @@ from typing import Any, Dict, Optional, Tuple
 
 import sentencepiece as _sentencepiece
 import torch as _torch
-import tensorflow as _tensorflow
+
+# import tensorflow as _tensorflow
 from gt4sd_trainer.hf_pl.pytorch_lightning_trainer import (
     PytorchLightningTrainingArguments,
     PyTorchLightningTrainingPipeline,
@@ -46,7 +47,7 @@ from ...core import TrainingPipelineArguments
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
-_tensorflow
+# _tensorflow
 _torch
 
 logger = logging.getLogger(__name__)
@@ -80,9 +81,7 @@ class GranularTrainingPipeline(PyTorchLightningTrainingPipeline):
         if "models" in model_config:
             configuration["model_list"] = model_config["models"]
         else:
-            raise ValueError(
-                "Models configuration is not given in the specified config file."
-            )
+            raise ValueError("Models configuration is not given in the specified config file.")
 
         arguments = Namespace(**configuration)
         datasets = []
@@ -146,9 +145,7 @@ class GranularPytorchLightningTrainingArguments(PytorchLightningTrainingArgument
     )
     profiler: Optional[str] = field(
         default="simple",
-        metadata={
-            "help": "To profile individual steps during training and assist in identifying bottlenecks."
-        },
+        metadata={"help": "To profile individual steps during training and assist in identifying bottlenecks."},
     )
 
 
@@ -206,9 +203,7 @@ class GranularDataArguments(TrainingPipelineArguments):
     )
     stratified_batch_file: Optional[str] = field(
         default=None,
-        metadata={
-            "help": "Stratified batch file for sampling. Defaults to None, a.k.a., no stratified sampling."
-        },
+        metadata={"help": "Stratified batch file for sampling. Defaults to None, a.k.a., no stratified sampling."},
     )
     stratified_value_name: Optional[str] = field(
         default=None,
@@ -228,6 +223,4 @@ class GranularSavingArguments(TrainingPipelineArguments):
 
     __name__ = "saving_args"
 
-    model_path: str = field(
-        metadata={"help": "Path to the checkpoint file to be used."}
-    )
+    model_path: str = field(metadata={"help": "Path to the checkpoint file to be used."})

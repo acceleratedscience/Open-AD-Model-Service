@@ -28,7 +28,8 @@ from typing import Any, Dict, Optional
 
 import sentencepiece as _sentencepiece
 import torch as _torch
-import tensorflow as _tensorflow
+
+# import tensorflow as _tensorflow
 import numpy as np
 import pytorch_lightning as pl
 import torch.nn as nn
@@ -48,7 +49,7 @@ from gt4sd_common.frameworks.gflownet.dataloader.sampler import SamplingIterator
 
 # imports that have to be loaded before lightning to avoid segfaults
 _sentencepiece
-_tensorflow
+# _tensorflow
 _torch
 
 logger = logging.getLogger(__name__)
@@ -90,9 +91,7 @@ class GFlowNetDataModule(pl.LightningDataModule):
         if model:
             self.sampling_model = model
         else:
-            self.sampling_model = MODEL_FACTORY[self.hps["sampling_model"]](
-                self.hps, context
-            )
+            self.sampling_model = MODEL_FACTORY[self.hps["sampling_model"]](self.hps, context)
         self.algo = algorithm
         self.env = environment
         self.ctx = context
@@ -137,9 +136,7 @@ class GFlowNetDataModule(pl.LightningDataModule):
         if stage == "predict" or stage is None:
             self.test_dataset.set_indexes(self.ix_test)  # type: ignore
 
-        logger.info(
-            f"number of data points used for training: {len(self.train_dataset)}"
-        )
+        logger.info(f"number of data points used for training: {len(self.train_dataset)}")
         logger.info(f"number of data points used for testing: {len(self.test_dataset)}")
         logger.info(
             f"testing proportion: {len(self.test_dataset) / (len(self.test_dataset) + len(self.train_dataset))}"

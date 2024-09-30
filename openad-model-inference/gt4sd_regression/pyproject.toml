@@ -14,7 +14,7 @@ gt4sd-trainer-hf-pl = "^1.0.0"
 terminator = {git =  "https://github.com/PhillipDowney/regression-transformer", rev = "gt4sd", optional = false}
 pytoda = {git = "https://github.com/PhillipDowney/paccmann_datasets", rev = "1.1.3", optional = false}
 # gt4sd_common = {path =  "../gt4sd_common/"}
-gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "main" }
+gt4sd_common = { git = "https://github.com/acceleratedscience/Open-AD-Model-Service", subdirectory = "openad-model-inference/gt4sd_common", branch = "excl_moler" }
 
 sentencepiece = "0.2.0"
 #psutil = "^5.9.8"

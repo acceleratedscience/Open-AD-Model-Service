@@ -29,7 +29,8 @@ from typing import Any, Dict
 
 import sentencepiece as _sentencepiece
 import torch as _torch
-import tensorflow as _tensorflow
+
+##import tensorflow as _tensorflow
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
@@ -95,9 +96,7 @@ def train_granular(configuration: Dict[str, Any]) -> None:
         lr=getattr(arguments, "lr", 0.0001),
         test_output_path=getattr(arguments, "test_output_path", "./test"),
     )
-    tensorboard_logger = TensorBoardLogger(
-        "logs", name=getattr(arguments, "basename", "default")
-    )
+    tensorboard_logger = TensorBoardLogger("logs", name=getattr(arguments, "basename", "default"))
     checkpoint_callback = ModelCheckpoint(
         every_n_epochs=getattr(arguments, "checkpoint_every_n_val_epochs", 5),
         save_top_k=-1,
