@@ -10,8 +10,8 @@ for dir in $DIRS; do
     git push
 done
 
-# echo "[i] Running lock for openad-model-inference"
-# poetry lock
-# git add .
-# git commit -m "openad-model-inference lock update"
-# git push
+echo "[i] Running lock for openad-model-inference"
+poetry lock
+git add .
+git commit -m "openad-model-inference lock update"
+git push
